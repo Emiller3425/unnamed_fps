@@ -48,14 +48,19 @@ public class PlayerController : MonoBehaviour
         {
             // Get WASD
             Vector2 moveValue = moveAction.ReadValue<Vector2>();
-            // Because W/S are the Y value of the Vector2, we apply it to the Z value of the Vector3 to simulate movement
-            movementDirection = new Vector3(moveValue.x, 0f, moveValue.y) * (sprintAction.IsPressed() ? sprintSpeed : walkSpeed);
-            characterController.Move(movementDirection);
 
-            if (jumpAction.IsPressed())
-            {
-                // jump logic
-            }
+            // get right direction vector
+            Vector3 right = transform.TransformDirection(Vector3.right);
+            // Get forward direction vector
+            Vector3 forward = transform.TransformDirection(Vector3.forward);
+
+            // Get movement speeds
+            float speedX = moveValue.x * (sprintAction.IsPressed() ? sprintSpeed : walkSpeed);
+            float speedY = moveValue.y * (sprintAction.IsPressed() ? sprintSpeed : walkSpeed);
+
+            // apply movement speed to player vectors
+            movementDirection = (right * speedX) + (forward * speedY);
+            characterController.Move(movementDirection);
 
             // Lookaround logic
             Vector2 lookValue = lookAction.ReadValue<Vector2>();
@@ -65,6 +70,13 @@ public class PlayerController : MonoBehaviour
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
             // Rotate the entire player object around the Y-Axis for looking around horizontally
             transform.Rotate(lookSpeed * lookValue.x * Vector3.up);
+
+            // Apply gravity
+            if (jumpAction.IsPressed())
+            {
+                // jump logic
+            }
+
         }
 
     }
