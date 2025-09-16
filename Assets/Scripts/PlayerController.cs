@@ -21,8 +21,9 @@ public class PlayerController : MonoBehaviour
     private bool canMove = true;
 
     // new system
-    InputAction moveAction;
-    InputAction jumpAction;
+    private InputAction moveAction;
+    private InputAction lookAction;
+    private InputAction jumpAction;
 
     void Start()
     {
@@ -31,6 +32,7 @@ public class PlayerController : MonoBehaviour
         Cursor.visible = false;
 
         moveAction = InputSystem.actions.FindAction("Move");
+        lookAction = InputSystem.actions.FindAction("Look");
         jumpAction = InputSystem.actions.FindAction("Jump");
     }
 
@@ -49,9 +51,10 @@ public class PlayerController : MonoBehaviour
             {
                 // jump logic
             }
-            // apply gravity
 
             // lookaround logic
+            Vector2 lookValue = lookAction.ReadValue<Vector2>() / 100f;
+            // finish this
         }
 
     }
