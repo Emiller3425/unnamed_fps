@@ -1,6 +1,17 @@
-.vscode
-Assets/Scenes
-Assets/Settings
-Assets/InputSystem_Actions.inputactions
-Packages
-unnamed_fps.sin
+# Ignore everything in the entire repository
+*
+
+# But don't ignore the .gitignore file itself
+!.gitignore
+
+# Re-include the Assets folder and all its contents
+!/Assets/
+
+# Re-include the ProjectSettings folder
+!/ProjectSettings/
+
+# Re-include any file in the Assets folder that ends in .cs (your C# scripts)
+!/Assets/**/*.cs
+
+# Re-include the .meta files associated with C# scripts
+!/Assets/**/*.cs.meta
