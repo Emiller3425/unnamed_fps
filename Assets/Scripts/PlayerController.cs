@@ -10,17 +10,19 @@ using UnityEngine.TextCore.Text;
 public class PlayerController : MonoBehaviour
 {
     public Camera playerCamera;
-    public float walkSpeed = 0.03f;
-    public float sprintSpeed = 0.05f;
-    public float lookSpeed = 0.25f;
-
+    public float walkSpeed = 4f;
+    public float sprintSpeed = 7f;
+    public float lookSpeed = 0.6f;
+    public float jumpHeight = 210f;
 
     private CharacterController characterController;
     private Vector3 movementDirection = Vector3.zero;
     private float rotationX = 0;
     private bool canMove = true;
-
-    // new system
+    private bool canJump = true;
+    private float velocityY = 0;
+    private float gravity = 20f;
+    // new input system
     private InputAction moveAction;
     private InputAction lookAction;
     private InputAction jumpAction;
@@ -58,9 +60,30 @@ public class PlayerController : MonoBehaviour
             float speedX = moveValue.x * (sprintAction.IsPressed() ? sprintSpeed : walkSpeed);
             float speedY = moveValue.y * (sprintAction.IsPressed() ? sprintSpeed : walkSpeed);
 
-            // apply movement speed to player vectors
             movementDirection = (right * speedX) + (forward * speedY);
-            characterController.Move(movementDirection);
+            
+            // apply gravity
+            if (!characterController.isGrounded)
+            {
+                velocityY -= gravity * Time.deltaTime;
+            }
+            // reset velocity and jump boolean if grounded
+            if (characterController.isGrounded)
+            {
+                velocityY = 0f;
+                canJump = true;
+            }
+            // handle jump
+            if (jumpAction.IsPressed() && canJump)
+            {
+                velocityY = jumpHeight;
+                canJump = false;
+            }
+            
+            movementDirection.y = velocityY;
+
+            // apply movement
+            characterController.Move(movementDirection * Time.deltaTime);
 
             // Lookaround logic
             Vector2 lookValue = lookAction.ReadValue<Vector2>();
@@ -70,13 +93,6 @@ public class PlayerController : MonoBehaviour
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
             // Rotate the entire player object around the Y-Axis for looking around horizontally
             transform.Rotate(lookSpeed * lookValue.x * Vector3.up);
-
-            // Apply gravity
-            if (jumpAction.IsPressed())
-            {
-                // jump logic
-            }
-
         }
 
     }
