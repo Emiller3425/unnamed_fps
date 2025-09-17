@@ -6,12 +6,18 @@
 
 # Re-include the Assets folder and all its contents
 !/Assets/
+!/Assets/**/*
 
-# Re-include the ProjectSettings folder
+Assets/Scenes
+Assets/Settings
+Assets/InputSystem_Actions.inputactions
+
+# Re-include the ProjectSettings folder and all its contents
 !/ProjectSettings/
+!/ProjectSettings/**/*
 
-# Re-include any file in the Assets folder that ends in .cs (your C# scripts)
+# Now, specifically re-include C# files and their .meta files
+# This is a bit redundant after re-including the whole folder, but it's good practice
+# for more complex scenarios where you might be more selective.
 !/Assets/**/*.cs
-
-# Re-include the .meta files associated with C# scripts
 !/Assets/**/*.cs.meta
