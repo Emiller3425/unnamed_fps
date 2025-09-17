@@ -9,15 +9,10 @@
 !/Assets/**/*
 
 Assets/Scenes
+Assets/Scenes.*
+Assets/Scripts.*
 Assets/Settings
+Assets/Settings.*
+Assets/New Terrain.*
+Assets/InputSystem_Actions.inputactions.*
 Assets/InputSystem_Actions.inputactions
-
-# Re-include the ProjectSettings folder and all its contents
-!/ProjectSettings/
-!/ProjectSettings/**/*
-
-# Now, specifically re-include C# files and their .meta files
-# This is a bit redundant after re-including the whole folder, but it's good practice
-# for more complex scenarios where you might be more selective.
-!/Assets/**/*.cs
-!/Assets/**/*.cs.meta
