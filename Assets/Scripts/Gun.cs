@@ -29,7 +29,7 @@ public class Gun : MonoBehaviour
     public GameObject bulletPrefab;
     private InputAction shoot;
     private InputAction reload;
-    private float reloadBuffer;
+    private float reloadBuffer = 0f;
     void Awake()
     {
         // define listeners
@@ -47,7 +47,6 @@ public class Gun : MonoBehaviour
         reload.started += OnReload;
     }
 
-
     void Start()
     {
         currentAmmo = maxAmmo;
@@ -56,13 +55,17 @@ public class Gun : MonoBehaviour
     void Update()
     {
         // probably handle fully auto here
-        Debug.Log(currentAmmo);
+        if (reloadBuffer > 0f)
+        {
+            reloadBuffer -= Time.deltaTime;
+        }
+        Debug.Log(reloadBuffer);
     }
 
     // attempt shoot on shoot action
     void OnShoot(InputAction.CallbackContext context)
     {
-        if (currentAmmo > 0)
+        if (currentAmmo > 0 && reloadBuffer <= 0f)
         {
             ShootBullet();
         }
@@ -75,7 +78,7 @@ public class Gun : MonoBehaviour
     // attempt reload on reload action
     void OnReload(InputAction.CallbackContext context)
     {
-        if (currentAmmo < maxAmmo)
+        if (currentAmmo < maxAmmo && reloadBuffer <= 0)
             Reload();
     }
 
@@ -91,9 +94,11 @@ public class Gun : MonoBehaviour
     // reload logic
     void Reload()
     {
-        Debug.Log("reload");
-        reloadBuffer = 2f;
-        currentAmmo = maxAmmo;
+        if (currentAmmo < maxAmmo && reloadBuffer <= 0f)
+        {
+            reloadBuffer = 2f;
+            currentAmmo = maxAmmo;
+        }
     }
 
     // disable InputSystem subscriptions
