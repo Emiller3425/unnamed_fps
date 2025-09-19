@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using NUnit.Framework;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,8 +14,8 @@ public class PlayerController : MonoBehaviour
     public float walkSpeed = 4f;
     public float sprintSpeed = 7f;
     public float lookSpeed = 0.6f;
-    public float jumpHeight = 210f;
-
+    public float jumpHeight = 7f;
+    public bool isWalking = false;
     private CharacterController characterController;
     private Vector3 movementDirection = Vector3.zero;
     private float rotationX = 0;
@@ -84,6 +85,16 @@ public class PlayerController : MonoBehaviour
 
             // apply movement
             characterController.Move(movementDirection * Time.deltaTime);
+            // Is charcter walking for view bobbing
+            if (movementDirection.x != 0f || movementDirection.z != 0f)
+            {
+                isWalking = true;
+            }
+            else
+            {
+                isWalking = false;
+            }
+            Debug.Log(isWalking);
 
             // Lookaround logic
             Vector2 lookValue = lookAction.ReadValue<Vector2>();

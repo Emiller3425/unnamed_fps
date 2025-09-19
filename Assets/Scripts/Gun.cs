@@ -59,7 +59,6 @@ public class Gun : MonoBehaviour
         {
             reloadBuffer -= Time.deltaTime;
         }
-        Debug.Log(reloadBuffer);
     }
 
     // attempt shoot on shoot action
