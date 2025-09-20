@@ -11,7 +11,8 @@ public class BurstRifle : BurstGun
     protected override void Start()
     {
         // Set default values for BurstRifle
-        maxAmmo = 36;
+        maxAmmo = 180;
+        magSize = 36;
         damage = 12;
         maxReloadBuffer = 2.5f;
         maxFireRateBuffer = 0.1f;

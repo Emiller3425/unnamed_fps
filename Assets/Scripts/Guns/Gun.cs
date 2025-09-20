@@ -11,7 +11,8 @@ using UnityEngine.TextCore.Text;
 public abstract class Gun : MonoBehaviour
 {
     public GameObject bulletPrefab;
-    public int maxAmmo = 30;
+    public int maxAmmo = 120;
+    public int magSize = 30;
     public int damage = 10;
     public float maxReloadBuffer = 2f;
     public float maxFireRateBuffer = 0.2f;
@@ -19,6 +20,7 @@ public abstract class Gun : MonoBehaviour
     protected float reloadBuffer = 0f;
     protected float fireRateBuffer = 0f;
     protected int currentAmmo;
+    protected int currentMag;
     protected InputAction shoot;
     protected InputAction reload;
     protected void Awake()
@@ -41,6 +43,7 @@ public abstract class Gun : MonoBehaviour
     protected virtual void Start()
     {
         currentAmmo = maxAmmo;
+        currentMag = magSize;
     }
 
     protected virtual void Update()
@@ -94,10 +97,12 @@ public abstract class Gun : MonoBehaviour
     // Reloads
     protected void Reload()
     {
-        if (currentAmmo < maxAmmo && reloadBuffer <= 0f)
+        if (currentAmmo > 0 && currentAmmo < maxAmmo && reloadBuffer <= 0f)
         {
             reloadBuffer = maxReloadBuffer;
-            currentAmmo = maxAmmo;
+            currentAmmo -= (magSize - currentMag);
+            currentMag = magSize;
+            Debug.Log(currentAmmo);
         }
     }
 

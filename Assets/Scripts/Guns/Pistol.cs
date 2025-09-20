@@ -11,7 +11,8 @@ public class Pistol : SemiAutoGun
     protected override void Start()
     {
         // Set default values for Pistol
-        maxAmmo = 12;
+        maxAmmo = 72;
+        magSize = 12;
         damage = 10;
         maxReloadBuffer = 1.5f;
         maxFireRateBuffer = 0.2f;
