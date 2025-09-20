@@ -6,12 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
-public class MachineGun : Gun
+public class Enemy : Entity
 {
-    public override void ShootBullet()
-    {
-        base.ShootBullet();
 
-        Debug.Log("machine gun shot");
-    }
 }

@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
-public class TemplateMonoBeheavior : MonoBehaviour
+public class Entity : MonoBehaviour
 {
     void Awake()
     {
