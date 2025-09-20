@@ -7,10 +7,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 using UnityEngine.TextCore.Text;
 
-/** 
-TODO Add reload logic
-**/
-
 
 public enum FiringType
 {
@@ -21,23 +17,26 @@ public enum FiringType
 
 public class Gun : MonoBehaviour
 {
-    public int maxAmmo = 30;
-    public int currentAmmo;
-    public int damage = 10;
-    public int fireRate = 2;
-    public FiringType firingType = FiringType.SEMIAUTO;
     public GameObject bulletPrefab;
+    public int maxAmmo = 30;
+    public int damage = 10;
+    public float maxReloadBuffer = 2f;
+    public float maxFireRateBuffer = 0.2f;
+    protected float reloadBuffer = 0f;
+    protected float fireRateBuffer = 0f;
+    protected int currentAmmo;
+    protected float bulletVelocity = 20f;
+    private FiringType firingType = FiringType.SEMIAUTO;
     private InputAction shoot;
     private InputAction reload;
-    private float reloadBuffer = 0f;
-    void Awake()
+    protected void Awake()
     {
         // define listeners
         shoot = InputSystem.actions.FindAction("Attack");
         reload = InputSystem.actions.FindAction("Reload");
     }
 
-    void OnEnable()
+    protected void OnEnable()
     {
         // enable listeners
         shoot.Enable();
@@ -47,26 +46,31 @@ public class Gun : MonoBehaviour
         reload.started += OnReload;
     }
 
-    void Start()
+    protected void Start()
     {
         currentAmmo = maxAmmo;
     }
 
-    void Update()
+    protected void Update()
     {
-        // probably handle fully auto here
+        // decriment reload and firerate buffers if they exist
         if (reloadBuffer > 0f)
         {
             reloadBuffer -= Time.deltaTime;
         }
+        if (fireRateBuffer > 0f)
+        {
+            fireRateBuffer -= Time.deltaTime;
+        }
     }
 
     // attempt shoot on shoot action
-    void OnShoot(InputAction.CallbackContext context)
+    protected void OnShoot(InputAction.CallbackContext context)
     {
         if (currentAmmo > 0 && reloadBuffer <= 0f)
         {
-            ShootBullet();
+            if (fireRateBuffer <= 0f)
+                ShootBullet();
         }
         else
         {
@@ -74,39 +78,42 @@ public class Gun : MonoBehaviour
         }
     }
 
-    // attempt reload on reload action
-    void OnReload(InputAction.CallbackContext context)
+    // Attempt reload on reload action
+    protected void OnReload(InputAction.CallbackContext context)
     {
         if (currentAmmo < maxAmmo && reloadBuffer <= 0)
             Reload();
     }
 
-    // shoot logic
-    void ShootBullet()
+    // Shoots bulllet
+    public virtual void ShootBullet()
     {
-        GameObject bulletObject = Instantiate(bulletPrefab, transform.position, transform.rotation);
-        Bullet bullet = bulletObject.GetComponent<Bullet>();
-        bullet.Shoot(transform.TransformDirection(Vector3.forward), 15f);
-        currentAmmo--;
+        if (fireRateBuffer <= 0)
+        {
+            GameObject bulletObject = Instantiate(bulletPrefab, transform.position, transform.rotation);
+            Bullet bullet = bulletObject.GetComponent<Bullet>();
+            bullet.Shoot(transform.TransformDirection(Vector3.forward), bulletVelocity);
+            currentAmmo--;
+            fireRateBuffer = maxFireRateBuffer;
+        }
     }
 
-    // reload logic
-    void Reload()
+    // Reloads
+    protected void Reload()
     {
         if (currentAmmo < maxAmmo && reloadBuffer <= 0f)
         {
-            reloadBuffer = 2f;
+            reloadBuffer = maxReloadBuffer;
             currentAmmo = maxAmmo;
         }
     }
 
     // disable InputSystem subscriptions
-    void OnDisable()
+    protected void OnDisable()
     {
-        // unsubscribe
+        // unsubscribe and disable listeners
         shoot.started -= OnShoot;
         reload.started -= OnReload;
-        // disable listeners
         shoot.Disable();
         reload.Disable();
     }

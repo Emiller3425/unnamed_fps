@@ -11,18 +11,18 @@ using UnityEngine.TextCore.Text;
 public class PlayerController : MonoBehaviour
 {
     public Camera playerCamera;
-    public float walkSpeed = 4f;
-    public float sprintSpeed = 7f;
+    public float walkSpeed = 7f;
+    public float sprintSpeed = 9f;
     public float lookSpeed = 0.6f;
     public float jumpHeight = 7f;
-    public bool isWalking = false;
     private CharacterController characterController;
     private Vector3 movementDirection = Vector3.zero;
     private float rotationX = 0;
     private bool canMove = true;
     private bool canJump = true;
     private float velocityY = 0;
-    private float gravity = 20f;
+    private float gravity = 25f;
+
     // new input system
     private InputAction moveAction;
     private InputAction lookAction;
@@ -52,9 +52,7 @@ public class PlayerController : MonoBehaviour
             // Get WASD
             Vector2 moveValue = moveAction.ReadValue<Vector2>();
 
-            // get right direction vector
             Vector3 right = transform.TransformDirection(Vector3.right);
-            // Get forward direction vector
             Vector3 forward = transform.TransformDirection(Vector3.forward);
 
             // Get movement speeds
@@ -83,26 +81,15 @@ public class PlayerController : MonoBehaviour
             
             movementDirection.y = velocityY;
 
-            // apply movement
             characterController.Move(movementDirection * Time.deltaTime);
-            // Is charcter walking for view bobbing
-            if (movementDirection.x != 0f || movementDirection.z != 0f)
-            {
-                isWalking = true;
-            }
-            else
-            {
-                isWalking = false;
-            }
-            Debug.Log(isWalking);
 
             // Lookaround logic
             Vector2 lookValue = lookAction.ReadValue<Vector2>();
-            // Apply rotation to the camera around the X-axis for looking around vertically
+
             rotationX -= lookValue.y * lookSpeed;
             rotationX = Mathf.Clamp(rotationX, -80f, 80f);
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
-            // Rotate the entire player object around the Y-Axis for looking around horizontally
+
             transform.Rotate(lookSpeed * lookValue.x * Vector3.up);
         }
 

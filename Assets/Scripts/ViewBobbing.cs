@@ -5,22 +5,50 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
+using UnityEngine.UIElements;
 
 public class ViewBobbing : MonoBehaviour
 {
+    private Vector3 pivotPoint; // pivot point, will be set to a parent empty gameo objects position each frame
+    private float viewBobbingSpeed; // speed of bobbing
+    private float effectHeight; // height of bobbing
+    private float effectWidth; // width of bobbing
+    private float sinTime;
+
+    private InputAction moveAction;
     void Start()
     {
-
+        pivotPoint = transform.position;
+        viewBobbingSpeed = 6f;
+        effectHeight = 0.15f;
+        effectWidth = 0.2f;
+        moveAction = InputSystem.actions.FindAction("Move");
     }
 
     void Update()
     {
+        Vector2 movementDirection = moveAction.ReadValue<Vector2>();
+        if (movementDirection.magnitude > 0f)
+        {
+            pivotPoint = transform.parent.position;
+            sinTime += Time.deltaTime * viewBobbingSpeed;
+            float sinY = -Mathf.Abs(effectHeight * Mathf.Sin(sinTime));
+            float sinX = effectWidth * Mathf.Cos(sinTime);
 
+            Vector3 localOffset = transform.right * sinX + transform.up * sinY;
+
+            transform.position = pivotPoint + localOffset;
+        }
+        else
+        {
+            sinTime = 0f;
+            transform.position = Vector3.Lerp(transform.position, transform.parent.position, 0.1f);
+        }
     }
 
     void OnDestroy()
     {
-        
+
     }
 
 }
