@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Unity.Android.Gradle;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -8,12 +9,15 @@ using UnityEngine.TextCore.Text;
 
 public class Pistol : Gun
 {
+
+    public override void OnEnable()
+    {
+        base.OnEnable();
+    }
     // Shoots bullet
     public override void ShootBullet()
     {
         base.ShootBullet();
-
-        Debug.Log("pistol shot");
     }
 
 }

@@ -8,19 +8,12 @@ using UnityEngine.TextCore.Text;
 
 public class Entity : MonoBehaviour
 {
-    void Awake()
-    {
-
-    }
-
-    void OnEnable()
-    {
-        
-    }
+    public int maxHealth = 100;
+    protected int currenthealth;
 
     void Start()
     {
-
+        currenthealth = maxHealth;
     }
 
     void Update()

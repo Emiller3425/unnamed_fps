@@ -22,11 +22,11 @@ public class Gun : MonoBehaviour
     public int damage = 10;
     public float maxReloadBuffer = 2f;
     public float maxFireRateBuffer = 0.2f;
+    public FiringType firingType = FiringType.SEMIAUTO;
     protected float reloadBuffer = 0f;
     protected float fireRateBuffer = 0f;
     protected int currentAmmo;
     protected float bulletVelocity = 20f;
-    private FiringType firingType = FiringType.SEMIAUTO;
     private InputAction shoot;
     private InputAction reload;
     protected void Awake()
@@ -36,7 +36,7 @@ public class Gun : MonoBehaviour
         reload = InputSystem.actions.FindAction("Reload");
     }
 
-    protected void OnEnable()
+    public virtual void OnEnable()
     {
         // enable listeners
         shoot.Enable();
@@ -67,16 +67,29 @@ public class Gun : MonoBehaviour
     // attempt shoot on shoot action
     protected void OnShoot(InputAction.CallbackContext context)
     {
-        if (currentAmmo > 0 && reloadBuffer <= 0f)
+        Debug.Log("Attempt Shot;");
+        if (firingType == FiringType.SEMIAUTO)
         {
-            if (fireRateBuffer <= 0f)
-                ShootBullet();
+            if (currentAmmo > 0 && reloadBuffer <= 0f)
+            {
+                if (fireRateBuffer <= 0f)
+                    ShootBullet();
+            }
+            else
+            {
+                Reload();
+            }
         }
-        else
+        else if (firingType == FiringType.BURST)
         {
-            Reload();
+            // add burst logic
+        }
+        else if (firingType == FiringType.FULLAUTO)
+        {
+            // add full auto logic
         }
     }
+
 
     // Attempt reload on reload action
     protected void OnReload(InputAction.CallbackContext context)
