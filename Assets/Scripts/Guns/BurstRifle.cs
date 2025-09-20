@@ -6,12 +6,17 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
-public class BurstRifle : Gun
+public class BurstRifle : BurstGun
 {
-    public override void ShootBullet()
+    protected override void Start()
     {
-        base.ShootBullet();
-
-        Debug.Log("burst rifle shot");
+        // Set default values for BurstRifle
+        maxAmmo = 36;
+        damage = 12;
+        maxReloadBuffer = 2.5f;
+        maxFireRateBuffer = 0.1f;
+        bulletVelocity = 45f;
+       // sets currentAmmo to maxAmmo
+        base.Start();
     }
 }

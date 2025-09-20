@@ -6,12 +6,17 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
-public class MachineGun : Gun
+public class MachineGun : FullAutoGun
 {
-    public override void ShootBullet()
+    protected override void Start()
     {
-        base.ShootBullet();
-
-        Debug.Log("machine gun shot");
+        // Set default values for MachineGun
+        maxAmmo = 35;
+        damage = 5;
+        maxReloadBuffer = 2.5f;
+        maxFireRateBuffer = 0.05f;
+        bulletVelocity = 30f;
+       // sets currentAmmo to maxAmmo
+        base.Start();
     }
-} 
+}

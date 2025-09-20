@@ -1,23 +1,22 @@
 using System;
 using System.Runtime.InteropServices;
-using Unity.Android.Gradle;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
-public class Pistol : Gun
+public class Pistol : SemiAutoGun
 {
-
-    public override void OnEnable()
+    protected override void Start()
     {
-        base.OnEnable();
+        // Set default values for Pistol
+        maxAmmo = 12;
+        damage = 10;
+        maxReloadBuffer = 1.5f;
+        maxFireRateBuffer = 0.2f;
+        bulletVelocity = 40f;
+       // sets currentAmmo to maxAmmo
+        base.Start();
     }
-    // Shoots bullet
-    public override void ShootBullet()
-    {
-        base.ShootBullet();
-    }
-
 }

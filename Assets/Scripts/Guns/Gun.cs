@@ -1,34 +1,26 @@
 using System;
 using System.Runtime.InteropServices;
 using Unity.VisualScripting;
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 using UnityEngine.TextCore.Text;
 
-
-public enum FiringType
-{
-    SEMIAUTO,
-    BURST,
-    FULLAUTO
-}
-
-public class Gun : MonoBehaviour
+public abstract class Gun : MonoBehaviour
 {
     public GameObject bulletPrefab;
     public int maxAmmo = 30;
     public int damage = 10;
     public float maxReloadBuffer = 2f;
     public float maxFireRateBuffer = 0.2f;
-    public FiringType firingType = FiringType.SEMIAUTO;
+    public float bulletVelocity = 30f;
     protected float reloadBuffer = 0f;
     protected float fireRateBuffer = 0f;
     protected int currentAmmo;
-    protected float bulletVelocity = 20f;
-    private InputAction shoot;
-    private InputAction reload;
+    protected InputAction shoot;
+    protected InputAction reload;
     protected void Awake()
     {
         // define listeners
@@ -36,7 +28,7 @@ public class Gun : MonoBehaviour
         reload = InputSystem.actions.FindAction("Reload");
     }
 
-    public virtual void OnEnable()
+    protected void OnEnable()
     {
         // enable listeners
         shoot.Enable();
@@ -46,12 +38,12 @@ public class Gun : MonoBehaviour
         reload.started += OnReload;
     }
 
-    protected void Start()
+    protected virtual void Start()
     {
         currentAmmo = maxAmmo;
     }
 
-    protected void Update()
+    protected virtual void Update()
     {
         // decriment reload and firerate buffers if they exist
         if (reloadBuffer > 0f)
@@ -64,32 +56,20 @@ public class Gun : MonoBehaviour
         }
     }
 
-    // attempt shoot on shoot action
-    protected void OnShoot(InputAction.CallbackContext context)
+    protected abstract void OnShoot(InputAction.CallbackContext context);
+
+    protected virtual void AttemptShoot()
     {
-        Debug.Log("Attempt Shot;");
-        if (firingType == FiringType.SEMIAUTO)
+        if (currentAmmo > 0 && reloadBuffer <= 0f)
         {
-            if (currentAmmo > 0 && reloadBuffer <= 0f)
-            {
-                if (fireRateBuffer <= 0f)
-                    ShootBullet();
-            }
-            else
-            {
-                Reload();
-            }
+            if (fireRateBuffer <= 0f)
+                ShootBullet();
         }
-        else if (firingType == FiringType.BURST)
+        else
         {
-            // add burst logic
-        }
-        else if (firingType == FiringType.FULLAUTO)
-        {
-            // add full auto logic
+            Reload();
         }
     }
-
 
     // Attempt reload on reload action
     protected void OnReload(InputAction.CallbackContext context)
@@ -99,7 +79,7 @@ public class Gun : MonoBehaviour
     }
 
     // Shoots bulllet
-    public virtual void ShootBullet()
+    protected void ShootBullet()
     {
         if (fireRateBuffer <= 0)
         {
