@@ -63,7 +63,7 @@ public abstract class Gun : MonoBehaviour
 
     protected virtual void AttemptShoot()
     {
-        if (currentAmmo > 0 && reloadBuffer <= 0f)
+        if (currentMag > 0 && reloadBuffer <= 0f)
         {
             if (fireRateBuffer <= 0f)
                 ShootBullet();
@@ -77,11 +77,11 @@ public abstract class Gun : MonoBehaviour
     // Attempt reload on reload action
     protected void OnReload(InputAction.CallbackContext context)
     {
-        if (currentAmmo < maxAmmo && reloadBuffer <= 0)
+        if (currentMag < magSize && reloadBuffer <= 0)
             Reload();
     }
 
-    // Shoots bulllet
+    // Shoots bullet
     protected void ShootBullet()
     {
         if (fireRateBuffer <= 0)
@@ -89,7 +89,7 @@ public abstract class Gun : MonoBehaviour
             GameObject bulletObject = Instantiate(bulletPrefab, transform.position, transform.rotation);
             Bullet bullet = bulletObject.GetComponent<Bullet>();
             bullet.Shoot(transform.TransformDirection(Vector3.forward), bulletVelocity);
-            currentAmmo--;
+            currentMag--;
             fireRateBuffer = maxFireRateBuffer;
         }
     }
@@ -97,12 +97,11 @@ public abstract class Gun : MonoBehaviour
     // Reloads
     protected void Reload()
     {
-        if (currentAmmo > 0 && currentAmmo < maxAmmo && reloadBuffer <= 0f)
+        if (currentAmmo > 0 && currentMag < magSize && reloadBuffer <= 0f)
         {
             reloadBuffer = maxReloadBuffer;
             currentAmmo -= (magSize - currentMag);
             currentMag = magSize;
-            Debug.Log(currentAmmo);
         }
     }
 
