@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
+// TODO FIX CAMERA AND MAKE WEAPON POSITION STATIC
+
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
