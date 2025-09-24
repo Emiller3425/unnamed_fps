@@ -18,7 +18,8 @@ public class ViewBobbing : MonoBehaviour
     private InputAction moveAction;
     void Start()
     {
-        pivotPoint = transform.position;
+        pivotPoint = transform.parent.position;
+        Debug.Log(transform.parent.name);
         viewBobbingSpeed = 6f;
         effectHeight = 0.15f;
         effectWidth = 0.2f;
@@ -37,7 +38,8 @@ public class ViewBobbing : MonoBehaviour
 
             Vector3 localOffset = transform.right * sinX + transform.up * sinY;
 
-            transform.position = pivotPoint + localOffset;
+            // transform.position = pivotPoint + localOffset;
+            transform.position = Vector3.Lerp(transform.position, pivotPoint + localOffset, 0.1f);
         }
         else
         {

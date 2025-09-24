@@ -51,6 +51,7 @@ public class PlayerController : MonoBehaviour
         // movement logic
         if (canMove)
         {
+            Debug.Log(characterController.transform.forward);
             // Get WASD
             Vector2 moveValue = moveAction.ReadValue<Vector2>();
 
@@ -62,7 +63,8 @@ public class PlayerController : MonoBehaviour
             float speedY = moveValue.y * (sprintAction.IsPressed() ? sprintSpeed : walkSpeed);
 
             movementDirection = (right * speedX) + (forward * speedY);
-            
+
+
             // apply gravity
             if (!characterController.isGrounded)
             {
@@ -80,7 +82,7 @@ public class PlayerController : MonoBehaviour
                 velocityY = jumpHeight;
                 canJump = false;
             }
-            
+
             movementDirection.y = velocityY;
 
             characterController.Move(movementDirection * Time.deltaTime);
@@ -91,15 +93,12 @@ public class PlayerController : MonoBehaviour
             rotationX -= lookValue.y * lookSpeed;
             rotationX = Mathf.Clamp(rotationX, -80f, 80f);
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
+            playerCamera.transform.position = characterController.transform.position + (Vector3.up * characterController.height / 2.5f);
 
             transform.Rotate(lookSpeed * lookValue.x * Vector3.up);
+            //
         }
 
-    }
-
-    void OnDestroy()
-    {
-        
     }
 
 }
