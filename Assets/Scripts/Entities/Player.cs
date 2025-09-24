@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
+// MIGHT NOT USE THIS
 public class Player : Entity
 {
 

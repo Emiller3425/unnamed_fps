@@ -11,7 +11,7 @@ public class ViewBobbingPivotPosition : MonoBehaviour
 {
     void Start()
     {
-        // sets view bobbing pivot for fps camera this might need to be adjusted based on the weaponm th in the future
+        // Sets view bobbing pivot for fps camera this might need to be adjusted based on the weapon the in the future
         transform.localPosition = new Vector3(0.5f, -0.5f, 1.2f);
     }
 

@@ -49,7 +49,6 @@ public class PlayerController : MonoBehaviour
         // movement logic
         if (canMove)
         {
-            Debug.Log(characterController.transform.forward);
             // Get WASD
             Vector2 moveValue = moveAction.ReadValue<Vector2>();
 

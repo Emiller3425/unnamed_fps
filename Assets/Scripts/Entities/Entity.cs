@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
+ // MIGHT NOT USE THIS
 public class Entity : MonoBehaviour
 {
     public int maxHealth = 100;
@@ -23,12 +24,12 @@ public class Entity : MonoBehaviour
 
     void OnDisable()
     {
-        
+
     }
 
     void OnDestroy()
     {
-        
+
     }
 
 }

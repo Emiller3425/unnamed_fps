@@ -7,6 +7,7 @@
 # Re-include the Assets folder and all its contents
 !/Assets/
 !/Assets/**/*
+!/david_martinez.png
 
 Assets/Scenes
 Assets/Scenes.*

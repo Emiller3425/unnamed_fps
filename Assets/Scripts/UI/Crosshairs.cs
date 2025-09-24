@@ -7,9 +7,16 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
+[RequireComponent(typeof(RectTransform))]
 public class Crosshairs : MonoBehaviour
 {
     private RectTransform crossHairRectTransform;
+
+    void Awake()
+    {
+        crossHairRectTransform = GetComponent<RectTransform>();
+        crossHairRectTransform.anchoredPosition = Vector2.zero;
+    }
 
     void Start()
     {

@@ -9,17 +9,16 @@ using UnityEngine.UIElements;
 
 public class ViewBobbing : MonoBehaviour
 {
-    private Vector3 pivotPoint; // pivot point, will be set to a parent empty gameo objects position each frame
-    private float viewBobbingSpeed; // speed of bobbing
-    private float effectHeight; // height of bobbing
-    private float effectWidth; // width of bobbing
+    private Vector3 pivotPoint;
+    private float viewBobbingSpeed;
+    private float effectHeight;
+    private float effectWidth;
     private float sinTime;
 
     private InputAction moveAction;
     void Start()
     {
-        pivotPoint = transform.parent.position;
-        Debug.Log(transform.parent.name);
+        pivotPoint = transform.parent.position; // view bobbing parent pivot position
         viewBobbingSpeed = 6f;
         effectHeight = 0.15f;
         effectWidth = 0.2f;
@@ -31,14 +30,14 @@ public class ViewBobbing : MonoBehaviour
         Vector2 movementDirection = moveAction.ReadValue<Vector2>();
         if (movementDirection.magnitude > 0f)
         {
-            pivotPoint = transform.parent.position;
+            pivotPoint = transform.parent.position; // view bobbing parent pivot position
             sinTime += Time.deltaTime * viewBobbingSpeed;
             float sinY = -Mathf.Abs(effectHeight * Mathf.Sin(sinTime));
             float sinX = effectWidth * Mathf.Cos(sinTime);
 
             Vector3 localOffset = transform.right * sinX + transform.up * sinY;
 
-            // transform.position = pivotPoint + localOffset;
+            // lerp so gun does not jerk initially
             transform.position = Vector3.Lerp(transform.position, pivotPoint + localOffset, 0.1f);
         }
         else
@@ -47,10 +46,4 @@ public class ViewBobbing : MonoBehaviour
             transform.position = Vector3.Lerp(transform.position, transform.parent.position, 0.1f);
         }
     }
-
-    void OnDestroy()
-    {
-
-    }
-
 }
