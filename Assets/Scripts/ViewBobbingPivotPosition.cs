@@ -11,12 +11,8 @@ public class ViewBobbingPivotPosition : MonoBehaviour
 {
     void Start()
     {
-        transform.position = transform.parent.position;
-    }
-
-    void Update()
-    {
-        transform.localPosition = transform.parent.localPosition + new Vector3(0.5f, -1.5f, 1.2f);
+        // sets view bobbing pivot for fps camera this might need to be adjusted basewd on the weaponm tpe in the future
+        transform.localPosition = new Vector3(0.5f, -0.5f, 1.2f);
     }
 
 }
