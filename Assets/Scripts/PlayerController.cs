@@ -7,8 +7,6 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
-// TODO FIX CAMERA AND MAKE WEAPON POSITION STATIC
-
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
@@ -93,10 +91,10 @@ public class PlayerController : MonoBehaviour
             rotationX -= lookValue.y * lookSpeed;
             rotationX = Mathf.Clamp(rotationX, -80f, 80f);
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
-            playerCamera.transform.position = characterController.transform.position + (Vector3.up * characterController.height / 2.5f);
+            // camera always will be at top of character controller
+            playerCamera.transform.position = characterController.transform.position + (Vector3.up * characterController.height / 2f);
 
             transform.Rotate(lookSpeed * lookValue.x * Vector3.up);
-            //
         }
 
     }

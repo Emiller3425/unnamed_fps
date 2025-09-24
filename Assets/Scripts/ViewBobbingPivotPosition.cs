@@ -9,16 +9,14 @@ using UnityEngine.UIElements;
 
 public class ViewBobbingPivotPosition : MonoBehaviour
 {
-    CharacterController playerController;
     void Start()
     {
-        playerController = GetComponentInParent<CharacterController>();
-        transform.localPosition = transform.parent.localPosition + (Vector3.forward * playerController.radius) + (Vector3.right * playerController.radius / 1.5f) - (Vector3.up * playerController.height / 1.75f);
+        transform.position = transform.parent.position;
     }
 
     void Update()
     {
-        transform.localPosition = transform.parent.localPosition + (Vector3.forward * playerController.radius) + (Vector3.right * playerController.radius / 1.5f) - (Vector3.up * playerController.height / 1.75f);
+        transform.localPosition = transform.parent.localPosition + new Vector3(0.5f, -1.5f, 1.2f);
     }
 
 }
