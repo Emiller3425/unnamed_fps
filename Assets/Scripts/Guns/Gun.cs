@@ -23,6 +23,7 @@ public abstract class Gun : MonoBehaviour
     protected int currentMag;
     protected InputAction shoot;
     protected InputAction reload;
+    protected Vector3 muzzleLocation;
     protected void Awake()
     {
         // define listeners
@@ -44,6 +45,7 @@ public abstract class Gun : MonoBehaviour
     {
         currentAmmo = maxAmmo;
         currentMag = magSize;
+        muzzleLocation = transform.Find("Muzzle").position;
     }
 
     protected virtual void Update()
@@ -57,6 +59,7 @@ public abstract class Gun : MonoBehaviour
         {
             fireRateBuffer -= Time.deltaTime;
         }
+        muzzleLocation = transform.Find("Muzzle").position;
     }
 
     protected abstract void OnShoot(InputAction.CallbackContext context);
@@ -86,7 +89,7 @@ public abstract class Gun : MonoBehaviour
     {
         if (fireRateBuffer <= 0)
         {
-            GameObject bulletObject = Instantiate(bulletPrefab, transform.position, transform.rotation);
+            GameObject bulletObject = Instantiate(bulletPrefab, muzzleLocation, transform.rotation);
             Bullet bullet = bulletObject.GetComponent<Bullet>();
             bullet.Shoot(transform.TransformDirection(Vector3.forward), bulletVelocity);
             currentMag--;

@@ -92,7 +92,7 @@ public class PlayerController : MonoBehaviour
             rotationX = Mathf.Clamp(rotationX, -80f, 80f);
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
             // camera always will be at top of character controller
-            playerCamera.transform.position = transform.position + (Vector3.up * characterController.height / 2f);
+            playerCamera.transform.localPosition = (Vector3.up * characterController.height / 2f);
 
             transform.Rotate(lookSpeed * lookValue.x * Vector3.up);
         }
