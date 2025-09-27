@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -11,12 +12,15 @@ using UnityEngine.TextCore.Text;
 public abstract class Gun : MonoBehaviour
 {
     public GameObject bulletPrefab;
+    public Camera playerCamera;
+    public Crosshairs crosshairs;
     public int maxAmmo = 120;
     public int magSize = 30;
     public int damage = 10;
     public float maxReloadBuffer = 2f;
     public float maxFireRateBuffer = 0.2f;
     public float bulletVelocity = 30f;
+    public float range = 100f;
     protected float reloadBuffer = 0f;
     protected float fireRateBuffer = 0f;
     protected int currentAmmo;
@@ -89,12 +93,35 @@ public abstract class Gun : MonoBehaviour
     {
         if (fireRateBuffer <= 0)
         {
+            // get ray for bullet
+            Vector3 rayDirection = calculateRay(out rayDirection);
             GameObject bulletObject = Instantiate(bulletPrefab, muzzleLocation, transform.rotation);
             Bullet bullet = bulletObject.GetComponent<Bullet>();
-            bullet.Shoot(transform.TransformDirection(Vector3.forward), bulletVelocity);
+            bullet.Shoot(rayDirection, bulletVelocity);
             currentMag--;
             fireRateBuffer = maxFireRateBuffer;
         }
+    }
+
+    protected Vector3 calculateRay(out Vector3 rayDirection)
+    {
+        Vector3 crossHairScreenPosition = crosshairs.transform.position;
+
+        Ray cameraRay = playerCamera.ScreenPointToRay(crossHairScreenPosition);
+
+        RaycastHit hit;
+        Vector3 targetPoint;
+        if (Physics.Raycast(cameraRay, out hit, range))
+        {
+            targetPoint = hit.point;
+        }
+        else
+        {
+            targetPoint = cameraRay.GetPoint(range);
+        }
+        rayDirection = (targetPoint - muzzleLocation).normalized;
+        
+        return rayDirection;
     }
 
     // Reloads
