@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
-public class TemplateMonoBeheavior : MonoBehaviour
+public class Health : MonoBehaviour
 {
     private float maxHealth = 100f;
     private float currentHealth;
