@@ -17,6 +17,7 @@ public class MachineGun : FullAutoGun
         maxReloadBuffer = 2.5f;
         maxFireRateBuffer = 0.05f;
         bulletVelocity = 30f;
+        flattenTrajectoryRange = 3f;
        // sets currentAmmo to maxAmmo
         base.Start();
     }

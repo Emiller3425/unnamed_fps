@@ -20,7 +20,7 @@ public abstract class Gun : MonoBehaviour
     public float maxReloadBuffer = 2f;
     public float maxFireRateBuffer = 0.2f;
     public float bulletVelocity = 30f;
-    public float range = 100f;
+    public float flattenTrajectoryRange = 100f;
     protected float reloadBuffer = 0f;
     protected float fireRateBuffer = 0f;
     protected int currentAmmo;
@@ -94,34 +94,35 @@ public abstract class Gun : MonoBehaviour
         if (fireRateBuffer <= 0)
         {
             // get ray for bullet
-            Vector3 rayDirection = calculateRay(out rayDirection);
+            Vector3 rayDirection = calculateRay(out Vector3 targetPoint);
             GameObject bulletObject = Instantiate(bulletPrefab, muzzleLocation, transform.rotation);
             Bullet bullet = bulletObject.GetComponent<Bullet>();
-            bullet.Shoot(rayDirection, bulletVelocity);
+            bullet.Shoot(rayDirection, bulletVelocity, targetPoint);
             currentMag--;
             fireRateBuffer = maxFireRateBuffer;
         }
     }
 
-    protected Vector3 calculateRay(out Vector3 rayDirection)
+    // TODO fix offset shooting
+    protected Vector3 calculateRay(out Vector3 targetPoint)
     {
         Vector3 crossHairScreenPosition = crosshairs.transform.position;
-
+        Debug.Log(crossHairScreenPosition);
         Ray cameraRay = playerCamera.ScreenPointToRay(crossHairScreenPosition);
 
         RaycastHit hit;
-        Vector3 targetPoint;
-        if (Physics.Raycast(cameraRay, out hit, range))
+
+        if (Physics.Raycast(cameraRay, out hit, flattenTrajectoryRange))
         {
             targetPoint = hit.point;
         }
         else
         {
-            targetPoint = cameraRay.GetPoint(range);
+            targetPoint = cameraRay.GetPoint(flattenTrajectoryRange);
         }
-        rayDirection = (targetPoint - muzzleLocation).normalized;
-        
-        return rayDirection;
+        Debug.Log(targetPoint);
+
+        return (targetPoint - muzzleLocation).normalized;
     }
 
     // Reloads
