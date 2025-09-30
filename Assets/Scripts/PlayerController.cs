@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
-  
+
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
 {
@@ -37,6 +37,16 @@ public class PlayerController : MonoBehaviour
         sprintAction = InputSystem.actions.FindAction("Sprint");
     }
 
+    void OnEnable()
+    {
+        moveAction.Enable();
+        lookAction.Enable();
+        sprintAction.Enable();
+        jumpAction.Enable();
+        // subscribe to function for immediately response on jump
+        jumpAction.started += OnJump;
+    }
+
     void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -60,7 +70,6 @@ public class PlayerController : MonoBehaviour
             float speedY = moveValue.y * (sprintAction.IsPressed() ? sprintSpeed : walkSpeed);
 
             movementDirection = (right * speedX) + (forward * speedY);
-
 
             // apply gravity
             if (!characterController.isGrounded)
@@ -96,6 +105,21 @@ public class PlayerController : MonoBehaviour
             transform.Rotate(lookSpeed * lookValue.x * Vector3.up);
         }
 
+    }
+
+    void OnJump(InputAction.CallbackContext context)
+    {
+       // TODO add subscription based logic for jumping
+    }
+
+    void OnDisable()
+    {
+        moveAction.Disable();
+        lookAction.Disable();
+        sprintAction.Disable();
+
+        jumpAction.started -= OnJump;
+        jumpAction.Disable();
     }
 
 }

@@ -19,32 +19,36 @@ public class HealthBarManager : MonoBehaviour
     private float currentHealth;
     private RectTransform greenRectTransform;
     private float greenWidthMax;
-    void Start()
+
+    void Awake()
     {
-        currentHealth = maxHealth;
         Transform greenTransform = transform.Find("Green");
         greenRectTransform = greenTransform.GetComponentInChildren<RectTransform>();
         greenWidthMax = greenRectTransform.rect.width;
     }
+    
+    void Start()
+    {
+        currentHealth = maxHealth;
+    }
 
-    void applyDamage(float damage)
+    void ApplyDamage(float damage)
     {
         currentHealth -= damage;
-        applyToGreen();
+        ApplyToGreen();
     }
-    void applyHealing(float healing)
+    void ApplyHealing(float healing)
     {
         currentHealth += healing;
         if (currentHealth > maxHealth)
         {
             currentHealth = maxHealth;
         }
-        applyToGreen();
+        ApplyToGreen();
     }
 
-    void applyToGreen()
+    void ApplyToGreen()
     {
-        Debug.Log(currentHealth / maxHealth * greenWidthMax);
-        greenRectTransform.sizeDelta = new Vector2(currentHealth / maxHealth * greenWidthMax, greenRectTransform.rect.height);
+         greenRectTransform.sizeDelta = new Vector2(currentHealth / maxHealth * greenWidthMax, greenRectTransform.rect.height);
     }
 }

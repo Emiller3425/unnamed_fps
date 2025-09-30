@@ -17,14 +17,14 @@ public abstract class Gun : MonoBehaviour
     public int maxAmmo = 120;
     public int magSize = 30;
     public int damage = 10;
+    public int currentAmmo;
+    public int currentMag;
     public float maxReloadBuffer = 2f;
     public float maxFireRateBuffer = 0.2f;
     public float bulletVelocity = 30f;
     public float flattenTrajectoryRange = 100f;
     protected float reloadBuffer = 0f;
     protected float fireRateBuffer = 0f;
-    protected int currentAmmo;
-    protected int currentMag;
     protected InputAction shoot;
     protected InputAction reload;
     protected Vector3 muzzleLocation;
@@ -33,6 +33,9 @@ public abstract class Gun : MonoBehaviour
         // define listeners
         shoot = InputSystem.actions.FindAction("Attack");
         reload = InputSystem.actions.FindAction("Reload");
+        // define publics used by ui
+        currentAmmo = maxAmmo;
+        currentMag = magSize;
     }
 
     protected void OnEnable()
@@ -47,8 +50,6 @@ public abstract class Gun : MonoBehaviour
 
     protected virtual void Start()
     {
-        currentAmmo = maxAmmo;
-        currentMag = magSize;
         muzzleLocation = transform.Find("Muzzle").position;
     }
 
@@ -118,7 +119,6 @@ public abstract class Gun : MonoBehaviour
         {
             targetPoint = cameraRay.GetPoint(flattenTrajectoryRange);
         }
-        Debug.Log(targetPoint);
 
         return (targetPoint - muzzleLocation).normalized;
     }
