@@ -8,7 +8,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
-// TODO, have bullet 
 
 [RequireComponent(typeof(BoxCollider), typeof(Rigidbody))]
 public class Bullet : MonoBehaviour
@@ -29,7 +28,7 @@ public class Bullet : MonoBehaviour
         targetDestination = target;
     }
 
-    // sets colliders
+    // sets colliders and camera for trajectory
     void Awake()
     {
         boxCollider = GetComponent<BoxCollider>();
@@ -77,11 +76,6 @@ public class Bullet : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         Destroy(gameObject);
-    }
-
-    void OnDestroy()
-    {
-        // do nothing
     }
 
 }

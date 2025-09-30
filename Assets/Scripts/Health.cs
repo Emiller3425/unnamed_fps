@@ -15,16 +15,9 @@ public class Health : MonoBehaviour
         currentHealth = maxHealth;
     }
 
-    void applyDamage(float damage)
+    // this update function should update the ui for the currentHealth : maxHealth ratio for the given entity it is attached to
+    void Update()
     {
-        currentHealth -= damage;
-    }
-    void applyHealing(float healing)
-    {
-        currentHealth += healing;
-        if (currentHealth > maxHealth)
-        {
-            currentHealth = maxHealth;
-        }
+        
     }
 }

@@ -103,11 +103,9 @@ public abstract class Gun : MonoBehaviour
         }
     }
 
-    // TODO fix offset shooting
     protected Vector3 calculateRay(out Vector3 targetPoint)
     {
         Vector3 crossHairScreenPosition = crosshairs.transform.position;
-        Debug.Log(crossHairScreenPosition);
         Ray cameraRay = playerCamera.ScreenPointToRay(crossHairScreenPosition);
 
         RaycastHit hit;
