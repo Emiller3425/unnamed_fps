@@ -7,26 +7,26 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
-public class AmmoCounter : MonoBehaviour
+public class AmmoUIManager : MonoBehaviour
 {
-    public GameObject equippedWeapon;
-    private TextMeshProUGUI ammo;
-    private int currentMagAmmo;
-    private int currentReserveAmmo;
+    public TextMeshProUGUI ammoUIText;
+    public static AmmoUIManager Instance { get; private set; }
 
     void Awake()
     {
-        ammo = GetComponentInChildren<TextMeshProUGUI>();
-    }
-    void Start()
-    {
-        currentMagAmmo = equippedWeapon.GetComponent<Pistol>().currentMag;
-        currentReserveAmmo = equippedWeapon.GetComponent<Pistol>().currentAmmo;
-        ammo.text = currentMagAmmo + " / " + currentReserveAmmo;
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+        ammoUIText = GetComponentInChildren<TextMeshProUGUI>();
     }
 
-    void Update()
+    public void UpdateAmmoUI(int magAmmo, int reserveAmmo)
     {
-        
+        ammoUIText.text = $"{magAmmo} / {reserveAmmo}";
     }
 }

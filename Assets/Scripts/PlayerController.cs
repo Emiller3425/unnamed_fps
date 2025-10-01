@@ -109,7 +109,7 @@ public class PlayerController : MonoBehaviour
 
     void OnJump(InputAction.CallbackContext context)
     {
-       // TODO add subscription based logic for jumping
+       // TODO: add subscription based logic for jumping
     }
 
     void OnDisable()

@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Rendering.LookDev;
@@ -55,15 +56,24 @@ public abstract class Gun : MonoBehaviour
 
     protected virtual void Update()
     {
-        // decriment reload and firerate buffers if they exist
+        if (AmmoUIManager.Instance.ammoUIText == null)
+            AmmoUIManager.Instance.UpdateAmmoUI(currentMag, currentAmmo);
+
+        // decriment reload and firerate buffers if they exist 
         if (reloadBuffer > 0f)
         {
             reloadBuffer -= Time.deltaTime;
+        }
+        // Update Ammo UI only after reload is complete
+        else
+        {
+            AmmoUIManager.Instance.UpdateAmmoUI(currentMag, currentAmmo);
         }
         if (fireRateBuffer > 0f)
         {
             fireRateBuffer -= Time.deltaTime;
         }
+        // relocate muzzle
         muzzleLocation = transform.Find("Muzzle").position;
     }
 
@@ -101,6 +111,7 @@ public abstract class Gun : MonoBehaviour
             bullet.Shoot(rayDirection, bulletVelocity, targetPoint);
             currentMag--;
             fireRateBuffer = maxFireRateBuffer;
+            AmmoUIManager.Instance.UpdateAmmoUI(currentMag, currentAmmo);
         }
     }
 

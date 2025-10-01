@@ -10,44 +10,46 @@ using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 
-public class HealthBarManager : MonoBehaviour
+public class HealthBarUIManager : MonoBehaviour
 {
     public UnityEngine.UI.Image border;
     public UnityEngine.UI.Image red;
     public UnityEngine.UI.Image green;
-    private float maxHealth = 100f;
-    private float currentHealth;
+    public static HealthBarUIManager Instance { get; private set; }
     private RectTransform greenRectTransform;
     private float greenWidthMax;
-
     void Awake()
     {
         Transform greenTransform = transform.Find("Green");
         greenRectTransform = greenTransform.GetComponentInChildren<RectTransform>();
         greenWidthMax = greenRectTransform.rect.width;
-    }
-    
-    void Start()
-    {
-        currentHealth = maxHealth;
+
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    void ApplyDamage(float damage)
-    {
+    public void ApplyDamage(float damage, float maxHealth, float currentHealth)
+    { 
         currentHealth -= damage;
-        ApplyToGreen();
+        ApplyToGreen(maxHealth, currentHealth);
     }
-    void ApplyHealing(float healing)
+    public void ApplyHealing(float healing, float maxHealth, float currentHealth)
     {
         currentHealth += healing;
         if (currentHealth > maxHealth)
         {
             currentHealth = maxHealth;
         }
-        ApplyToGreen();
+        ApplyToGreen(maxHealth, currentHealth);
     }
 
-    void ApplyToGreen()
+    void ApplyToGreen(float maxHealth, float currentHealth)
     {
          greenRectTransform.sizeDelta = new Vector2(currentHealth / maxHealth * greenWidthMax, greenRectTransform.rect.height);
     }
