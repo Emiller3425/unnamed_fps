@@ -7,12 +7,17 @@ using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
-public class ViewBobbingPivotPosition : MonoBehaviour
+public class EnemyViewBobbing : MonoBehaviour
 {
+    private Vector3 pivotPoint;
     void Start()
     {
-        // Sets view bobbing pivot for fps camera this might need to be adjusted based on the weapon the in the future
-        transform.localPosition = new Vector3(0.5f, -0.5f, 1.2f);
+        pivotPoint = transform.parent.position;
     }
 
+    void Update()
+    {
+        pivotPoint = transform.parent.position;
+        transform.position = pivotPoint;
+    }
 }

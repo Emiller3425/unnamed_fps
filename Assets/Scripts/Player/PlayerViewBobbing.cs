@@ -7,14 +7,13 @@ using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
-public class ViewBobbing : MonoBehaviour
+public class PlayerViewBobbing : MonoBehaviour
 {
     private Vector3 pivotPoint;
     private float viewBobbingSpeed;
     private float effectHeight;
     private float effectWidth;
     private float sinTime;
-
     private InputAction moveAction;
     void Start()
     {

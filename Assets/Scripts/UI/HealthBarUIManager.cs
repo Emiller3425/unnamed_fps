@@ -9,6 +9,7 @@ using UnityEngine.Rendering;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
+// TODO: Functionallity for player to actually take damage
 
 public class HealthBarUIManager : MonoBehaviour
 {
@@ -35,7 +36,7 @@ public class HealthBarUIManager : MonoBehaviour
     }
 
     public void ApplyDamage(float damage, float maxHealth, float currentHealth)
-    { 
+    {
         currentHealth -= damage;
         ApplyToGreen(maxHealth, currentHealth);
     }
@@ -51,6 +52,6 @@ public class HealthBarUIManager : MonoBehaviour
 
     void ApplyToGreen(float maxHealth, float currentHealth)
     {
-         greenRectTransform.sizeDelta = new Vector2(currentHealth / maxHealth * greenWidthMax, greenRectTransform.rect.height);
+        greenRectTransform.sizeDelta = new Vector2(currentHealth / maxHealth * greenWidthMax, greenRectTransform.rect.height);
     }
 }

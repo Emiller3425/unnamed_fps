@@ -15,7 +15,9 @@ public abstract class Gun : MonoBehaviour
     public GameObject bulletPrefab;
     public Camera playerCamera;
     public Crosshairs crosshairs;
-    public int maxAmmo = 120;
+    public PlayerStats playerStats;
+    public EnemyStats enemyStats;
+    public bool isPlayerGun = false;
     public int magSize = 30;
     public int damage = 10;
     public int currentAmmo;
@@ -26,27 +28,30 @@ public abstract class Gun : MonoBehaviour
     public float flattenTrajectoryRange = 100f;
     protected float reloadBuffer = 0f;
     protected float fireRateBuffer = 0f;
+    protected int maxAmmo;
     protected InputAction shoot;
     protected InputAction reload;
     protected Vector3 muzzleLocation;
-    protected void Awake()
+    protected virtual void Awake()
     {
         // define listeners
-        shoot = InputSystem.actions.FindAction("Attack");
-        reload = InputSystem.actions.FindAction("Reload");
-        // define publics used by ui
-        currentAmmo = maxAmmo;
-        currentMag = magSize;
+        if (isPlayerGun)
+        {
+            shoot = InputSystem.actions.FindAction("Attack");
+            reload = InputSystem.actions.FindAction("Reload");
+        }
     }
 
     protected void OnEnable()
     {
-        // enable listeners
-        shoot.Enable();
-        reload.Enable();
-        // subscribe
-        shoot.started += OnShoot;
-        reload.started += OnReload;
+        if (isPlayerGun) {
+            // enable listeners
+            shoot.Enable();
+            reload.Enable();
+            // subscribe
+            shoot.started += OnShoot;
+            reload.started += OnReload;
+        }
     }
 
     protected virtual void Start()
@@ -56,16 +61,17 @@ public abstract class Gun : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (AmmoUIManager.Instance.ammoUIText == null)
+        if (AmmoUIManager.Instance.ammoUIText == null && isPlayerGun)
+        {
             AmmoUIManager.Instance.UpdateAmmoUI(currentMag, currentAmmo);
-
+        }
         // decriment reload and firerate buffers if they exist 
         if (reloadBuffer > 0f)
         {
             reloadBuffer -= Time.deltaTime;
         }
         // Update Ammo UI only after reload is complete
-        else
+        else if (isPlayerGun)
         {
             AmmoUIManager.Instance.UpdateAmmoUI(currentMag, currentAmmo);
         }
@@ -81,6 +87,7 @@ public abstract class Gun : MonoBehaviour
 
     protected virtual void AttemptShoot()
     {
+        // player shoot logic
         if (currentMag > 0 && reloadBuffer <= 0f)
         {
             if (fireRateBuffer <= 0f)
@@ -108,7 +115,7 @@ public abstract class Gun : MonoBehaviour
             Vector3 rayDirection = calculateRay(out Vector3 targetPoint);
             GameObject bulletObject = Instantiate(bulletPrefab, muzzleLocation, transform.rotation);
             Bullet bullet = bulletObject.GetComponent<Bullet>();
-            bullet.Shoot(rayDirection, bulletVelocity, targetPoint);
+            bullet.Shoot(rayDirection, bulletVelocity, damage, targetPoint);
             currentMag--;
             fireRateBuffer = maxFireRateBuffer;
             AmmoUIManager.Instance.UpdateAmmoUI(currentMag, currentAmmo);
@@ -137,10 +144,17 @@ public abstract class Gun : MonoBehaviour
     // Reloads
     protected void Reload()
     {
-        if (currentAmmo > 0 && currentMag < magSize && reloadBuffer <= 0f)
+        // player reload
+        if (currentAmmo > 0 && currentMag < magSize && reloadBuffer <= 0f && isPlayerGun)
         {
             reloadBuffer = maxReloadBuffer;
             currentAmmo -= (magSize - currentMag);
+            currentMag = magSize;
+        }
+        // enemy reload infinite ammo
+        else
+        {
+            reloadBuffer = maxReloadBuffer;
             currentMag = magSize;
         }
     }
@@ -149,9 +163,12 @@ public abstract class Gun : MonoBehaviour
     protected void OnDisable()
     {
         // unsubscribe and disable listeners
-        shoot.started -= OnShoot;
-        reload.started -= OnReload;
-        shoot.Disable();
-        reload.Disable();
+        if (isPlayerGun)
+        {
+            shoot.started -= OnShoot;
+            reload.started -= OnReload;
+            shoot.Disable();
+            reload.Disable();
+        }
     }
 }

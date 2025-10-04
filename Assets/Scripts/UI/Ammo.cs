@@ -9,8 +9,8 @@ using UnityEngine.TextCore.Text;
 
 public class AmmoUIManager : MonoBehaviour
 {
-    public TextMeshProUGUI ammoUIText;
     public static AmmoUIManager Instance { get; private set; }
+    [HideInInspector] public TextMeshProUGUI ammoUIText;
 
     void Awake()
     {

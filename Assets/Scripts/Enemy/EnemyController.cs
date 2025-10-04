@@ -6,8 +6,15 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
-// MIGHT NOT USE THIS
-public class Player : Entity
+// logic for base enemy movement
+public class EnemyController : MonoBehaviour
 {
+    void Awake()
+    {
 
+    }
+    void Update()
+    {
+
+    }
 }

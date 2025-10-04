@@ -1,10 +1,12 @@
 using System;
+using System.Data.Common;
 using System.Runtime.InteropServices;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
@@ -15,16 +17,18 @@ public class Bullet : MonoBehaviour
     private Vector3 trajectory;
     private Camera playerCamera;
     private float velocity;
+    private float damage;
     private Vector3 targetDestination;
     private Vector3 spawnLocation;
     private bool trajectoryChanged = false;
     private BoxCollider boxCollider;
     private Rigidbody rigidBody;
     // Sets bullet movement variables
-    public void Shoot(Vector3 direction, float speed, Vector3 target)
+    public void Shoot(Vector3 direction, float speed, float gunDamage, Vector3 target)
     {
         trajectory = direction;
         velocity = speed;
+        damage = gunDamage;
         targetDestination = target;
     }
 
@@ -75,6 +79,12 @@ public class Bullet : MonoBehaviour
     // if collision occurs destroy bullet (will need to add damage logic later, potentially bullet holes in walls etc)
     void OnCollisionEnter(Collision collision)
     {
+        Debug.Log(collision.gameObject);
+        IDamageable damageableObject = collision.gameObject.GetComponent<IDamageable>();
+        if (damageableObject != null)
+        {
+            damageableObject.ApplyDamage(damage);
+        }
         Destroy(gameObject);
     }
 

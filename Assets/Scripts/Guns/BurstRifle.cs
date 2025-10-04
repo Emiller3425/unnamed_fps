@@ -8,17 +8,22 @@ using UnityEngine.TextCore.Text;
 
 public class BurstRifle : BurstGun
 {
+    protected override void Awake()
+    {
+        base.Awake();
+        magSize = 35;
+        currentAmmo = playerStats ? playerStats.GetRifleAmmo() : enemyStats.GetAmmo();
+        currentMag = magSize;
+    }
     protected override void Start()
     {
         // Set default values for BurstRifle
-        maxAmmo = 180;
-        magSize = 36;
         damage = 12;
         maxReloadBuffer = 2.5f;
         maxFireRateBuffer = 0.1f;
         bulletVelocity = 45f;
         flattenTrajectoryRange = 3f;
-       // sets currentAmmo to maxAmmo
+        // sets currentAmmo to maxAmmo
         base.Start();
     }
 }
