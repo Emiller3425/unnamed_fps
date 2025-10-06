@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
 
     // new input system
     private InputAction moveAction;
+    private InputAction dashAction;
     private InputAction lookAction;
     private InputAction jumpAction;
     private InputAction sprintAction;
@@ -32,6 +33,7 @@ public class PlayerController : MonoBehaviour
     void Awake()
     {
         moveAction = InputSystem.actions.FindAction("Move");
+        dashAction = InputSystem.actions.FindAction("Dash");
         lookAction = InputSystem.actions.FindAction("Look");
         jumpAction = InputSystem.actions.FindAction("Jump");
         sprintAction = InputSystem.actions.FindAction("Sprint");
@@ -40,11 +42,13 @@ public class PlayerController : MonoBehaviour
     void OnEnable()
     {
         moveAction.Enable();
+        dashAction.Enable();
         lookAction.Enable();
         sprintAction.Enable();
         jumpAction.Enable();
         // subscribe to function for immediately response on jump
         jumpAction.started += OnJump;
+        dashAction.performed += OnDash;
     }
 
     void Start()
@@ -79,14 +83,12 @@ public class PlayerController : MonoBehaviour
             // reset velocity and jump boolean if grounded
             if (characterController.isGrounded)
             {
-                velocityY = 0f;
                 canJump = true;
-            }
-            // handle jump
-            if (jumpAction.IsPressed() && canJump)
-            {
-                velocityY = jumpHeight;
-                canJump = false;
+                // Only overwrite velocityY if velocityY isd <0, this ensures that when we set the it in the Input Callback it isn't overwritten.
+                if (velocityY < 0f)
+                {
+                    velocityY = -2f;
+                }
             }
 
             movementDirection.y = velocityY;
@@ -109,7 +111,18 @@ public class PlayerController : MonoBehaviour
 
     void OnJump(InputAction.CallbackContext context)
     {
-       // TODO: add subscription based logic for jumping
+        // TODO: add subscription based logic for jumping
+        if (canJump)
+            {
+                velocityY = jumpHeight;
+                canJump = false;
+            }
+    }
+
+    void OnDash(InputAction.CallbackContext context)
+    {
+        // TODO: add subscription based logic for directional dashing
+        Debug.Log($"Dash - Phase: {context.phase}");
     }
 
     void OnDisable()
@@ -120,6 +133,9 @@ public class PlayerController : MonoBehaviour
 
         jumpAction.started -= OnJump;
         jumpAction.Disable();
+
+        dashAction.performed -= OnDash;
+        dashAction.Disable();
     }
 
 }

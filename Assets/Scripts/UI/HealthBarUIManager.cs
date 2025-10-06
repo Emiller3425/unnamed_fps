@@ -9,8 +9,6 @@ using UnityEngine.Rendering;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
-// TODO: Functionallity for player to actually take damage
-
 public class HealthBarUIManager : MonoBehaviour
 {
     public UnityEngine.UI.Image border;
