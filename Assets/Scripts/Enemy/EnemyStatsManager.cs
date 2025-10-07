@@ -21,7 +21,6 @@ public class EnemyStatsManager : MonoBehaviour, IDamageable
     public void ApplyDamage(float damage)
     {
         currentHealth -= damage;
-        Debug.Log("Enemy health:" + currentHealth);
         if (currentHealth <= 0f)
         {
             Destroy(gameObject);

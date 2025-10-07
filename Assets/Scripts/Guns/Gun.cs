@@ -29,28 +29,29 @@ public abstract class Gun : MonoBehaviour
     protected float reloadBuffer = 0f;
     protected float fireRateBuffer = 0f;
     protected int maxAmmo;
-    protected InputAction shoot;
-    protected InputAction reload;
+    protected InputAction shootAction;
+    protected InputAction reloadAction;
     protected Vector3 muzzleLocation;
     protected virtual void Awake()
     {
         // define listeners
         if (isPlayerGun)
         {
-            shoot = InputSystem.actions.FindAction("Attack");
-            reload = InputSystem.actions.FindAction("Reload");
+            shootAction = InputSystem.actions.FindAction("Attack");
+            reloadAction = InputSystem.actions.FindAction("Reload");
         }
     }
 
     protected void OnEnable()
     {
-        if (isPlayerGun) {
+        if (isPlayerGun)
+        {
             // enable listeners
-            shoot.Enable();
-            reload.Enable();
+            shootAction.Enable();
+            reloadAction.Enable();
             // subscribe
-            shoot.started += OnShoot;
-            reload.started += OnReload;
+            shootAction.started += OnShoot;
+            reloadAction.started += OnReload;
         }
     }
 
@@ -93,8 +94,7 @@ public abstract class Gun : MonoBehaviour
             if (fireRateBuffer <= 0f)
                 ShootBullet();
         }
-        else
-        {
+        else {
             Reload();
         }
     }
@@ -144,14 +144,18 @@ public abstract class Gun : MonoBehaviour
     // Reloads
     protected void Reload()
     {
-        // player reload
+        // Already in the middle of a reload
+        if (reloadBuffer > 0f)
+            return;
+        
+        // Reload player mag if is less than max and we have ammo in reserves
         if (currentAmmo > 0 && currentMag < magSize && reloadBuffer <= 0f && isPlayerGun)
         {
             reloadBuffer = maxReloadBuffer;
             currentAmmo -= (magSize - currentMag);
             currentMag = magSize;
         }
-        // enemy reload infinite ammo
+        // Enemy reload infinite ammo
         else
         {
             reloadBuffer = maxReloadBuffer;
@@ -165,10 +169,10 @@ public abstract class Gun : MonoBehaviour
         // unsubscribe and disable listeners
         if (isPlayerGun)
         {
-            shoot.started -= OnShoot;
-            reload.started -= OnReload;
-            shoot.Disable();
-            reload.Disable();
+            shootAction.started -= OnShoot;
+            reloadAction.started -= OnReload;
+            shootAction.Disable();
+            reloadAction.Disable();
         }
     }
 }

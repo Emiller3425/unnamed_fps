@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
 {
     public Camera playerCamera;
     public float walkSpeed = 7f;
+    public float adsWalkSpeed = 5f;
     public float sprintSpeed = 9f;
     public float lookSpeed = 0.6f;
     public float jumpHeight = 7f;
@@ -29,6 +30,7 @@ public class PlayerController : MonoBehaviour
     private InputAction lookAction;
     private InputAction jumpAction;
     private InputAction sprintAction;
+    private InputAction aimAction;
 
     void Awake()
     {
@@ -122,7 +124,6 @@ public class PlayerController : MonoBehaviour
     void OnDash(InputAction.CallbackContext context)
     {
         // TODO: add subscription based logic for directional dashing
-        Debug.Log($"Dash - Phase: {context.phase}");
     }
 
     void OnDisable()

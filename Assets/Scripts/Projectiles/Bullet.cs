@@ -79,7 +79,6 @@ public class Bullet : MonoBehaviour
     // if collision occurs destroy bullet (will need to add damage logic later, potentially bullet holes in walls etc)
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.gameObject);
         IDamageable damageableObject = collision.gameObject.GetComponent<IDamageable>();
         if (damageableObject != null)
         {

@@ -15,7 +15,7 @@ public class HealthBarUIManager : MonoBehaviour
     public UnityEngine.UI.Image red;
     public UnityEngine.UI.Image green;
     public static HealthBarUIManager Instance { get; private set; }
-    private RectTransform greenRectTransform;
+    public RectTransform greenRectTransform;
     private float greenWidthMax;
     void Awake()
     {

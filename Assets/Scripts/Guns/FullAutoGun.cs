@@ -11,7 +11,7 @@ public class FullAutoGun : Gun
     protected override void Update()
     {
         base.Update();
-        if (shoot.IsPressed())
+        if (shootAction.IsPressed())
         {
             AttemptShoot();
         }
