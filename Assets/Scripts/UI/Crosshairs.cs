@@ -11,7 +11,6 @@ using UnityEngine.TextCore.Text;
 public class Crosshairs : MonoBehaviour
 {
     private RectTransform crossHairRectTransform;
-
     void Awake()
     {
         crossHairRectTransform = GetComponent<RectTransform>();
@@ -22,6 +21,16 @@ public class Crosshairs : MonoBehaviour
     {
         crossHairRectTransform = GetComponent<RectTransform>();
         crossHairRectTransform.anchoredPosition = Vector2.zero;
+    }
+
+    public void ShowCrosshairs()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void HideCrosshairs()
+    {
+        gameObject.SetActive(false);
     }
 
     public void SetPosition(Vector2 newPosition)
