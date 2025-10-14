@@ -8,11 +8,10 @@ using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
-// TODO: Figure out position for povit during ADS -- might just be an offset via camera -- could also be gun specific
-
 public class PlayerViewBobbing : MonoBehaviour
 {
     public Crosshairs crosshairs;
+    public ViewBobbingPivotPosition viewBobbingPivotPosition;
     private Vector3 pivotPoint;
     private Vector3 localOffset;
     private float viewBobbingSpeed;
@@ -53,14 +52,15 @@ public class PlayerViewBobbing : MonoBehaviour
     void Update()
     {
         Vector2 movementDirection = moveAction.ReadValue<Vector2>();
+        pivotPoint = transform.parent.position;
         if (adsEnabled)
         {
-            pivotPoint = Camera.main.transform.position;
+            // pivotPoint = Camera.main.transform.position;
             localOffset = CalculateViewBobbingOffset(adsEffectHeight, adsEffectWidth, adsViewBobbingSpeed);
         }
         else
         {
-            pivotPoint = transform.parent.position;
+            // pivotPoint = transform.parent.position;
             localOffset = CalculateViewBobbingOffset(effectHeight, effectWidth, viewBobbingSpeed);
         }
         if (movementDirection.magnitude > 0f)
@@ -85,7 +85,8 @@ public class PlayerViewBobbing : MonoBehaviour
 
     void OnAim(InputAction.CallbackContext context)
     {
-        adsEnabled = !adsEnabled;
+        adsEnabled = !adsEnabled;  
+        viewBobbingPivotPosition.adsEnabled = adsEnabled;
         if (adsEnabled)
         {
             crosshairs.HideCrosshairs();

@@ -15,12 +15,14 @@ public class PlayerController : MonoBehaviour
     public float adsWalkSpeed = 5f;
     public float sprintSpeed = 9f;
     public float lookSpeed = 0.6f;
+    public float adsLookSpeed = 0.3f;
     public float jumpHeight = 7f;
     private CharacterController characterController;
     private Vector3 movementDirection = Vector3.zero;
     private float rotationX = 0;
     private bool canMove = true;
     private bool canJump = true;
+    private bool adsEnabled = false;
     private float velocityY = 0;
     private float gravity = 25f;
 
@@ -39,6 +41,7 @@ public class PlayerController : MonoBehaviour
         lookAction = InputSystem.actions.FindAction("Look");
         jumpAction = InputSystem.actions.FindAction("Jump");
         sprintAction = InputSystem.actions.FindAction("Sprint");
+        aimAction = InputSystem.actions.FindAction("Aim");
     }
 
     void OnEnable()
@@ -48,9 +51,11 @@ public class PlayerController : MonoBehaviour
         lookAction.Enable();
         sprintAction.Enable();
         jumpAction.Enable();
+        aimAction.Enable();
         // subscribe to function for immediately response on jump
         jumpAction.started += OnJump;
         dashAction.performed += OnDash;
+        aimAction.started += OnAim;
     }
 
     void Start()
@@ -72,8 +77,8 @@ public class PlayerController : MonoBehaviour
             Vector3 forward = transform.TransformDirection(Vector3.forward);
 
             // Get movement speeds
-            float speedX = moveValue.x * (sprintAction.IsPressed() ? sprintSpeed : walkSpeed);
-            float speedY = moveValue.y * (sprintAction.IsPressed() ? sprintSpeed : walkSpeed);
+            float speedX = moveValue.x * (adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() ? sprintSpeed : walkSpeed));
+            float speedY = moveValue.y * (adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() ? sprintSpeed : walkSpeed));
 
             movementDirection = (right * speedX) + (forward * speedY);
 
@@ -86,7 +91,7 @@ public class PlayerController : MonoBehaviour
             if (characterController.isGrounded)
             {
                 canJump = true;
-                // Only overwrite velocityY if velocityY isd <0, this ensures that when we set the it in the Input Callback it isn't overwritten.
+                // Only overwrite velocityY if velocityY is < 0, this ensures that when we set the it in the Input Callback it isn't overwritten.
                 if (velocityY < 0f)
                 {
                     velocityY = -2f;
@@ -100,29 +105,34 @@ public class PlayerController : MonoBehaviour
             // Lookaround logic
             Vector2 lookValue = lookAction.ReadValue<Vector2>();
 
-            rotationX -= lookValue.y * lookSpeed;
+            rotationX -= lookValue.y * (adsEnabled ? adsLookSpeed : lookSpeed);
             rotationX = Mathf.Clamp(rotationX, -80f, 80f);
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
             // camera always will be at top of character controller
             playerCamera.transform.localPosition = (Vector3.up * characterController.height / 2f - new Vector3(0f, 0.5f, 0f));
 
-            transform.Rotate(lookSpeed * lookValue.x * Vector3.up);
+            transform.Rotate((adsEnabled ? adsLookSpeed : lookSpeed) * lookValue.x * Vector3.up);
         }
 
     }
 
     void OnJump(InputAction.CallbackContext context)
     {
-        // TODO: add subscription based logic for jumping
         if (canJump)
-            {
-                velocityY = jumpHeight;
-                canJump = false;
-            }
+        {
+            velocityY = jumpHeight;
+            canJump = false;
+        }
+    }
+    
+    void OnAim(InputAction.CallbackContext context)
+    {
+        adsEnabled = !adsEnabled;
     }
 
     void OnDash(InputAction.CallbackContext context)
     {
+        Debug.Log(context.action);
         // TODO: add subscription based logic for directional dashing
     }
 

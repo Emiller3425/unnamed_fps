@@ -112,7 +112,7 @@ public abstract class Gun : MonoBehaviour
         if (fireRateBuffer <= 0)
         {
             // get ray for bullet
-            Vector3 rayDirection = calculateRay(out Vector3 targetPoint);
+            Vector3 rayDirection = CalculateRay(out Vector3 targetPoint);
             GameObject bulletObject = Instantiate(bulletPrefab, muzzleLocation, transform.rotation);
             Bullet bullet = bulletObject.GetComponent<Bullet>();
             bullet.Shoot(rayDirection, bulletVelocity, damage, targetPoint);
@@ -122,7 +122,7 @@ public abstract class Gun : MonoBehaviour
         }
     }
 
-    protected Vector3 calculateRay(out Vector3 targetPoint)
+    protected Vector3 CalculateRay(out Vector3 targetPoint)
     {
         Vector3 crossHairScreenPosition = crosshairs.transform.position;
         Ray cameraRay = playerCamera.ScreenPointToRay(crossHairScreenPosition);

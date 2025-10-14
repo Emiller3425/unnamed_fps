@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
+// TODO: make cross hair widen when walking, and after shot. instaed of hidding middle, should be within crosshair bounds
+
 [RequireComponent(typeof(RectTransform))]
 public class Crosshairs : MonoBehaviour
 {
