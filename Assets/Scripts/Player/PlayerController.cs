@@ -19,11 +19,11 @@ public class PlayerController : MonoBehaviour
     public float jumpHeight = 7f;
     private CharacterController characterController;
     private Vector3 movementDirection = Vector3.zero;
-    private float rotationX = 0;
+    private float rotationX = 0f;
     private bool canMove = true;
     private bool canJump = true;
     private bool adsEnabled = false;
-    private float velocityY = 0;
+    private float velocityY = 0f;
     private float gravity = 25f;
 
     // new input system
@@ -91,7 +91,7 @@ public class PlayerController : MonoBehaviour
             if (characterController.isGrounded)
             {
                 canJump = true;
-                // Only overwrite velocityY if velocityY is < 0, this ensures that when we set the it in the Input Callback it isn't overwritten.
+                // Only overwrite velocityY if velocityY is < 0, this ensures that when we set it in the Input Callback it isn't overwritten.
                 if (velocityY < 0f)
                 {
                     velocityY = -2f;
@@ -132,8 +132,23 @@ public class PlayerController : MonoBehaviour
 
     void OnDash(InputAction.CallbackContext context)
     {
-        Debug.Log(context.action);
-        // TODO: add subscription based logic for directional dashing
+        // TODO: Add dash logic -- initial burst then slows down
+        if (context.control == Keyboard.current.wKey)
+        {
+            Debug.Log("Dash Forwards");
+        }
+        else if (context.control == Keyboard.current.sKey)
+        {
+            Debug.Log("Dash Backwards");
+        }
+        else if (context.control == Keyboard.current.aKey)
+        {
+            Debug.Log("Dash Left");
+        }
+        else if (context.control == Keyboard.current.dKey)
+        {
+            Debug.Log("Dash Right");
+        }
     }
 
     void OnDisable()

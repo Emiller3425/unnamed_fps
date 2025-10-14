@@ -15,8 +15,7 @@ public abstract class Gun : MonoBehaviour
     public GameObject bulletPrefab;
     public Camera playerCamera;
     public Crosshairs crosshairs;
-    public PlayerStats playerStats;
-    public EnemyStats enemyStats;
+    public EntityStats entityStats;
     public bool isPlayerGun = false;
     public int magSize = 30;
     public int damage = 10;

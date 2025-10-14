@@ -12,7 +12,7 @@ public class MachineGun : FullAutoGun
     {
         base.Awake();
         magSize = 35;
-        currentAmmo = playerStats ? playerStats.GetMachineGunAmmo() : enemyStats.GetAmmo();
+        currentAmmo = entityStats.GetMachineGunAmmo();
         currentMag = magSize;
     }
     protected override void Start()

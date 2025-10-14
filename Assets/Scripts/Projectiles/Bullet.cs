@@ -21,6 +21,7 @@ public class Bullet : MonoBehaviour
     private Vector3 targetDestination;
     private Vector3 spawnLocation;
     private bool trajectoryChanged = false;
+    private bool hasCollided = false;
     private BoxCollider boxCollider;
     private Rigidbody rigidBody;
     // Sets bullet movement variables
@@ -80,9 +81,10 @@ public class Bullet : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         IDamageable damageableObject = collision.gameObject.GetComponent<IDamageable>();
-        if (damageableObject != null)
+        if (damageableObject != null && !hasCollided)
         {
             damageableObject.ApplyDamage(damage);
+            hasCollided = true;
         }
         Destroy(gameObject);
     }

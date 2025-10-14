@@ -6,40 +6,20 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
-public class PlayerStatsManager : MonoBehaviour, IDamageable
+public class PlayerStatsManager : StatsManager
 {
-    public PlayerStats playerStats;
-    private float currentHealth;
-    private int currentPistolAmmo;
-    private int currentMachineGunAmmo;
-    private int currentRifleAmmo;
-    void Awake()
+    public override void ApplyDamage(float damage)
     {
-        currentHealth = playerStats.GetHealth();
+        base.ApplyDamage(damage);
+        HealthBarUIManager.Instance.ApplyDamage(damage, entityStats.GetHealth(), currentHealth);
     }
-
-    public void ApplyDamage(float damage)
+    public override void ApplyHealing(float healing)
     {
-        currentHealth -= damage;
-        HealthBarUIManager.Instance.ApplyDamage(damage, playerStats.GetHealth(), currentHealth);
-        if (currentHealth < 0f)
-        {
-            Destroy(gameObject);
-        }
+        base.ApplyHealing(healing);
+        HealthBarUIManager.Instance.ApplyHealing(healing, entityStats.GetHealth(), currentHealth);
     }
-
-    public void ApplyHealing(float healing)
+    protected override void OnDestroy()
     {
-        currentHealth += healing;
-        HealthBarUIManager.Instance.ApplyHealing(healing, playerStats.GetHealth(), currentHealth);
-        if (currentHealth > playerStats.GetHealth())
-        {
-            currentHealth = playerStats.GetHealth();
-        }
-    }
-
-    void OnDestroy()
-    {
-         // on destroy logic---death screen
+        // TODO: Player death
     }
 }

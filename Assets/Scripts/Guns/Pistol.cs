@@ -12,7 +12,7 @@ public class Pistol : SemiAutoGun
     {
         base.Awake();
         magSize = 12;
-        currentAmmo = playerStats != null ? playerStats.GetPistolAmmo() : enemyStats.GetAmmo();
+        currentAmmo = entityStats.GetPistolAmmo();
         currentMag = magSize;
     }
     protected override void Start()
