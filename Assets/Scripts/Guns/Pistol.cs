@@ -21,8 +21,6 @@ public class Pistol : SemiAutoGun
         damage = 10;
         maxReloadBuffer = 1.5f;
         maxFireRateBuffer = 0.2f;
-        bulletVelocity = 45f;
-        flattenTrajectoryRange = 5f;
         // sets currentAmmo to maxAmmo
         base.Start();
     }

@@ -12,7 +12,7 @@ using UnityEngine.TextCore.Text;
 
 public abstract class Gun : MonoBehaviour
 {
-    public GameObject bulletPrefab;
+    // public GameObject bulletPrefab;
     public Camera playerCamera;
     public Crosshairs crosshairs;
     public EntityStats entityStats;
@@ -23,8 +23,9 @@ public abstract class Gun : MonoBehaviour
     public int currentMag;
     public float maxReloadBuffer = 2f;
     public float maxFireRateBuffer = 0.2f;
-    public float bulletVelocity = 30f;
-    public float flattenTrajectoryRange = 100f;
+    public float maxRange = 100f;
+    // public float bulletVelocity = 30f;
+    // public float flattenTrajectoryRange = 100f;
     protected float reloadBuffer = 0f;
     protected float fireRateBuffer = 0f;
     protected int maxAmmo;
@@ -111,33 +112,37 @@ public abstract class Gun : MonoBehaviour
         if (fireRateBuffer <= 0)
         {
             // get ray for bullet
-            Vector3 rayDirection = CalculateRay(out Vector3 targetPoint);
-            GameObject bulletObject = Instantiate(bulletPrefab, muzzleLocation, transform.rotation);
-            Bullet bullet = bulletObject.GetComponent<Bullet>();
-            bullet.Shoot(rayDirection, bulletVelocity, damage, targetPoint);
+            Vector3 rayDirection = CalculateRay();
+            if (rayDirection == Vector3.zero)
+            {
+                Debug.Log("Miss");
+            } else
+            {
+                Debug.Log("Hit");
+            }
             currentMag--;
             fireRateBuffer = maxFireRateBuffer;
             AmmoUIManager.Instance.UpdateAmmoUI(currentMag, currentAmmo);
         }
     }
 
-    protected Vector3 CalculateRay(out Vector3 targetPoint)
+    protected Vector3 CalculateRay()
     {
         Vector3 crossHairScreenPosition = crosshairs.transform.position;
         Ray cameraRay = playerCamera.ScreenPointToRay(crossHairScreenPosition);
 
         RaycastHit hit;
 
-        if (Physics.Raycast(cameraRay, out hit, flattenTrajectoryRange))
+        if (Physics.Raycast(cameraRay, out hit, maxRange))
         {
-            targetPoint = hit.point;
+            hit.collider.gameObject.GetComponent<IDamageable>()?.ApplyDamage(damage);
+            return (hit.point - muzzleLocation).normalized;
         }
-        else
+       else
         {
-            targetPoint = cameraRay.GetPoint(flattenTrajectoryRange);
+            // we did not hit anything
+            return Vector3.zero;
         }
-
-        return (targetPoint - muzzleLocation).normalized;
     }
 
     // Reloads

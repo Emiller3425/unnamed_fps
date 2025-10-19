@@ -21,8 +21,6 @@ public class BurstRifle : BurstGun
         damage = 12;
         maxReloadBuffer = 2.5f;
         maxFireRateBuffer = 0.1f;
-        bulletVelocity = 45f;
-        flattenTrajectoryRange = 3f;
         // sets currentAmmo to maxAmmo
         base.Start();
     }

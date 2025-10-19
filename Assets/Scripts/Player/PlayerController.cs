@@ -136,6 +136,7 @@ public class PlayerController : MonoBehaviour
         if (context.control == Keyboard.current.wKey)
         {
             Debug.Log("Dash Forwards");
+            
         }
         else if (context.control == Keyboard.current.sKey)
         {

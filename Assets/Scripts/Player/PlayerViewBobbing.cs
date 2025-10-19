@@ -16,23 +16,29 @@ public class PlayerViewBobbing : MonoBehaviour
     private Vector3 localOffset;
     private float viewBobbingSpeed;
     private float adsViewBobbingSpeed;
+    private float sprintViewBobbingSpeed;
     private float effectHeight;
     private float adsEffectHeight;
+    private float sprintEffectHeight;
     private float effectWidth;
     private float adsEffectWidth;
+    private float sprintEffectWidth;
     private float sinTime;
     private bool adsEnabled = false;
     private InputAction moveAction;
     private InputAction aimAction;
+    private InputAction sprintAction;
     void Awake()
     {
         moveAction = InputSystem.actions.FindAction("Move");
+        sprintAction = InputSystem.actions.FindAction("Sprint");
         aimAction = InputSystem.actions.FindAction("Aim");
     }
     void OnEnable()
     {
         moveAction.Enable();
         aimAction.Enable();
+        sprintAction.Enable();
         // subscriptions
         aimAction.started += OnAim;
     }
@@ -40,12 +46,18 @@ public class PlayerViewBobbing : MonoBehaviour
     void Start()
     {
         pivotPoint = transform.parent.position;
+
         viewBobbingSpeed = 6f;
-        adsViewBobbingSpeed = 4f;
         effectHeight = 0.15f;
         effectWidth = 0.2f;
+
+        adsViewBobbingSpeed = 4f;
         adsEffectHeight = 0f;
         adsEffectWidth = 0.02f;
+
+        sprintViewBobbingSpeed = 8f;
+        sprintEffectHeight = 0.2f;
+        sprintEffectWidth = 0.25f;
 
     }
 
@@ -57,6 +69,11 @@ public class PlayerViewBobbing : MonoBehaviour
         {
             // pivotPoint = Camera.main.transform.position;
             localOffset = CalculateViewBobbingOffset(adsEffectHeight, adsEffectWidth, adsViewBobbingSpeed);
+        }
+        else if (sprintAction.IsPressed())
+        {
+            // pivotPoint = transform.parent.position
+            localOffset = CalculateViewBobbingOffset(sprintEffectHeight, sprintEffectWidth, sprintViewBobbingSpeed);
         }
         else
         {
@@ -85,7 +102,7 @@ public class PlayerViewBobbing : MonoBehaviour
 
     void OnAim(InputAction.CallbackContext context)
     {
-        adsEnabled = !adsEnabled;  
+        adsEnabled = !adsEnabled;
         viewBobbingPivotPosition.adsEnabled = adsEnabled;
         if (adsEnabled)
         {
@@ -97,6 +114,7 @@ public class PlayerViewBobbing : MonoBehaviour
         }
 
     }
+
 
     void OnDisable()
     {

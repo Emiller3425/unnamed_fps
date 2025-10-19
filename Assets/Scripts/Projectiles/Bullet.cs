@@ -59,8 +59,8 @@ public class Bullet : MonoBehaviour
         return traveledDistance > targetDistance; 
     }
 
-    // updates bullet position
-    void Update()
+    // updates bullet position, uses FixedUpdate() because we are checking rigidBody collision
+    void FixedUpdate()
     {
         if (velocity > 0)
         {
