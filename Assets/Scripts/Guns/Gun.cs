@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 using UnityEngine.TextCore.Text;
+using UnityEngine.VFX;
 
 public abstract class Gun : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public abstract class Gun : MonoBehaviour
     public Camera playerCamera;
     public Crosshairs crosshairs;
     public EntityStats entityStats;
+    public GameObject muzzleFlash;
     public bool isPlayerGun = false;
     public int magSize = 30;
     public int damage = 10;
@@ -24,14 +26,14 @@ public abstract class Gun : MonoBehaviour
     public float maxReloadBuffer = 2f;
     public float maxFireRateBuffer = 0.2f;
     public float maxRange = 100f;
-    // public float bulletVelocity = 30f;
-    // public float flattenTrajectoryRange = 100f;
     protected float reloadBuffer = 0f;
     protected float fireRateBuffer = 0f;
     protected int maxAmmo;
     protected InputAction shootAction;
     protected InputAction reloadAction;
     protected Vector3 muzzleLocation;
+    protected Transform muzzleTransform;
+    protected VisualEffect muzzleVFX;
     protected virtual void Awake()
     {
         // define listeners
@@ -57,7 +59,12 @@ public abstract class Gun : MonoBehaviour
 
     protected virtual void Start()
     {
-        muzzleLocation = transform.Find("Muzzle").position;
+        muzzleTransform = transform.Find("Muzzle");
+
+        if (muzzleFlash != null)
+        {
+            muzzleVFX = muzzleFlash.GetComponent<VisualEffect>();
+        }
     }
 
     protected virtual void Update()
@@ -80,8 +87,11 @@ public abstract class Gun : MonoBehaviour
         {
             fireRateBuffer -= Time.deltaTime;
         }
-        // relocate muzzle
-        muzzleLocation = transform.Find("Muzzle").position;
+        if (muzzleTransform != null && muzzleFlash != null)
+        {
+            muzzleFlash.transform.position = muzzleTransform.position;
+            muzzleFlash.transform.rotation = muzzleTransform.rotation;
+        }
     }
 
     protected abstract void OnShoot(InputAction.CallbackContext context);
@@ -116,14 +126,21 @@ public abstract class Gun : MonoBehaviour
             if (rayDirection == Vector3.zero)
             {
                 Debug.Log("Miss");
-            } else
+            }
+            else
             {
                 Debug.Log("Hit");
+            }
+            // Handle Muzzle Flash
+            if (muzzleVFX != null)
+            {
+                Debug.Log("Muzzle flash");
+                muzzleVFX.Play();
             }
             currentMag--;
             fireRateBuffer = maxFireRateBuffer;
             AmmoUIManager.Instance.UpdateAmmoUI(currentMag, currentAmmo);
-        }
+        } 
     }
 
     protected Vector3 CalculateRay()

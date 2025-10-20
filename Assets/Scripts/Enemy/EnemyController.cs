@@ -50,7 +50,7 @@ public class EnemyController : MonoBehaviour
         movementDirection.y = velocityY;
         enemyController.Move(new Vector3(1f, 0f, 1f) * Time.deltaTime);
 
-        // Enemy lookaround logic
+        // Enemy lookaround logic below
 
     }
 }
