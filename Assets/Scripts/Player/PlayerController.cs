@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
+// TODO: use velocity of x and z for dashing
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -14,6 +15,7 @@ public class PlayerController : MonoBehaviour
     public float walkSpeed = 7f;
     public float adsWalkSpeed = 5f;
     public float sprintSpeed = 9f;
+    public float crouchSpeed = 3f;
     public float lookSpeed = 0.6f;
     public float adsLookSpeed = 0.3f;
     public float jumpHeight = 7f;
@@ -24,7 +26,11 @@ public class PlayerController : MonoBehaviour
     private bool canJump = true;
     private bool adsEnabled = false;
     private float velocityY = 0f;
+    private float velocityX = 0f;
+    private float velocityZ = 0f;
     private float gravity = 25f;
+    private float walkingStepNoiseBuffer = 0.5f;
+    private float sprintingStepNoiseBuffer = 0.4f;
 
     // new input system
     private InputAction moveAction;
@@ -32,6 +38,7 @@ public class PlayerController : MonoBehaviour
     private InputAction lookAction;
     private InputAction jumpAction;
     private InputAction sprintAction;
+    private InputAction crouchAction;
     private InputAction aimAction;
 
     void Awake()
@@ -41,6 +48,7 @@ public class PlayerController : MonoBehaviour
         lookAction = InputSystem.actions.FindAction("Look");
         jumpAction = InputSystem.actions.FindAction("Jump");
         sprintAction = InputSystem.actions.FindAction("Sprint");
+        crouchAction = InputSystem.actions.FindAction("Crouch");
         aimAction = InputSystem.actions.FindAction("Aim");
     }
 
@@ -50,6 +58,7 @@ public class PlayerController : MonoBehaviour
         dashAction.Enable();
         lookAction.Enable();
         sprintAction.Enable();
+        crouchAction.Enable();
         jumpAction.Enable();
         aimAction.Enable();
         // subscribe to function for immediately response on jump
@@ -77,10 +86,29 @@ public class PlayerController : MonoBehaviour
             Vector3 forward = transform.TransformDirection(Vector3.forward);
 
             // Get movement speeds
-            float speedX = moveValue.x * (adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() ? sprintSpeed : walkSpeed));
-            float speedY = moveValue.y * (adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() ? sprintSpeed : walkSpeed));
+            float speedX = moveValue.x * (crouchAction.IsPressed() ? crouchSpeed : adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() ? sprintSpeed : walkSpeed));
+            float speedY = moveValue.y * (crouchAction.IsPressed() ? crouchSpeed : adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() ? sprintSpeed : walkSpeed));
 
             movementDirection = (right * speedX) + (forward * speedY);
+
+            if (moveValue != Vector2.zero)
+            {
+                if (walkingStepNoiseBuffer <= 0f && !sprintAction.IsPressed())
+                {
+                    FindAnyObjectByType<AudioManager>().Play("footstep");
+                    walkingStepNoiseBuffer = 0.5f;
+                    sprintingStepNoiseBuffer = 0.4f;
+                }
+                else if (sprintingStepNoiseBuffer <= 0f && sprintAction.IsPressed())
+                {
+                    FindAnyObjectByType<AudioManager>().Play("footstep");
+                    sprintingStepNoiseBuffer = 0.4f;
+                    walkingStepNoiseBuffer = 0.5f;
+                }
+            }
+
+            walkingStepNoiseBuffer -= Time.deltaTime;
+            sprintingStepNoiseBuffer -= Time.deltaTime;
 
             // apply gravity
             if (!characterController.isGrounded)
@@ -109,11 +137,17 @@ public class PlayerController : MonoBehaviour
             rotationX = Mathf.Clamp(rotationX, -80f, 80f);
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
             // camera always will be at top of character controller
-            playerCamera.transform.localPosition = (Vector3.up * characterController.height / 2f - new Vector3(0f, 0.5f, 0f));
+            if (crouchAction.IsPressed())
+            {
+                playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, (Vector3.up * characterController.height / 2f - new Vector3(0f, 1f, 0f)), 0.1f); 
+            }
+            else
+            {
+                playerCamera.transform.localPosition = (Vector3.up * characterController.height / 2f - new Vector3(0f, 0.5f, 0f));
+            }
 
             transform.Rotate((adsEnabled ? adsLookSpeed : lookSpeed) * lookValue.x * Vector3.up);
         }
-
     }
 
     void OnJump(InputAction.CallbackContext context)
@@ -136,7 +170,6 @@ public class PlayerController : MonoBehaviour
         if (context.control == Keyboard.current.wKey)
         {
             Debug.Log("Dash Forwards");
-            
         }
         else if (context.control == Keyboard.current.sKey)
         {

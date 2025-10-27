@@ -11,7 +11,6 @@ public class EnemyStatsManager : StatsManager
     public override void ApplyDamage(float damage)
     {
         base.ApplyDamage(damage);
-        Debug.Log(currentHealth);
     }
     protected override void OnDestroy()
     {

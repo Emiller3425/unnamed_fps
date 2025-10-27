@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEditor;
@@ -8,6 +9,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
+using UnityEngine.Rendering.UI;
 using UnityEngine.TextCore.Text;
 using UnityEngine.VFX;
 
@@ -16,6 +18,7 @@ public abstract class Gun : MonoBehaviour
     // public GameObject bulletPrefab;
     public Camera playerCamera;
     public Crosshairs crosshairs;
+    public HitMarker hitMarker;
     public EntityStats entityStats;
     public GameObject muzzleFlash;
     public bool isPlayerGun = false;
@@ -152,7 +155,16 @@ public abstract class Gun : MonoBehaviour
 
         if (Physics.Raycast(cameraRay, out hit, maxRange))
         {
-            hit.collider.gameObject.GetComponent<IDamageable>()?.ApplyDamage(damage);
+            if (hit.collider.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
+            {
+                damageable.ApplyDamage(damage);
+                if (isPlayerGun)
+                {
+                    // not awaited because hit marker is not used in anyrthing else within this fucntion call
+                    hitMarker.ShowHitMarker();
+                    FindAnyObjectByType<AudioManager>().Play("hitmarker");
+                }
+            }
             return (hit.point - muzzleLocation).normalized;
         }
        else

@@ -53,7 +53,7 @@ public class PlayerViewBobbing : MonoBehaviour
 
         adsViewBobbingSpeed = 4f;
         adsEffectHeight = 0f;
-        adsEffectWidth = 0.02f;
+        adsEffectWidth = 0.01f;
 
         sprintViewBobbingSpeed = 8f;
         sprintEffectHeight = 0.2f;
