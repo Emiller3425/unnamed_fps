@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 // TODO: use velocity of x and z for dashing
+// TODO: Handle character controller and capsule collider hitboxes when crouched
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -25,13 +26,13 @@ public class PlayerController : MonoBehaviour
     private bool canMove = true;
     private bool canJump = true;
     private bool adsEnabled = false;
+    private bool isCrouched = false;
     private float velocityY = 0f;
     private float velocityX = 0f;
     private float velocityZ = 0f;
     private float gravity = 25f;
     private float walkingStepNoiseBuffer = 0.5f;
     private float sprintingStepNoiseBuffer = 0.4f;
-
     // new input system
     private InputAction moveAction;
     private InputAction dashAction;
@@ -136,14 +137,16 @@ public class PlayerController : MonoBehaviour
             rotationX -= lookValue.y * (adsEnabled ? adsLookSpeed : lookSpeed);
             rotationX = Mathf.Clamp(rotationX, -80f, 80f);
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
-            // camera always will be at top of character controller
+            
+            // handle camera height for crouching
             if (crouchAction.IsPressed())
             {
+                isCrouched = true;
                 playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, (Vector3.up * characterController.height / 2f - new Vector3(0f, 1f, 0f)), 0.1f); 
             }
             else
             {
-                playerCamera.transform.localPosition = (Vector3.up * characterController.height / 2f - new Vector3(0f, 0.5f, 0f));
+                playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, Vector3.up * characterController.height / 2f - new Vector3(0f, 0.5f, 0f), 0.1f);
             }
 
             transform.Rotate((adsEnabled ? adsLookSpeed : lookSpeed) * lookValue.x * Vector3.up);

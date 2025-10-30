@@ -14,6 +14,6 @@ public class EnemyStatsManager : StatsManager
     }
     protected override void OnDestroy()
     {
-        // TODO: Enemy death
+        // TODO: Enemy death -- ideally a death animation
     }
 }

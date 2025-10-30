@@ -72,7 +72,7 @@ public abstract class Gun : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (AmmoUIManager.Instance.ammoUIText == null && isPlayerGun)
+        if (AmmoUIManager.Instance?.ammoUIText == null && isPlayerGun)
         {
             AmmoUIManager.Instance.UpdateAmmoUI(currentMag, currentAmmo);
         }
@@ -84,7 +84,7 @@ public abstract class Gun : MonoBehaviour
         // Update Ammo UI only after reload is complete
         else if (isPlayerGun)
         {
-            AmmoUIManager.Instance.UpdateAmmoUI(currentMag, currentAmmo);
+            AmmoUIManager.Instance?.UpdateAmmoUI(currentMag, currentAmmo);
         }
         if (fireRateBuffer > 0f)
         {
