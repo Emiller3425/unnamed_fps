@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     public float crouchSpeed = 3f;
     public float lookSpeed = 0.6f;
     public float adsLookSpeed = 0.3f;
-    public float jumpHeight = 7f;
+    public float jumpHeight = 5f;
     private CharacterController characterController;
     private Vector3 movementDirection = Vector3.zero;
     private float rotationX = 0f;
@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
     private float velocityY = 0f;
     private float velocityX = 0f;
     private float velocityZ = 0f;
-    private float gravity = 25f;
+    private float gravity = 10f;
     private float walkingStepNoiseBuffer = 0.5f;
     private float sprintingStepNoiseBuffer = 0.4f;
     // new input system

@@ -23,7 +23,7 @@ public class EnemyController : MonoBehaviour
     private Vector3 movementDirection = Vector3.zero;
     private float rotationX = 0f;
     private float velocityY = 0f;
-    private float gravity = 25f;
+    private float gravity = 10f;
     private bool canMove = true;
     private bool canJump = true;
     private CharacterController enemyController;
@@ -47,21 +47,21 @@ public class EnemyController : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, lookSpeed * Time.deltaTime);
             float distanceToPlayer = Vector3.Distance(transform.position, FindAnyObjectByType<PlayerController>().transform.position);
-            Debug.Log(distanceToPlayer);
+            // Debug.Log(distanceToPlayer);
 
             enemyController.Move(forward * Time.deltaTime);
         }
+        Debug.Log(enemyController.isGrounded);
 
-        if (enemyController.isGrounded)
-        {
-            velocityY -= gravity * Time.deltaTime;
-        }
+        velocityY -= gravity * Time.deltaTime;
 
         if (enemyController.isGrounded)
         {
             canJump = true;
         }
         movementDirection.y = velocityY;
+
+        enemyController.Move(movementDirection.y * Vector3.up * Time.deltaTime);
 
     }
 }

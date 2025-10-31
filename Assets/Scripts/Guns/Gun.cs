@@ -106,6 +106,10 @@ public abstract class Gun : MonoBehaviour
         {
             if (fireRateBuffer <= 0f)
                 ShootBullet();
+            if (currentMag <= 0)
+            {
+                Reload();
+            }
         }
         else {
             Reload();
@@ -122,6 +126,7 @@ public abstract class Gun : MonoBehaviour
     // Shoots bullet
     protected void ShootBullet()
     {
+        Console.WriteLine("Shot for some fucking reason");
         if (fireRateBuffer <= 0)
         {
             // get ray for bullet
