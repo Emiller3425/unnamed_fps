@@ -9,30 +9,41 @@ using UnityEngine.TextCore.Text;
 public class StatsManager : MonoBehaviour, IDamageable, IHealable
 {
     public EntityStats entityStats;
+    protected int currentLevel;
+    protected int maxLevel;
+    protected float maxHealth;
     protected float currentHealth;
     protected int currentPistolAmmo;
+    protected int maxPistolAmmo;
     protected int currentMachineGunAmmo;
+    protected int maxMachineGunAmmo;
     protected int currentRifleAmmo;
-    protected virtual void Awake()
+    protected int maxRifleAmmo;
+    public virtual void Awake()
     {
-        currentHealth = entityStats.GetHealth();
+        currentHealth = entityStats.GetCurrentHealth();
+        maxHealth = entityStats.GetMaxHealth();
+        currentLevel = entityStats.GetCurrentLevel();
+        maxLevel = entityStats.GetMaxLevel();
+        currentPistolAmmo = entityStats.GetCurrentPistolAmmo();
+        maxPistolAmmo = entityStats.GetMaxPistolAmmo();
+        currentMachineGunAmmo = entityStats.GetCurrentMachineGunAmmo();
+        maxMachineGunAmmo = entityStats.GetMaxMachineGunAmmo();
+        currentRifleAmmo = entityStats.GetCurrentRifleAmmo();
+        maxRifleAmmo = entityStats.GetMaxRifleAmmo();
     }
 
     public virtual void ApplyDamage(float damage)
     {
         currentHealth -= damage;
-        if (currentHealth <= 0f)
-        {
-            Destroy(gameObject);
-        }
     }
 
     public virtual void ApplyHealing(float healing)
     {
         currentHealth += healing;
-        if (currentHealth > entityStats.GetHealth())
+        if (currentHealth > entityStats.GetMaxHealth())
         {
-            currentHealth = entityStats.GetHealth();
+            currentHealth = entityStats.GetMaxHealth();
         }
     }
 

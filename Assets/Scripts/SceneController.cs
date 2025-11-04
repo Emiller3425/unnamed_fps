@@ -16,7 +16,6 @@ public class SceneController : MonoBehaviour
         while (!asyncLoad.isDone)
         {
             float progress = Mathf.Clamp01(asyncLoad.progress / 0.9f);
-            Debug.Log($"Loading Progress: {progress}");
             yield return null;
         }
     }

@@ -12,7 +12,7 @@ public class BurstRifle : BurstGun
     {
         base.Awake();
         magSize = 35;
-        currentAmmo = entityStats.GetRifleAmmo();
+        currentAmmo = entityStats.GetCurrentRifleAmmo();
         currentMag = magSize;
     }
     protected override void Start()

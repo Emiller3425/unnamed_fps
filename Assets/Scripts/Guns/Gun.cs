@@ -126,23 +126,13 @@ public abstract class Gun : MonoBehaviour
     // Shoots bullet
     protected void ShootBullet()
     {
-        Console.WriteLine("Shot for some fucking reason");
         if (fireRateBuffer <= 0)
         {
             // get ray for bullet
             Vector3 rayDirection = CalculateRay();
-            if (rayDirection == Vector3.zero)
-            {
-                Debug.Log("Miss");
-            }
-            else
-            {
-                Debug.Log("Hit");
-            }
             // Handle Muzzle Flash
             if (muzzleVFX != null)
             {
-                Debug.Log("Muzzle flash");
                 muzzleVFX.Play();
             }
             currentMag--;

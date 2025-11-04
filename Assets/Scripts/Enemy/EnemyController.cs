@@ -51,7 +51,6 @@ public class EnemyController : MonoBehaviour
 
             enemyController.Move(forward * Time.deltaTime);
         }
-        Debug.Log(enemyController.isGrounded);
 
         velocityY -= gravity * Time.deltaTime;
 
