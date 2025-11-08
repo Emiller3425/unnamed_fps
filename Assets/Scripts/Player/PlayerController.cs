@@ -1,4 +1,5 @@
 using System;
+using System.Data.SqlTypes;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
 using Unity.VisualScripting;
@@ -41,6 +42,7 @@ public class PlayerController : MonoBehaviour
     private InputAction sprintAction;
     private InputAction crouchAction;
     private InputAction aimAction;
+    private InputAction interactAction;
 
     void Awake()
     {
@@ -51,6 +53,7 @@ public class PlayerController : MonoBehaviour
         sprintAction = InputSystem.actions.FindAction("Sprint");
         crouchAction = InputSystem.actions.FindAction("Crouch");
         aimAction = InputSystem.actions.FindAction("Aim");
+        interactAction = InputSystem.actions.FindAction("Interact");
     }
 
     void OnEnable()
@@ -62,10 +65,12 @@ public class PlayerController : MonoBehaviour
         crouchAction.Enable();
         jumpAction.Enable();
         aimAction.Enable();
+        interactAction.Enable();
         // subscribe to function for immediately response on jump
         jumpAction.started += OnJump;
         dashAction.performed += OnDash;
         aimAction.started += OnAim;
+        interactAction.started += OnInteract;
     }
 
     void Start()
@@ -137,12 +142,12 @@ public class PlayerController : MonoBehaviour
             rotationX -= lookValue.y * (adsEnabled ? adsLookSpeed : lookSpeed);
             rotationX = Mathf.Clamp(rotationX, -80f, 80f);
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
-            
+
             // handle camera height for crouching
             if (crouchAction.IsPressed())
             {
                 isCrouched = true;
-                playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, (Vector3.up * characterController.height / 2f - new Vector3(0f, 1f, 0f)), 0.1f); 
+                playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, (Vector3.up * characterController.height / 2f - new Vector3(0f, 1f, 0f)), 0.1f);
             }
             else
             {
@@ -151,6 +156,31 @@ public class PlayerController : MonoBehaviour
 
             transform.Rotate((adsEnabled ? adsLookSpeed : lookSpeed) * lookValue.x * Vector3.up);
         }
+    }
+    GameObject GetInteractionObject()
+    {
+        Ray cameraRay = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
+        RaycastHit hit;
+
+        if (Physics.Raycast(cameraRay, out hit, 2f))
+        {
+            if (hit.collider.gameObject.GetComponentInParent<IInteractable>() != null)
+            {
+                Debug.Log("Interact PlayerController");
+                return hit.collider.gameObject;
+            }
+        }
+        return null;
+    }
+    
+    void OnInteract(InputAction.CallbackContext context)
+    {
+        GameObject interactObject = GetInteractionObject();
+        if (interactObject != null)
+        {
+            interactObject.GetComponentInParent<Door>().HandleInteract();
+        }
+
     }
 
     void OnJump(InputAction.CallbackContext context)

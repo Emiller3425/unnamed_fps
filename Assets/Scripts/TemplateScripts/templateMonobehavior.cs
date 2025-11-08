@@ -39,5 +39,6 @@ public class TemplateMonoBeheavior : MonoBehaviour
     }
     void OnDestroy()
     {
+        
     }
 }

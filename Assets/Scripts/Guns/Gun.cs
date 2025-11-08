@@ -135,6 +135,7 @@ public abstract class Gun : MonoBehaviour
             {
                 muzzleVFX.Play();
             }
+            FindAnyObjectByType<AudioManager>().Play("gunshot");
             currentMag--;
             fireRateBuffer = maxFireRateBuffer;
             AmmoUIManager.Instance.UpdateAmmoUI(currentMag, currentAmmo);
@@ -182,6 +183,7 @@ public abstract class Gun : MonoBehaviour
             reloadBuffer = maxReloadBuffer;
             currentAmmo -= (magSize - currentMag);
             currentMag = magSize;
+            FindAnyObjectByType<AudioManager>().Play("reload");
         }
         // Enemy reload infinite ammo
         else
