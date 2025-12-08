@@ -8,14 +8,13 @@ using UnityEngine.TextCore.Text;
 
 public class EnemyStatsManager : StatsManager
 {
-    public PlayerStatsManager playerStatsManager;
     public override void ApplyDamage(float damage)
     {
         base.ApplyDamage(damage);
         if (currentHealth <= 0f)
         {
             Destroy(gameObject);
-            playerStatsManager.AddExperiencePoints(100);
+            PlayerStatsManager.Instance.AddExperiencePoints(100);
         }
     }
     protected override void OnDestroy()

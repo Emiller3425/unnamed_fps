@@ -21,8 +21,8 @@ public class PlayerController : MonoBehaviour
     public float lookSpeed = 0.6f;
     public float adsLookSpeed = 0.3f;
     public float jumpHeight = 5f;
+    public Vector3 movementDirection = Vector3.zero;
     private CharacterController characterController;
-    private Vector3 movementDirection = Vector3.zero;
     private float rotationX = 0f;
     private bool canMove = true;
     private bool canJump = true;
@@ -92,20 +92,20 @@ public class PlayerController : MonoBehaviour
             Vector3 forward = transform.TransformDirection(Vector3.forward);
 
             // Get movement speeds
-            float speedX = moveValue.x * (crouchAction.IsPressed() ? crouchSpeed : adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() ? sprintSpeed : walkSpeed));
-            float speedY = moveValue.y * (crouchAction.IsPressed() ? crouchSpeed : adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() ? sprintSpeed : walkSpeed));
+            float speedX = moveValue.x * (crouchAction.IsPressed() && characterController.isGrounded ? crouchSpeed : adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() && characterController.isGrounded ? sprintSpeed : walkSpeed));
+            float speedY = moveValue.y * (crouchAction.IsPressed() && characterController.isGrounded ? crouchSpeed : adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() && characterController.isGrounded ? sprintSpeed : walkSpeed));
 
             movementDirection = (right * speedX) + (forward * speedY);
 
             if (moveValue != Vector2.zero)
             {
-                if (walkingStepNoiseBuffer <= 0f && !sprintAction.IsPressed())
+                if (walkingStepNoiseBuffer <= 0f && !sprintAction.IsPressed() && characterController.isGrounded)
                 {
                     FindAnyObjectByType<AudioManager>().Play("footstep");
                     walkingStepNoiseBuffer = 0.5f;
                     sprintingStepNoiseBuffer = 0.4f;
                 }
-                else if (sprintingStepNoiseBuffer <= 0f && sprintAction.IsPressed())
+                else if (sprintingStepNoiseBuffer <= 0f && sprintAction.IsPressed() && characterController.isGrounded)
                 {
                     FindAnyObjectByType<AudioManager>().Play("footstep");
                     sprintingStepNoiseBuffer = 0.4f;
@@ -119,6 +119,7 @@ public class PlayerController : MonoBehaviour
             // apply gravity
             if (!characterController.isGrounded)
             {
+                canJump = false;
                 velocityY -= gravity * Time.deltaTime;
             }
             // reset velocity and jump boolean if grounded
@@ -128,7 +129,7 @@ public class PlayerController : MonoBehaviour
                 // Only overwrite velocityY if velocityY is < 0, this ensures that when we set it in the Input Callback it isn't overwritten.
                 if (velocityY < 0f)
                 {
-                    velocityY = -2f;
+                    velocityY = -10f;
                 }
             }
 
@@ -144,7 +145,7 @@ public class PlayerController : MonoBehaviour
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
 
             // handle camera height for crouching
-            if (crouchAction.IsPressed())
+            if (crouchAction.IsPressed() && characterController.isGrounded)
             {
                 isCrouched = true;
                 playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, (Vector3.up * characterController.height / 2f - new Vector3(0f, 1f, 0f)), 0.1f);
@@ -162,7 +163,7 @@ public class PlayerController : MonoBehaviour
         Ray cameraRay = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
         RaycastHit hit;
 
-        if (Physics.Raycast(cameraRay, out hit, 2f))
+        if (Physics.Raycast(cameraRay, out hit, 3f))
         {
             if (hit.collider.gameObject.GetComponentInParent<IInteractable>() != null)
             {
@@ -199,6 +200,8 @@ public class PlayerController : MonoBehaviour
 
     void OnDash(InputAction.CallbackContext context)
     {
+        float dashForceX = 0;
+        float dashForceZ = 0;
         // TODO: Add dash logic -- initial burst then slows down
         if (context.control == Keyboard.current.wKey)
         {
@@ -216,6 +219,7 @@ public class PlayerController : MonoBehaviour
         {
             Debug.Log("Dash Right");
         }
+
     }
 
     void OnDisable()

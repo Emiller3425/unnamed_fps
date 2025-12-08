@@ -31,7 +31,7 @@ public class BurstGun : Gun
         }
     }
 
-    protected override void AttemptShoot()
+    public override void AttemptShoot()
     {
         if (currentAmmo > 0 && reloadBuffer <= 0f)
         {

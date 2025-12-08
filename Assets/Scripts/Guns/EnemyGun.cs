@@ -13,15 +13,9 @@ using UnityEngine.Rendering.UI;
 using UnityEngine.TextCore.Text;
 using UnityEngine.VFX;
 
-public abstract class Gun : MonoBehaviour
+public abstract class EnemyGun : MonoBehaviour
 {
-    // public GameObject bulletPrefab;
-    public Camera playerCamera;
-    public Crosshairs crosshairs;
-    public HitMarker hitMarker;
     public EntityStats entityStats;
-    public GameObject muzzleFlash;
-    public bool isPlayerGun = false;
     public int magSize = 30;
     public int damage = 10;
     public int currentAmmo;
@@ -32,68 +26,20 @@ public abstract class Gun : MonoBehaviour
     protected float reloadBuffer = 0f;
     protected float fireRateBuffer = 0f;
     protected int maxAmmo;
-    protected InputAction shootAction;
-    protected InputAction reloadAction;
     protected Vector3 muzzleLocation;
     protected Transform muzzleTransform;
-    protected VisualEffect muzzleVFX; 
-    protected virtual void Awake()
-    {
-        // define listeners
-        if (isPlayerGun)
-        {
-            shootAction = InputSystem.actions.FindAction("Attack");
-            reloadAction = InputSystem.actions.FindAction("Reload");
-        }
-    }
-
-    protected void OnEnable()
-    {
-        if (isPlayerGun)
-        {
-            // enable listeners
-            shootAction.Enable();
-            reloadAction.Enable();
-            // subscribe
-            shootAction.started += OnShoot;
-            reloadAction.started += OnReload;
-        }
-    }
-
-    protected virtual void Start()
-    {
-        muzzleTransform = transform.Find("Muzzle");
-
-        if (muzzleFlash != null)
-        {
-            muzzleVFX = muzzleFlash.GetComponent<VisualEffect>();
-        }
-    }
 
     protected virtual void Update()
     {
-        if (AmmoUIManager.Instance?.ammoUIText == null && isPlayerGun)
-        {
-            AmmoUIManager.Instance.UpdateAmmoUI(currentMag, currentAmmo);
-        }
         // decriment reload and firerate buffers if they exist 
         if (reloadBuffer > 0f)
         {
             reloadBuffer -= Time.deltaTime;
         }
         // Update Ammo UI only after reload is complete
-        else if (isPlayerGun)
-        {
-            AmmoUIManager.Instance?.UpdateAmmoUI(currentMag, currentAmmo);
-        }
         if (fireRateBuffer > 0f)
         {
             fireRateBuffer -= Time.deltaTime;
-        }
-        if (muzzleTransform != null && muzzleFlash != null)
-        {
-            muzzleFlash.transform.position = muzzleTransform.position;
-            muzzleFlash.transform.rotation = muzzleTransform.rotation;
         }
     }
 
@@ -132,21 +78,16 @@ public abstract class Gun : MonoBehaviour
             Vector3 rayDirection = CalculateRay();
             // Play Gunshot
             FindAnyObjectByType<AudioManager>().Play("gunshot");
-            // Handle Muzzle Flash
-            if (muzzleVFX != null)
-            {
-                muzzleVFX.Play();
-            }
             currentMag--;
             fireRateBuffer = maxFireRateBuffer;
             AmmoUIManager.Instance.UpdateAmmoUI(currentMag, currentAmmo);
         } 
     }
 
+    // TODO: Fix the fucking calculate ray, we might want to use projectiles from enemies
     protected Vector3 CalculateRay()
     {
-        Vector3 crossHairScreenPosition = crosshairs.transform.position;
-        Ray cameraRay = playerCamera.ScreenPointToRay(crossHairScreenPosition);
+        Ray cameraRay = new Ray(muzzleTransform.position, muzzleTransform.forward);
 
         RaycastHit hit;
 
@@ -157,12 +98,6 @@ public abstract class Gun : MonoBehaviour
                 damageable.ApplyDamage(damage);
                 EnemyController enemyController = hit.collider.gameObject.GetComponent<EnemyController>();
                 enemyController.PlayBloodSplatter(hit);
-                if (isPlayerGun)
-                {
-                    // not awaited because hit marker is not used in anything else within this fucntion call
-                    hitMarker.ShowHitMarker();
-                    FindAnyObjectByType<AudioManager>().Play("hitmarker");
-                }
             }
             return (hit.point - muzzleLocation).normalized;
         }
@@ -180,32 +115,7 @@ public abstract class Gun : MonoBehaviour
         if (reloadBuffer > 0f)
             return;
         
-        // Reload player mag if is less than max and we have ammo in reserves
-        if (currentAmmo > 0 && currentMag < magSize && reloadBuffer <= 0f && isPlayerGun)
-        {
-            reloadBuffer = maxReloadBuffer;
-            currentAmmo -= (magSize - currentMag);
-            currentMag = magSize;
-            FindAnyObjectByType<AudioManager>().Play("reload");
-        }
-        // Enemy reload infinite ammo
-        else
-        {
             reloadBuffer = maxReloadBuffer;
             currentMag = magSize;
-        }
-    }
-
-    // disable InputSystem subscriptions
-    protected void OnDisable()
-    {
-        // unsubscribe and disable listeners
-        if (isPlayerGun)
-        {
-            shootAction.started -= OnShoot;
-            reloadAction.started -= OnReload;
-            shootAction.Disable();
-            reloadAction.Disable();
-        }
     }
 }

@@ -5,11 +5,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
+using UnityEngine.VFX;
 
 public enum EnemyState
 {
     IDLE,
-    PATROL,
+    PATROL, 
     ATTACKING,
     RELOADING
 }
@@ -20,19 +21,23 @@ public class EnemyController : MonoBehaviour
     public float walkSpeed = 0.5f;
     public float sprintSpeed = 7f;
     public float lookSpeed = 10f;
+    public GameObject bloodSplatter;
+    public EnemyGun enemyGun;
     private Vector3 movementDirection = Vector3.zero;
     private float rotationX = 0f;
     private float velocityY = 0f;
     private float gravity = 10f;
-    private bool canMove = true;
+     
     private bool canJump = true;
     private CharacterController enemyController;
     private PlayerController playerTarget;
+    private VisualEffect bloodVFX;
 
     void Start()
     {
         enemyController = GetComponent<CharacterController>();
         playerTarget = FindAnyObjectByType<PlayerController>();
+        bloodVFX = bloodSplatter.GetComponent<VisualEffect>();
     }
     void Update()
     {
@@ -47,7 +52,10 @@ public class EnemyController : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(directionToTarget);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, lookSpeed * Time.deltaTime);
             float distanceToPlayer = Vector3.Distance(transform.position, FindAnyObjectByType<PlayerController>().transform.position);
-            // Debug.Log(distanceToPlayer);
+            if (distanceToPlayer < 100f)
+            {
+                // 
+            }
 
             enemyController.Move(forward * Time.deltaTime);
         }
@@ -62,5 +70,17 @@ public class EnemyController : MonoBehaviour
 
         enemyController.Move(movementDirection.y * Vector3.up * Time.deltaTime);
 
+    }
+
+    public CharacterController GetController()
+    {
+        return enemyController;
+    }
+
+    public void PlayBloodSplatter(UnityEngine.RaycastHit hit)
+    {
+        bloodSplatter.transform.position = hit.point;
+        bloodVFX.SetVector3("BloodVelocity", -hit.normal * 2);
+        bloodVFX.Play();
     }
 }

@@ -9,12 +9,20 @@ using UnityEngine.TextCore.Text;
 
 public class PlayerStatsManager : StatsManager
 {
+    public static PlayerStatsManager Instance { get; private set; }
     private int maxExperiencePoints = 100;
     private int experienceToNextLevel;
 
     public override void Awake()
     {
         base.Awake();
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        } else
+        {
+            Instance = this;
+        }
         experienceToNextLevel = maxExperiencePoints;
     }
 

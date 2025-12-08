@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 
@@ -12,22 +13,27 @@ public class PlayerViewBobbing : MonoBehaviour
 {
     public Crosshairs crosshairs;
     public ViewBobbingPivotPosition viewBobbingPivotPosition;
+    public CharacterController playerController;
     private Vector3 pivotPoint;
     private Vector3 localOffset;
     private float viewBobbingSpeed;
     private float adsViewBobbingSpeed;
     private float sprintViewBobbingSpeed;
+    private float jumpViewBobbingSpeed;
     private float effectHeight;
     private float adsEffectHeight;
     private float sprintEffectHeight;
+    private float jumpEffectHeight;
     private float effectWidth;
     private float adsEffectWidth;
     private float sprintEffectWidth;
+    private float jumpEffectWidth;
     private float sinTime;
     private bool adsEnabled = false;
     private InputAction moveAction;
     private InputAction aimAction;
     private InputAction sprintAction;
+    private InputAction jumpAction;
     void Awake()
     {
         moveAction = InputSystem.actions.FindAction("Move");
@@ -59,6 +65,10 @@ public class PlayerViewBobbing : MonoBehaviour
         sprintEffectHeight = 0.2f;
         sprintEffectWidth = 0.25f;
 
+        jumpViewBobbingSpeed = 0.8f;
+        jumpEffectHeight = 0.3f;
+        jumpEffectWidth = 0;
+
     }
 
     void Update()
@@ -69,6 +79,10 @@ public class PlayerViewBobbing : MonoBehaviour
         {
             // pivotPoint = Camera.main.transform.position;
             localOffset = CalculateViewBobbingOffset(adsEffectHeight, adsEffectWidth, adsViewBobbingSpeed);
+        }
+        else if (!playerController.isGrounded)
+        {
+            localOffset = CalculateViewBobbingOffset(jumpEffectHeight, jumpEffectWidth, jumpViewBobbingSpeed);
         }
         else if (sprintAction.IsPressed())
         {
