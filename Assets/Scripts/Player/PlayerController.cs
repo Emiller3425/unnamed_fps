@@ -20,14 +20,15 @@ public class PlayerController : MonoBehaviour
     public float crouchSpeed = 3f;
     public float lookSpeed = 0.6f;
     public float adsLookSpeed = 0.3f;
-    public float jumpHeight = 5f;
+    public float jumpHeight = 4f;
     public Vector3 movementDirection = Vector3.zero;
     public bool isSprinting = false;
     public bool isCrouched = false;
+    public Animator animator;
     private CharacterController characterController;
+    public bool canJump = true;
     private float rotationX = 0f;
     private bool canMove = true;
-    private bool canJump = true;
     private bool adsEnabled = false;
     private float velocityY = 0f;
     private float velocityX = 0f;
@@ -96,24 +97,24 @@ public class PlayerController : MonoBehaviour
             float speedX = moveValue.x * (crouchAction.IsPressed() && characterController.isGrounded ? crouchSpeed : adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() && characterController.isGrounded ? sprintSpeed : walkSpeed));
             float speedY = moveValue.y * (crouchAction.IsPressed() && characterController.isGrounded ? crouchSpeed : adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() && characterController.isGrounded ? sprintSpeed : walkSpeed));
 
-            isCrouched = (crouchAction.IsPressed() ? true : false);
-            isSprinting = (sprintAction.IsPressed() ? true : false);
+            isCrouched = crouchAction.IsPressed();
+            isSprinting = sprintAction.IsPressed();
 
             movementDirection = (right * speedX) + (forward * speedY);
 
             if (moveValue != Vector2.zero)
             {
-                if (walkingStepNoiseBuffer <= 0f && !sprintAction.IsPressed() && characterController.isGrounded)
+                if (walkingStepNoiseBuffer <= 0f && (crouchAction.IsPressed() || !sprintAction.IsPressed()) && characterController.isGrounded)
                 {
                     FindAnyObjectByType<AudioManager>().Play("footstep");
                     walkingStepNoiseBuffer = 0.5f;
                     sprintingStepNoiseBuffer = 0.4f;
                 }
-                else if (sprintingStepNoiseBuffer <= 0f && sprintAction.IsPressed() && characterController.isGrounded)
+                else if (sprintingStepNoiseBuffer <= 0f && sprintAction.IsPressed() && !crouchAction.IsPressed() && characterController.isGrounded)
                 {
                     FindAnyObjectByType<AudioManager>().Play("footstep");
-                    sprintingStepNoiseBuffer = 0.4f;
                     walkingStepNoiseBuffer = 0.5f;
+                    sprintingStepNoiseBuffer = 0.4f;
                 }
             }
 
@@ -151,7 +152,6 @@ public class PlayerController : MonoBehaviour
             // handle camera height for crouching
             if (crouchAction.IsPressed() && characterController.isGrounded)
             {
-                isCrouched = true;
                 playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, (Vector3.up * characterController.height / 2f - new Vector3(0f, 1f, 0f)), 0.1f);
             }
             else

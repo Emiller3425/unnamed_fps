@@ -141,7 +141,6 @@ public abstract class Gun : MonoBehaviour
             if (animator != null)
             {
                 animator.SetTrigger("Shoot");
-                Debug.Log("shoot animation");
             }
             currentMag--;
             fireRateBuffer = maxFireRateBuffer;
@@ -202,7 +201,7 @@ public abstract class Gun : MonoBehaviour
             FindAnyObjectByType<AudioManager>().Play("reload");
         }
         // Enemy reload infinite ammo
-        else
+        else if (!isPlayerGun)
         {
             reloadBuffer = maxReloadBuffer;
             currentMag = magSize;
