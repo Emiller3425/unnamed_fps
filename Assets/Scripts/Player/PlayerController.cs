@@ -22,12 +22,13 @@ public class PlayerController : MonoBehaviour
     public float adsLookSpeed = 0.3f;
     public float jumpHeight = 5f;
     public Vector3 movementDirection = Vector3.zero;
+    public bool isSprinting = false;
+    public bool isCrouched = false;
     private CharacterController characterController;
     private float rotationX = 0f;
     private bool canMove = true;
     private bool canJump = true;
     private bool adsEnabled = false;
-    private bool isCrouched = false;
     private float velocityY = 0f;
     private float velocityX = 0f;
     private float velocityZ = 0f;
@@ -94,6 +95,9 @@ public class PlayerController : MonoBehaviour
             // Get movement speeds
             float speedX = moveValue.x * (crouchAction.IsPressed() && characterController.isGrounded ? crouchSpeed : adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() && characterController.isGrounded ? sprintSpeed : walkSpeed));
             float speedY = moveValue.y * (crouchAction.IsPressed() && characterController.isGrounded ? crouchSpeed : adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() && characterController.isGrounded ? sprintSpeed : walkSpeed));
+
+            isCrouched = (crouchAction.IsPressed() ? true : false);
+            isSprinting = (sprintAction.IsPressed() ? true : false);
 
             movementDirection = (right * speedX) + (forward * speedY);
 

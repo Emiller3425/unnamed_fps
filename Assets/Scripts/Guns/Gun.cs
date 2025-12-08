@@ -198,7 +198,7 @@ public abstract class Gun : MonoBehaviour
             } else
             {
                currentMag = magSize; 
-            // }
+            }
             FindAnyObjectByType<AudioManager>().Play("reload");
         }
         // Enemy reload infinite ammo
