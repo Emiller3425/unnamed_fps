@@ -21,6 +21,7 @@ public abstract class Gun : MonoBehaviour
     public HitMarker hitMarker;
     public EntityStats entityStats;
     public GameObject muzzleFlash;
+    public Animator animator;
     public bool isPlayerGun = false;
     public int magSize = 30;
     public int damage = 10;
@@ -137,6 +138,11 @@ public abstract class Gun : MonoBehaviour
             {
                 muzzleVFX.Play();
             }
+            if (animator != null)
+            {
+                animator.SetTrigger("Shoot");
+                Debug.Log("shoot animation");
+            }
             currentMag--;
             fireRateBuffer = maxFireRateBuffer;
             AmmoUIManager.Instance.UpdateAmmoUI(currentMag, currentAmmo);
@@ -185,7 +191,14 @@ public abstract class Gun : MonoBehaviour
         {
             reloadBuffer = maxReloadBuffer;
             currentAmmo -= (magSize - currentMag);
-            currentMag = magSize;
+            if (currentAmmo < 0)
+            {
+                currentMag = magSize + currentAmmo;
+                currentAmmo = 0;
+            } else
+            {
+               currentMag = magSize; 
+            // }
             FindAnyObjectByType<AudioManager>().Play("reload");
         }
         // Enemy reload infinite ammo

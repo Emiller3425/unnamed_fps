@@ -25,11 +25,9 @@ public class PlayerAnimationController : AnimationController
     {
         if (playerController.movementDirection.x == 0f && playerController.movementDirection.z == 0f)
         {
-            Debug.Log("Idle");
             animator.SetFloat("Speed", 0f, 0.2f, Time.deltaTime);
         } else
         {
-            Debug.Log("Walk");
             animator.SetFloat("Speed", 1f, 0.2f, Time.deltaTime);
         }
         // TODO: Add sprinting, crouching, jumping, shooting
