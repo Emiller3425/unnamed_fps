@@ -16,30 +16,31 @@ public class HitMarker : MonoBehaviour
     {
         hitMarkerRectTransform = GetComponent<RectTransform>();
         hitMarkerRectTransform.anchoredPosition = Vector2.zero;
-        HideHitMarker();
+        GameEvents.current.OnSetHitMarkerActivated += SetHitMarkerActivated;
+        GameEvents.current.OnSetHitMarkerDeactivated += SetHitMarkerDeactivated;
     }
 
     void Start()
     {
-        hitMarkerRectTransform = GetComponent<RectTransform>();
-        hitMarkerRectTransform.anchoredPosition = Vector2.zero;
+        SetHitMarkerDeactivated();
     }
 
-    public async void ShowHitMarker()
+    public async void SetHitMarkerActivated()
     {
         gameObject.SetActive(true);
         await Task.Delay(75);
-        HideHitMarker();
+        SetHitMarkerDeactivated();
     }
 
-    public void HideHitMarker()
+    public void SetHitMarkerDeactivated()
     {
         gameObject.SetActive(false);
     }
 
-    public void SetPosition(Vector2 newPosition)
+    private void OnDestroy()
     {
-        hitMarkerRectTransform.anchoredPosition = newPosition;
+        GameEvents.current.OnSetHitMarkerActivated -= SetHitMarkerActivated;
+        GameEvents.current.OnSetHitMarkerDeactivated -= SetHitMarkerDeactivated;
     }
 
 }

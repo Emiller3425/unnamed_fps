@@ -120,11 +120,11 @@ public class PlayerViewBobbing : MonoBehaviour
         viewBobbingPivotPosition.adsEnabled = adsEnabled;
         if (adsEnabled)
         {
-            crosshairs.HideCrosshairs();
+            GameEvents.current.SetCrossHairDeactivated();
         }
         else
         {
-            crosshairs.ShowCrosshairs();
+            crosshairs.SetCrossHairActivated();
         }
 
     }

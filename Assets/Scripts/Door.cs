@@ -15,7 +15,7 @@ public class Door : MonoBehaviour, IInteractable
     private float targetRotation = 0f;
     private bool isDoorClosed = true;
 
-    void Update()
+    private void Update()
     {
         Quaternion target = Quaternion.Euler(0f, targetRotation, 0f);
 

@@ -17,27 +17,29 @@ public class Crosshairs : MonoBehaviour
     {
         crossHairRectTransform = GetComponent<RectTransform>();
         crossHairRectTransform.anchoredPosition = Vector2.zero;
+        GameEvents.current.OnSetCrossHairActivated += SetCrossHairActivated;
+        GameEvents.current.OnSetCrossHairDeactivated += SetCrossHairDeactivated;
     }
 
-    void Start()
-    {
-        crossHairRectTransform = GetComponent<RectTransform>();
-        crossHairRectTransform.anchoredPosition = Vector2.zero;
-    }
-
-    public void ShowCrosshairs()
+    public void SetCrossHairActivated()
     {
         gameObject.SetActive(true);
     }
 
-    public void HideCrosshairs()
+    public void SetCrossHairDeactivated()
     {
         gameObject.SetActive(false);
     }
 
-    public void SetPosition(Vector2 newPosition)
+    public void SetCrossHairPosition(Vector2 newPosition)
     {
         crossHairRectTransform.anchoredPosition = newPosition;
+    }
+
+    private void OnDestoy()
+    {
+        GameEvents.current.OnSetCrossHairActivated -= SetCrossHairActivated;
+        GameEvents.current.OnSetCrossHairDeactivated -= SetCrossHairDeactivated;
     }
 
 }

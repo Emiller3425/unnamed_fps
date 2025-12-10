@@ -21,7 +21,6 @@ public class EnemyController : MonoBehaviour
     public float walkSpeed = 0.5f;
     public float sprintSpeed = 7f;
     public float lookSpeed = 10f;
-    public GameObject bloodSplatter;
     public EnemyGun enemyGun;
     private Vector3 movementDirection = Vector3.zero;
     private float rotationX = 0f;
@@ -37,7 +36,6 @@ public class EnemyController : MonoBehaviour
     {
         enemyController = GetComponent<CharacterController>();
         playerTarget = FindAnyObjectByType<PlayerController>();
-        bloodVFX = bloodSplatter.GetComponent<VisualEffect>();
     }
     void Update()
     {
@@ -54,7 +52,7 @@ public class EnemyController : MonoBehaviour
             float distanceToPlayer = Vector3.Distance(transform.position, FindAnyObjectByType<PlayerController>().transform.position);
             if (distanceToPlayer < 100f)
             {
-                // 
+                // Enemy Movemement Logic
             }
 
             enemyController.Move(forward * Time.deltaTime);
@@ -79,8 +77,6 @@ public class EnemyController : MonoBehaviour
 
     public void PlayBloodSplatter(UnityEngine.RaycastHit hit)
     {
-        bloodSplatter.transform.position = hit.point;
-        bloodVFX.SetVector3("BloodVelocity", -hit.normal * 2);
-        bloodVFX.Play();
+        GameEvents.current.PlayVFX("bloodSplatter", hit.point, hit.normal * 2);
     }
 }

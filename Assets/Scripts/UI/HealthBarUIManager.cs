@@ -31,14 +31,16 @@ public class HealthBarUIManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        GameEvents.current.OnHealthAdded += HealthAdded;
+        GameEvents.current.OnHealthSubtracted += HealthSubtracted;
     }
 
-    public void ApplyDamage(float damage, float maxHealth, float currentHealth)
+    private void HealthAdded(float damage, float maxHealth, float currentHealth)
     {
         currentHealth -= damage;
         ApplyToGreen(maxHealth, currentHealth);
     }
-    public void ApplyHealing(float healing, float maxHealth, float currentHealth)
+    private void HealthSubtracted(float healing, float maxHealth, float currentHealth)
     {
         currentHealth += healing;
         if (currentHealth > maxHealth)
@@ -48,8 +50,14 @@ public class HealthBarUIManager : MonoBehaviour
         ApplyToGreen(maxHealth, currentHealth);
     }
 
-    void ApplyToGreen(float maxHealth, float currentHealth)
+    private void ApplyToGreen(float maxHealth, float currentHealth)
     {
         greenRectTransform.sizeDelta = new Vector2(currentHealth / maxHealth * greenWidthMax, greenRectTransform.rect.height);
+    }
+
+    private void OnDestroy()
+    {
+        GameEvents.current.OnHealthAdded -= HealthAdded;
+        GameEvents.current.OnHealthSubtracted -= HealthSubtracted;
     }
 }

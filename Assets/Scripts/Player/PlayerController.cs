@@ -45,8 +45,9 @@ public class PlayerController : MonoBehaviour
     private InputAction crouchAction;
     private InputAction aimAction;
     private InputAction interactAction;
+    private InputAction emoteAction;
 
-    void Awake()
+    private void Awake()
     {
         moveAction = InputSystem.actions.FindAction("Move");
         dashAction = InputSystem.actions.FindAction("Dash");
@@ -56,10 +57,8 @@ public class PlayerController : MonoBehaviour
         crouchAction = InputSystem.actions.FindAction("Crouch");
         aimAction = InputSystem.actions.FindAction("Aim");
         interactAction = InputSystem.actions.FindAction("Interact");
-    }
+        emoteAction = InputSystem.actions.FindAction("Emote");
 
-    void OnEnable()
-    {
         moveAction.Enable();
         dashAction.Enable();
         lookAction.Enable();
@@ -68,21 +67,24 @@ public class PlayerController : MonoBehaviour
         jumpAction.Enable();
         aimAction.Enable();
         interactAction.Enable();
+        emoteAction.Enable();
         // subscribe to function for immediately response on jump
         jumpAction.started += OnJump;
         dashAction.performed += OnDash;
         aimAction.started += OnAim;
         interactAction.started += OnInteract;
+        emoteAction.started += OnEmote;
     }
 
-    void Start()
+    private void Start()
     {
+        // Game Events
         characterController = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-    void Update()
+    private void Update()
     {
         // movement logic
         if (canMove)
@@ -106,13 +108,13 @@ public class PlayerController : MonoBehaviour
             {
                 if (walkingStepNoiseBuffer <= 0f && (crouchAction.IsPressed() || !sprintAction.IsPressed()) && characterController.isGrounded)
                 {
-                    FindAnyObjectByType<AudioManager>().Play("footstep");
+                    GameEvents.current.PlaySFX("footstep");
                     walkingStepNoiseBuffer = 0.5f;
                     sprintingStepNoiseBuffer = 0.4f;
                 }
                 else if (sprintingStepNoiseBuffer <= 0f && sprintAction.IsPressed() && !crouchAction.IsPressed() && characterController.isGrounded)
                 {
-                    FindAnyObjectByType<AudioManager>().Play("footstep");
+                    GameEvents.current.PlaySFX("footstep");
                     walkingStepNoiseBuffer = 0.5f;
                     sprintingStepNoiseBuffer = 0.4f;
                 }
@@ -162,7 +164,7 @@ public class PlayerController : MonoBehaviour
             transform.Rotate((adsEnabled ? adsLookSpeed : lookSpeed) * lookValue.x * Vector3.up);
         }
     }
-    GameObject GetInteractionObject()
+    private GameObject GetInteractionObject()
     {
         Ray cameraRay = new Ray(playerCamera.transform.position, playerCamera.transform.forward);
         RaycastHit hit;
@@ -178,17 +180,16 @@ public class PlayerController : MonoBehaviour
         return null;
     }
     
-    void OnInteract(InputAction.CallbackContext context)
+    private void OnInteract(InputAction.CallbackContext context)
     {
         GameObject interactObject = GetInteractionObject();
         if (interactObject != null)
         {
-            interactObject.GetComponentInParent<Door>().HandleInteract();
+            interactObject.GetComponentInParent<IInteractable>().HandleInteract();
         }
-
     }
 
-    void OnJump(InputAction.CallbackContext context)
+    private void OnJump(InputAction.CallbackContext context)
     {
         if (canJump)
         {
@@ -197,12 +198,17 @@ public class PlayerController : MonoBehaviour
         }
     }
     
-    void OnAim(InputAction.CallbackContext context)
+    private void OnAim(InputAction.CallbackContext context)
     {
         adsEnabled = !adsEnabled;
     }
 
-    void OnDash(InputAction.CallbackContext context)
+    private void OnEmote(InputAction.CallbackContext context)
+    {
+        animator.SetTrigger("Emote");
+    }
+
+    private void OnDash(InputAction.CallbackContext context)
     {
         float dashForceX = 0;
         float dashForceZ = 0;
@@ -226,17 +232,27 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    void OnDisable()
+    private void OnDestroy()
     {
         moveAction.Disable();
         lookAction.Disable();
         sprintAction.Disable();
+        crouchAction.Disable();
 
         jumpAction.started -= OnJump;
         jumpAction.Disable();
 
         dashAction.performed -= OnDash;
         dashAction.Disable();
+
+        aimAction.started -= OnAim;
+        aimAction.Disable();
+
+        interactAction.started -= OnInteract;
+        interactAction.Disable();
+
+        emoteAction.started -= OnEmote;
+        emoteAction.Disable();
     }
 
 }

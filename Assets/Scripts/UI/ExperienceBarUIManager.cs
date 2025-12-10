@@ -17,7 +17,7 @@ public class ExperienceBarUIManager : MonoBehaviour
     public static ExperienceBarUIManager Instance { get; private set; }
     public RectTransform blueRectTransform;
     private float blueWidthMax;
-    void Awake()
+    private void Awake()
     {
         Transform blueTransform = transform.Find("Blue");
         blueRectTransform = blueTransform.GetComponentInChildren<RectTransform>();
@@ -31,15 +31,22 @@ public class ExperienceBarUIManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        GameEvents.current.OnExperienceAdded += ExperienceAdded;
     }
 
-    public void AddExperiencePoints(float maxExperiencePoints, float currentExperiencePoints)
+    private void ExperienceAdded(float maxExperiencePoints, float currentExperiencePoints)
     {
         ApplyToBlue(maxExperiencePoints, currentExperiencePoints);
     }
 
-    void ApplyToBlue(float maxExperiencePoints, float currentExperiencePoints)
+    private void ApplyToBlue(float maxExperiencePoints, float currentExperiencePoints)
     {
         blueRectTransform.sizeDelta = new Vector2(currentExperiencePoints / maxExperiencePoints * blueWidthMax, blueRectTransform.rect.height);
+    }
+
+    private void OnDestroy()
+    {
+        GameEvents.current.OnExperienceAdded -= ExperienceAdded;
     }
 }

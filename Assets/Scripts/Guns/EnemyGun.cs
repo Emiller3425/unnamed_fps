@@ -77,10 +77,9 @@ public abstract class EnemyGun : MonoBehaviour
             // get ray for bullet
             Vector3 rayDirection = CalculateRay();
             // Play Gunshot
-            FindAnyObjectByType<AudioManager>().Play("gunshot");
+            GameEvents.current.PlaySFX("gunshot");
             currentMag--;
             fireRateBuffer = maxFireRateBuffer;
-            AmmoUIManager.Instance.UpdateAmmoUI(currentMag, currentAmmo);
         } 
     }
 
