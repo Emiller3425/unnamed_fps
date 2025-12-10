@@ -1,7 +1,5 @@
 // TODO: Fix blood vfx
 // TODO: Define Animation Events
-// TODO: Define UI Events
-
 
 using System;
 using System.Collections;

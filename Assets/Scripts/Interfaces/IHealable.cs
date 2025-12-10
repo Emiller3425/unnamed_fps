@@ -1,4 +1,4 @@
 public interface IHealable
 {
-    void ApplyHealing(float healing);
+    void HealthAdded(float healing);
 }

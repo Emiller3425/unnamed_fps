@@ -26,7 +26,6 @@ public class EnemyController : MonoBehaviour
     private float rotationX = 0f;
     private float velocityY = 0f;
     private float gravity = 10f;
-     
     private bool canJump = true;
     private CharacterController enemyController;
     private PlayerController playerTarget;

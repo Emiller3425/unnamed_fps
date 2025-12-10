@@ -33,12 +33,12 @@ public class StatsManager : MonoBehaviour, IDamageable, IHealable
         maxRifleAmmo = entityStats.GetMaxRifleAmmo();
     }
 
-    public virtual void ApplyDamage(float damage)
+    public virtual void HealthSubtracted(float damage)
     {
         currentHealth -= damage;
     }
 
-    public virtual void ApplyHealing(float healing)
+    public virtual void HealthAdded(float healing)
     {
         currentHealth += healing;
         if (currentHealth > entityStats.GetMaxHealth())

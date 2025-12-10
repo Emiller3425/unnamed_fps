@@ -26,28 +26,29 @@ public class PlayerStatsManager : StatsManager
         experienceToNextLevel = maxExperiencePoints;
     }
 
-    // initializes experience bar percentage filled on load
+    // initializes player UI based on stats on load
     private void Start()
     {
-        AddExperiencePoints(0);
+        ExperienceAdded(0);
+        HealthAdded(0);
     }
 
-    public override void ApplyDamage(float damage)
+    public override void HealthSubtracted(float damage)
     {
-        base.ApplyDamage(damage);
-        GameEvents.current.HealthSubtracted(damage, entityStats.GetCurrentHealth(), currentHealth);
+        base.HealthSubtracted(damage);
+        GameEvents.current.HealthSubtracted(damage, entityStats.GetMaxHealth(), currentHealth);
         if (currentHealth <= 0f)
         {
             Destroy(gameObject);
         }
     }
-    public override void ApplyHealing(float healing)
+    public override void HealthAdded(float healing)
     {
-        base.ApplyHealing(healing);
-        GameEvents.current.HealthAdded(healing, entityStats.GetCurrentHealth(), currentHealth);
+        base.HealthAdded(healing);
+        GameEvents.current.HealthAdded(healing, entityStats.GetMaxHealth(), currentHealth);
     }
 
-    public void AddExperiencePoints(int experience)
+    public void ExperienceAdded(int experience)
     {
         experienceToNextLevel -= experience;
         if (experienceToNextLevel <= 0)
@@ -65,7 +66,7 @@ public class PlayerStatsManager : StatsManager
         }
         IncreaseStatsOnLevelUp(experienceOver);
         if (experienceOver > 0)
-            AddExperiencePoints(experienceOver);
+            ExperienceAdded(experienceOver);
     }
 
     public void IncreaseStatsOnLevelUp(int experienceOver)

@@ -35,18 +35,21 @@ public class HealthBarUIManager : MonoBehaviour
         GameEvents.current.OnHealthSubtracted += HealthSubtracted;
     }
 
-    private void HealthAdded(float damage, float maxHealth, float currentHealth)
+    private void HealthAdded(float healing, float maxHealth, float currentHealth)
     {
-        currentHealth -= damage;
-        ApplyToGreen(maxHealth, currentHealth);
-    }
-    private void HealthSubtracted(float healing, float maxHealth, float currentHealth)
-    {
+         Debug.Log("Update Player Health On Load");
+         Debug.Log($"{healing} {maxHealth} {currentHealth}");
         currentHealth += healing;
         if (currentHealth > maxHealth)
         {
             currentHealth = maxHealth;
         }
+        ApplyToGreen(maxHealth, currentHealth);
+    }
+
+    private void HealthSubtracted(float damage, float maxHealth, float currentHealth)
+    {
+        currentHealth -= damage;
         ApplyToGreen(maxHealth, currentHealth);
     }
 
