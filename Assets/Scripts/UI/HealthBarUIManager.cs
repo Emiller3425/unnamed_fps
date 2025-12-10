@@ -37,8 +37,6 @@ public class HealthBarUIManager : MonoBehaviour
 
     private void HealthAdded(float healing, float maxHealth, float currentHealth)
     {
-         Debug.Log("Update Player Health On Load");
-         Debug.Log($"{healing} {maxHealth} {currentHealth}");
         currentHealth += healing;
         if (currentHealth > maxHealth)
         {
