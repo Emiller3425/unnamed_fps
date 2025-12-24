@@ -76,6 +76,6 @@ public class EnemyController : MonoBehaviour
 
     public void PlayBloodSplatter(UnityEngine.RaycastHit hit)
     {
-        GameEvents.current.PlayVFX("bloodSplatter", hit.point, hit.normal * 2);
+        GameEvents.current.PlayVFX("bloodSplatter", hit.point, hit.normal * 2, null);
     }
 }

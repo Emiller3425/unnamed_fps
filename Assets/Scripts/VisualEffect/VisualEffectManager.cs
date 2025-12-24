@@ -24,11 +24,17 @@ public class VisualEffectManager : MonoBehaviour
         GameEvents.current.OnPlayVFX += Play;
     }
 
-    private void Play(string name, Vector3 position, Vector3 velocity)
+    private void Play(string name, Vector3 position, Vector3 velocity, Transform sourceToFollow)
     {
         if (effectLookup.TryGetValue(name, out VisualEffectItem effectItem))
         {
+            if (sourceToFollow != null)
+            {
+                position = sourceToFollow.position;
+            }
+
             GameObject vfxObject = Instantiate(effectItem.prefab, position, Quaternion.identity);
+
             if (vfxObject.TryGetComponent<VisualEffect>(out var vfx))
             if (velocity != Vector3.zero)
                 {
@@ -38,7 +44,26 @@ public class VisualEffectManager : MonoBehaviour
                 vfx.Play();
             }
             Destroy(vfxObject, vfx.GetFloat("EffectMaxDuration"));
+
+            FollowSource(vfxObject, sourceToFollow, vfx.GetFloat("EffectMaxDuration"));
         }
+    }
+
+    private void FollowSource(GameObject vfxObject, Transform sourceToFollow, float duration)
+    {
+        if (sourceToFollow != null)
+        {
+            
+            if (vfxObject.TryGetComponent<VisualEffectFollower>(out var follower) == false)
+            {
+                follower = vfxObject.AddComponent<VisualEffectFollower>();
+            }
+
+            follower.SetTarget(sourceToFollow);
+
+            Destroy(vfxObject, duration);
+        }
+        Destroy(vfxObject, duration);
     }
 
     private void OnDestroy()

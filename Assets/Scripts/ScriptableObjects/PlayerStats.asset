@@ -12,7 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0616ac70d8a17a74c9e638d0e5e67470, type: 3}
   m_Name: PlayerStats
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStats
-  health: 100
-  pistolAmmo: 72
-  machinGunAmmo: 160
-  rifleAmmo: 180
+  currentLevel: 1
+  maxLevel: 100
+  currentHealth: 100
+  maxHealth: 100
+  currentPistolAmmo: 72
+  maxPistolAmmo: 72
+  currentMachineGunAmmo: 160
+  maxMachineGunAmmo: 160
+  currentRifleAmmo: 180
+  maxRifleAmmo: 180

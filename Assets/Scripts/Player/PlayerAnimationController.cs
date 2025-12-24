@@ -35,7 +35,7 @@ public class PlayerAnimationController : AnimationController
                 {
                     animator.SetFloat("Speed", 0.25f, 0.2f, Time.deltaTime);
                 // Sprint
-                } else if (playerController.isSprinting) {
+                } else if (playerController.isSprinting && playerController.canSprint) {
                     animator.SetFloat("Speed", 0.75f, 0.2f, Time.deltaTime);
                 // Walk
                 } else

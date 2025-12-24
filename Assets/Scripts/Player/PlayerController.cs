@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.Runtime.InteropServices;
 using NUnit.Framework;
@@ -26,7 +27,9 @@ public class PlayerController : MonoBehaviour
     public bool isCrouched = false;
     public Animator animator;
     private CharacterController characterController;
+    private CapsuleCollider capsuleCollider;
     public bool canJump = true;
+    public bool canSprint = false;
     private float rotationX = 0f;
     private bool canMove = true;
     private bool adsEnabled = false;
@@ -36,6 +39,9 @@ public class PlayerController : MonoBehaviour
     private float gravity = 10f;
     private float walkingStepNoiseBuffer = 0.5f;
     private float sprintingStepNoiseBuffer = 0.4f;
+    private float capsuleColliderStandHeight = 2f;
+    private float capsuleColliderCrouchHeight = 1f;
+    private Dictionary<string, int> movementValues;
     // new input system
     private InputAction moveAction;
     private InputAction dashAction;
@@ -49,6 +55,14 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        movementValues = new Dictionary<string, int>
+        {
+            {"w", 0},
+            {"a", 0},
+            {"s", 0},
+            {"d", 0},
+        };
+
         moveAction = InputSystem.actions.FindAction("Move");
         dashAction = InputSystem.actions.FindAction("Dash");
         lookAction = InputSystem.actions.FindAction("Look");
@@ -80,6 +94,7 @@ public class PlayerController : MonoBehaviour
     {
         // Game Events
         characterController = GetComponent<CharacterController>();
+        capsuleCollider = GetComponent<CapsuleCollider>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -91,28 +106,31 @@ public class PlayerController : MonoBehaviour
         {
             // Get WASD
             Vector2 moveValue = moveAction.ReadValue<Vector2>();
+            canSprint = moveValue.y > 0.1f;
 
             Vector3 right = transform.TransformDirection(Vector3.right);
             Vector3 forward = transform.TransformDirection(Vector3.forward);
 
             // Get movement speeds
-            float speedX = moveValue.x * (crouchAction.IsPressed() && characterController.isGrounded ? crouchSpeed : adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() && characterController.isGrounded ? sprintSpeed : walkSpeed));
-            float speedY = moveValue.y * (crouchAction.IsPressed() && characterController.isGrounded ? crouchSpeed : adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() && characterController.isGrounded ? sprintSpeed : walkSpeed));
+            float speedX = moveValue.x * (crouchAction.IsPressed() && characterController.isGrounded ? crouchSpeed : adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() && characterController.isGrounded && canSprint ? sprintSpeed : walkSpeed));
+            float speedY = moveValue.y * (crouchAction.IsPressed() && characterController.isGrounded ? crouchSpeed : adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() && characterController.isGrounded && canSprint ? sprintSpeed : walkSpeed));
 
             isCrouched = crouchAction.IsPressed();
             isSprinting = sprintAction.IsPressed();
 
             movementDirection = (right * speedX) + (forward * speedY);
 
-            if (moveValue != Vector2.zero)
+            if (moveValue != Vector2.zero)  
             {
-                if (walkingStepNoiseBuffer <= 0f && (crouchAction.IsPressed() || !sprintAction.IsPressed()) && characterController.isGrounded)
+                // crouch
+                if (walkingStepNoiseBuffer <= 0f && (crouchAction.IsPressed() || !sprintAction.IsPressed() || !canSprint) && characterController.isGrounded)
                 {
                     GameEvents.current.PlaySFX("footstep");
                     walkingStepNoiseBuffer = 0.5f;
                     sprintingStepNoiseBuffer = 0.4f;
                 }
-                else if (sprintingStepNoiseBuffer <= 0f && sprintAction.IsPressed() && !crouchAction.IsPressed() && characterController.isGrounded)
+                // sprint
+                else if (sprintingStepNoiseBuffer <= 0f && sprintAction.IsPressed() && !crouchAction.IsPressed() && characterController.isGrounded && canSprint)
                 {
                     GameEvents.current.PlaySFX("footstep");
                     walkingStepNoiseBuffer = 0.5f;
@@ -155,10 +173,12 @@ public class PlayerController : MonoBehaviour
             if (crouchAction.IsPressed() && characterController.isGrounded)
             {
                 playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, (Vector3.up * characterController.height / 2f - new Vector3(0f, 1f, 0f)), 0.1f);
+                capsuleCollider.height = capsuleColliderCrouchHeight;
             }
             else
             {
                 playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, Vector3.up * characterController.height / 2f - new Vector3(0f, 0.5f, 0f), 0.1f);
+                capsuleCollider.height = capsuleColliderStandHeight;
             }
 
             transform.Rotate((adsEnabled ? adsLookSpeed : lookSpeed) * lookValue.x * Vector3.up);

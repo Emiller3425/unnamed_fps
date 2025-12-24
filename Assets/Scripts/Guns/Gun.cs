@@ -126,7 +126,7 @@ public abstract class Gun : MonoBehaviour
             // Play Gunshot
             GameEvents.current.PlaySFX("gunshot");
             // Handle Muzzle Flash
-            GameEvents.current.PlayVFX("glockMuzzleFlash", muzzleTransform.position, Vector3.zero);
+            GameEvents.current.PlayVFX("glockMuzzleFlash", muzzleTransform.position, Vector3.zero, muzzleTransform);
             if (animator != null)
             {
                 animator.SetTrigger("Shoot");
@@ -143,6 +143,8 @@ public abstract class Gun : MonoBehaviour
     protected Vector3 CalculateRay()
     {
         Ray cameraRay = playerCamera.ScreenPointToRay(screenCenter);
+
+        Debug.DrawRay(cameraRay.origin, cameraRay.direction * 100f, Color.red, 0f);
 
         RaycastHit hit;
 

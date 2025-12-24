@@ -1,4 +1,3 @@
-// TODO: Fix blood vfx
 // TODO: Define Animation Events
 
 using System;
@@ -18,7 +17,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action OnReloadStarted;
     public event Action OnReloadFinished;
     public event Action<string> OnPlaySFX;
-    public event Action<string, Vector3, Vector3> OnPlayVFX;
+    public event Action<string, Vector3, Vector3, Transform> OnPlayVFX;
     public event Action<float, float, float> OnHealthAdded;
      public event Action<float, float, float> OnHealthSubtracted;
     public event Action<float, float> OnExperienceAdded;
@@ -42,9 +41,9 @@ public class GameEvents : TemplateMonoBeheavior
     {
         OnPlaySFX?.Invoke(clip);
     }
-    public void PlayVFX(string shader, Vector3 position, Vector3 velocity)
+    public void PlayVFX(string shader, Vector3 position, Vector3 velocity, Transform sourceToFollow)
     {
-        OnPlayVFX?.Invoke(shader, position, velocity);
+        OnPlayVFX?.Invoke(shader, position, velocity, sourceToFollow);
     }
     public void ExperienceAdded(float maxExperiencePoints, float currentExperiencePoints)
     {
