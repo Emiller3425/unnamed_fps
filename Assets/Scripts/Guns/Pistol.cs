@@ -24,4 +24,4 @@ public class Pistol : SemiAutoGun
         // sets currentAmmo to maxAmmo
         base.Start();
     }
-}
+} 

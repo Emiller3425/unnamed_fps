@@ -26,7 +26,7 @@ public class PlayerStatsManager : StatsManager
         experienceToNextLevel = maxExperiencePoints;
     }
 
-    // initializes player UI on load wity correct values
+    // initializes player UI on load with correct values
     private void Start()
     {
         ExperienceAdded(0);
