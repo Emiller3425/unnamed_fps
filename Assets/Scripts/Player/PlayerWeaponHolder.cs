@@ -29,7 +29,7 @@ public class PlayerWeaponHolder : MonoBehaviour
         Debug.Log("swap initiated");
         if (inventory.currentWeapon.name == "Pistol")
         {
-            inventory.EquipWeapon("Pistol2");
+            inventory.EquipWeapon("MachineGun");
         } else
         {
             inventory.EquipWeapon("Pistol");

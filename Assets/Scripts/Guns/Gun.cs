@@ -67,20 +67,6 @@ public abstract class Gun : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (firstUpdate)
-        {
-            GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetPistolAmmo());
-            firstUpdate = false;
-        }
-        if (reloadBuffer > 0f)
-        {
-            reloadBuffer -= Time.deltaTime;
-            if (reloadBuffer <= 0f)
-            {
-                GameEvents.current.ReloadFinished();
-                GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetPistolAmmo());
-            }
-        }
         // decriment reload and firerate buffers if they exist 
         if (fireRateBuffer > 0f)
         {
@@ -116,7 +102,7 @@ public abstract class Gun : MonoBehaviour
     }
 
     // Shoots bullet
-    protected void ShootBullet()
+    protected virtual void ShootBullet()
     {
         if (fireRateBuffer <= 0)
         {
@@ -132,10 +118,6 @@ public abstract class Gun : MonoBehaviour
             }
             currentMag--;
             fireRateBuffer = maxFireRateBuffer;
-            if (isPlayerGun)
-            {
-                GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetPistolAmmo());
-            }
         } 
     }
 

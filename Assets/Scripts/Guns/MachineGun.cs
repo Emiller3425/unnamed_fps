@@ -25,6 +25,25 @@ public class MachineGun : FullAutoGun
         base.Start();
     }
 
+    protected override void Update()
+    {
+        if (firstUpdate)
+        {
+            GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetSMGAmmo());
+            firstUpdate = false;
+        }
+        if (reloadBuffer > 0f)
+        {
+            reloadBuffer -= Time.deltaTime;
+            if (reloadBuffer <= 0f)
+            {
+                GameEvents.current.ReloadFinished();
+                GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetSMGAmmo());
+            }
+        }
+        base.Update();
+    }
+
     protected override void Reload()
     {
         base.Reload();
@@ -49,6 +68,15 @@ public class MachineGun : FullAutoGun
         {
             reloadBuffer = maxReloadBuffer;
             currentMag = magSize;
+        }
+    }
+
+    protected override void ShootBullet()
+    {
+        base.ShootBullet();
+        if (isPlayerGun)
+        {
+            GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetSMGAmmo());
         }
     }
 }

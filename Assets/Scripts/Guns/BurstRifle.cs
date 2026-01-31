@@ -12,7 +12,7 @@ public class BurstRifle : BurstGun
     {
         base.Awake();
         magSize = 35;
-        PlayerStatsManager.Instance.SetPistolAmmo(entityStats.GetCurrentPistolAmmo());
+        PlayerStatsManager.Instance.SetRifleAmmo(entityStats.GetCurrentRifleAmmo());
         currentMag = magSize;
     }
     protected override void Start()
@@ -24,6 +24,26 @@ public class BurstRifle : BurstGun
         // sets currentAmmo to maxAmmo
         base.Start();
     }
+
+    protected override void Update()
+    {
+        if (firstUpdate)
+        {
+            GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetRifleAmmo());
+            firstUpdate = false;
+        }
+        if (reloadBuffer > 0f)
+        {
+            reloadBuffer -= Time.deltaTime;
+            if (reloadBuffer <= 0f)
+            {
+                GameEvents.current.ReloadFinished();
+                GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetRifleAmmo());
+            }
+        }
+        base.Update();
+    }
+
     protected override void Reload()
     {
         base.Reload();
@@ -48,6 +68,15 @@ public class BurstRifle : BurstGun
         {
             reloadBuffer = maxReloadBuffer;
             currentMag = magSize;
+        }
+    }
+
+    protected override void ShootBullet()
+    {
+        base.ShootBullet();
+        if (isPlayerGun)
+        {
+            GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetRifleAmmo());
         }
     }
 }

@@ -26,6 +26,25 @@ public class Pistol : SemiAutoGun
         base.Start();
     }
 
+    protected override void Update()
+    {
+        if (firstUpdate)
+        {
+            GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetPistolAmmo());
+            firstUpdate = false;
+        }
+        if (reloadBuffer > 0f)
+        {
+            reloadBuffer -= Time.deltaTime;
+            if (reloadBuffer <= 0f)
+            {
+                GameEvents.current.ReloadFinished();
+                GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetPistolAmmo());
+            }
+        }
+        base.Update();
+    }
+
     protected override void Reload()
     {
         base.Reload();
@@ -50,6 +69,15 @@ public class Pistol : SemiAutoGun
         {
             reloadBuffer = maxReloadBuffer;
             currentMag = magSize;
+        }
+    }
+
+    protected override void ShootBullet()
+    {
+        base.ShootBullet();
+        if (isPlayerGun)
+        {
+            GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetPistolAmmo());
         }
     }
 } 

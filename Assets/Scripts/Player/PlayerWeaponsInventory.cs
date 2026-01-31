@@ -31,6 +31,7 @@ public class PlayerWeaponInventory : MonoBehaviour
         }
     }
 
+    // TODO: We need to add more flexible logic to the typing of guns, make it ewasier to determine if a gun is a pistol a rifle or an smg -- maybe use an interface?
     public void EquipWeapon(string weaponName)
     {
         if (weaponDictionary.ContainsKey(weaponName))
@@ -41,10 +42,16 @@ public class PlayerWeaponInventory : MonoBehaviour
             }
             currentWeapon = weaponDictionary[weaponName];
             currentWeapon.SetActive(true);
-
-            GameEvents.current.AmmoChanged(currentWeapon.GetComponent<Gun>().currentMag, PlayerStatsManager.Instance.GetPistolAmmo());
-            Debug.Log($"Equipped: {weaponName}");
-            Debug.Log($"{currentWeapon.GetComponent<Gun>().currentMag} +  {PlayerStatsManager.Instance.GetPistolAmmo()}");
+            if (currentWeapon.GetComponent<Pistol>())
+            {
+                GameEvents.current.AmmoChanged(currentWeapon.GetComponent<Gun>().currentMag, PlayerStatsManager.Instance.GetPistolAmmo());
+            } else if (currentWeapon.GetComponent<MachineGun>())
+            {
+                GameEvents.current.AmmoChanged(currentWeapon.GetComponent<Gun>().currentMag, PlayerStatsManager.Instance.GetSMGAmmo());
+            } else if (currentWeapon.GetComponent<BurstRifle>())
+            {
+                GameEvents.current.AmmoChanged(currentWeapon.GetComponent<Gun>().currentMag, PlayerStatsManager.Instance.GetRifleAmmo());
+            }
         }
     }
 
