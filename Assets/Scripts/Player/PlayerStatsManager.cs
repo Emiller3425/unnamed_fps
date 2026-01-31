@@ -58,6 +58,31 @@ public class PlayerStatsManager : StatsManager
         // Update Experience UI
         GameEvents.current.ExperienceAdded(maxExperiencePoints, maxExperiencePoints - experienceToNextLevel);
      }
+    public int GetPistolAmmo()
+    {
+        return currentPistolAmmo;
+    }
+    public void SetPistolAmmo(int ammo)
+    {
+        currentPistolAmmo = ammo;
+    }
+    public int GetSMGAmmo()
+    {
+        return currentSMGAmmo;
+    }
+    public void SetSMGAmmo(int ammo)
+    {
+        currentSMGAmmo = ammo;
+    }
+    public int GetRifleAmmo()
+    {
+        return currentRifleAmmo;
+    }
+    public void SetRifleAmmo(int ammo)
+    {
+        currentRifleAmmo -= ammo;
+    }
+
     public void LevelUp(int experienceOver)
     {
         if (currentLevel < maxLevel)

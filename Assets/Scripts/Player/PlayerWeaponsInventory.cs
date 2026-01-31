@@ -10,8 +10,8 @@ using UnityEngine.TextCore.Text;
 public class PlayerWeaponInventory : MonoBehaviour
 {
     public Transform weaponHolder;
+    public GameObject currentWeapon;
     private Dictionary<string, GameObject> weaponDictionary = new Dictionary<string, GameObject>();
-    private GameObject currentWeapon;
 
     private void Start()
     {
@@ -24,6 +24,7 @@ public class PlayerWeaponInventory : MonoBehaviour
         foreach (Transform child in weaponHolder)
         {
             weaponDictionary.Add(child.name, child.gameObject);
+            Debug.Log(child.name);
 
             // Start with everything turned off
             child.gameObject.SetActive(false);
@@ -41,7 +42,9 @@ public class PlayerWeaponInventory : MonoBehaviour
             currentWeapon = weaponDictionary[weaponName];
             currentWeapon.SetActive(true);
 
+            GameEvents.current.AmmoChanged(currentWeapon.GetComponent<Gun>().currentMag, PlayerStatsManager.Instance.GetPistolAmmo());
             Debug.Log($"Equipped: {weaponName}");
+            Debug.Log($"{currentWeapon.GetComponent<Gun>().currentMag} +  {PlayerStatsManager.Instance.GetPistolAmmo()}");
         }
     }
 

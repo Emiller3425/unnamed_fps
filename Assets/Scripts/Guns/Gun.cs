@@ -23,7 +23,6 @@ public abstract class Gun : MonoBehaviour
     public bool isPlayerGun = false;
     public int magSize = 30;
     public int damage = 10;
-    public int currentAmmo;
     public int currentMag;
     public float maxReloadBuffer = 2f;
     public float maxFireRateBuffer = 0.2f;
@@ -47,7 +46,7 @@ public abstract class Gun : MonoBehaviour
         }
     }
 
-    protected void OnEnable()
+    protected virtual void OnEnable()
     {
         if (isPlayerGun)
         {
@@ -70,19 +69,19 @@ public abstract class Gun : MonoBehaviour
     {
         if (firstUpdate)
         {
-            GameEvents.current.AmmoChanged(currentMag, currentAmmo);
+            GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetPistolAmmo());
             firstUpdate = false;
         }
-        // decriment reload and firerate buffers if they exist 
         if (reloadBuffer > 0f)
         {
             reloadBuffer -= Time.deltaTime;
             if (reloadBuffer <= 0f)
             {
                 GameEvents.current.ReloadFinished();
-                GameEvents.current.AmmoChanged(currentMag, currentAmmo);
+                GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetPistolAmmo());
             }
         }
+        // decriment reload and firerate buffers if they exist 
         if (fireRateBuffer > 0f)
         {
             fireRateBuffer -= Time.deltaTime;
@@ -135,7 +134,7 @@ public abstract class Gun : MonoBehaviour
             fireRateBuffer = maxFireRateBuffer;
             if (isPlayerGun)
             {
-                GameEvents.current.AmmoChanged(currentMag, currentAmmo);
+                GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetPistolAmmo());
             }
         } 
     }
@@ -172,34 +171,11 @@ public abstract class Gun : MonoBehaviour
     }
 
     // Reloads
-    protected void Reload()
+    protected virtual void Reload()
     {
         // Already in the middle of a reload
         if (reloadBuffer > 0f)
             return;
-        
-        // Reload player mag if is less than max and we have ammo in reserves
-        if (currentAmmo > 0 && currentMag < magSize && reloadBuffer <= 0f && isPlayerGun)
-        {
-            GameEvents.current.ReloadStarted();
-            reloadBuffer = maxReloadBuffer;
-            currentAmmo -= (magSize - currentMag);
-            if (currentAmmo < 0)
-            {
-                currentMag = magSize + currentAmmo;
-                currentAmmo = 0;
-            } else
-            {
-               currentMag = magSize; 
-            }
-            GameEvents.current.PlaySFX("reload");
-        }
-        // Enemy reload infinite ammo
-        else if (!isPlayerGun)
-        {
-            reloadBuffer = maxReloadBuffer;
-            currentMag = magSize;
-        }
     }
 
     // disable InputSystem subscriptions

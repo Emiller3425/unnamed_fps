@@ -8,10 +8,8 @@ using UnityEngine.TextCore.Text;
 
 public class PlayerWeaponHolder : MonoBehaviour
 {
-    public Camera playerCamera;
-    public GameObject equippedWeapon;
+    public PlayerWeaponInventory inventory;
     protected InputAction swapWeapon;
-
     private void Awake()
     {
         swapWeapon = InputSystem.actions.FindAction("Swap");
@@ -25,23 +23,16 @@ public class PlayerWeaponHolder : MonoBehaviour
         swapWeapon.started += OnSwap;
     }
 
-    private void Start()
-    {
-        GameObject gunInstance = Instantiate(equippedWeapon, transform.position, transform.rotation);
-        gunInstance.transform.SetParent(this.transform);
-        Gun gunScript = gunInstance.GetComponent<Gun>();
-
-        if (gunScript)
-        {
-            gunScript.playerCamera = playerCamera;
-            // gunScript.animator = 
-            // gunScript.entityStats = 
-        }
-    }
-
     private void OnSwap(InputAction.CallbackContext context)
     {
         // implement weapon swap
         Debug.Log("swap initiated");
+        if (inventory.currentWeapon.name == "Pistol")
+        {
+            inventory.EquipWeapon("Pistol2");
+        } else
+        {
+            inventory.EquipWeapon("Pistol");
+        }
     }
 }

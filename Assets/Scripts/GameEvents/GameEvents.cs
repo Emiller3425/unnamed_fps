@@ -19,7 +19,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action<string> OnPlaySFX;
     public event Action<string, Vector3, Vector3, Transform> OnPlayVFX;
     public event Action<float, float, float> OnHealthAdded;
-     public event Action<float, float, float> OnHealthSubtracted;
+    public event Action<float, float, float> OnHealthSubtracted;
     public event Action<float, float> OnExperienceAdded;
     public event Action OnSetCrossHairActivated;
     public event Action OnSetCrossHairDeactivated;

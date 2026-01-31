@@ -23,7 +23,7 @@ public class BurstGun : Gun
     {
         if (burstRoundsLeft <= 0 && reloadBuffer <= 0)
         {
-            if (currentAmmo > 0)
+            if (PlayerStatsManager.Instance.GetPistolAmmo() > 0)
             {
                 burstRoundsLeft = burstRounds;
             }
@@ -33,7 +33,7 @@ public class BurstGun : Gun
 
     public override void AttemptShoot()
     {
-        if (currentAmmo > 0 && reloadBuffer <= 0f)
+        if (PlayerStatsManager.Instance.GetPistolAmmo() > 0 && reloadBuffer <= 0f)
         {
             if (fireRateBuffer <= 0f)
             {

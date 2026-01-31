@@ -15,8 +15,8 @@ public class StatsManager : MonoBehaviour, IDamageable, IHealable
     protected float currentHealth;
     protected int currentPistolAmmo;
     protected int maxPistolAmmo;
-    protected int currentMachineGunAmmo;
-    protected int maxMachineGunAmmo;
+    protected int currentSMGAmmo;
+    protected int maxSMGAmmo;
     protected int currentRifleAmmo;
     protected int maxRifleAmmo;
     public virtual void Awake()
@@ -27,8 +27,8 @@ public class StatsManager : MonoBehaviour, IDamageable, IHealable
         maxLevel = entityStats.GetMaxLevel();
         currentPistolAmmo = entityStats.GetCurrentPistolAmmo();
         maxPistolAmmo = entityStats.GetMaxPistolAmmo();
-        currentMachineGunAmmo = entityStats.GetCurrentMachineGunAmmo();
-        maxMachineGunAmmo = entityStats.GetMaxMachineGunAmmo();
+        currentSMGAmmo = entityStats.GetCurrentSMGAmmo();
+        maxSMGAmmo = entityStats.GetMaxSMGAmmo();
         currentRifleAmmo = entityStats.GetCurrentRifleAmmo();
         maxRifleAmmo = entityStats.GetMaxRifleAmmo();
     }
