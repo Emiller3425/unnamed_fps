@@ -19,7 +19,7 @@ public abstract class Gun : MonoBehaviour
     // public GameObject bulletPrefab;
     public Camera playerCamera;
     public EntityStats entityStats;
-    public Animator animator;
+    public AnimatorOverrideController weaponAnimationOverride;
     public bool isPlayerGun = false;
     public int magSize = 30;
     public int damage = 10;
@@ -112,10 +112,9 @@ public abstract class Gun : MonoBehaviour
             GameEvents.current.PlaySFX("gunshot");
             // Handle Muzzle Flash
             GameEvents.current.PlayVFX("glockMuzzleFlash", muzzleTransform.position, Vector3.zero, muzzleTransform);
-            if (animator != null)
-            {
-                animator.SetTrigger("Shoot");
-            }
+            
+            GameEvents.current.WeaponFired();
+
             currentMag--;
             fireRateBuffer = maxFireRateBuffer;
         } 

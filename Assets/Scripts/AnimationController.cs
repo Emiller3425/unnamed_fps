@@ -8,7 +8,12 @@ using UnityEngine.TextCore.Text;
 
 public class AnimationController : MonoBehaviour
 {
-    protected Animator animator;
+    public Animator animator;
+
+    protected virtual void Awake()
+    {
+        
+    }
     protected virtual void Start()
     {
         animator = GetComponent<Animator>();
@@ -16,6 +21,14 @@ public class AnimationController : MonoBehaviour
         {
             Debug.LogError("Could not find animator");
         }
+    }
+    protected virtual void PlayShootAnimation()
+    {
+        
+    }
+    protected virtual void PlayReloadAnimation()
+    {
+        
     }
     protected virtual void Update()
     {
@@ -25,5 +38,10 @@ public class AnimationController : MonoBehaviour
     protected virtual void HandleAnimations()
     {
         // do nothing in base class
+    }
+
+    protected virtual void OnDestroy()
+    {
+        
     }
 }

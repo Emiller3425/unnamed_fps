@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b2461b11b2cedb343af066c41c57a8cc
+guid: 84192c8043404714d97b40a688173f4b
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -31,18 +31,18 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: fps_armature|mac_idle
-      takeName: fps_armature|mac_idle
-      internalID: 214979361084318464
+      name: fps_armature|glock_swap
+      takeName: fps_armature|glock_swap
+      internalID: 3693662542751445267
       firstFrame: 0
-      lastFrame: 11
+      lastFrame: 10
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0

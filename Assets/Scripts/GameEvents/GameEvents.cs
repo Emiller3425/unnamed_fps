@@ -25,6 +25,9 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action OnSetCrossHairDeactivated;
     public event Action OnSetHitMarkerActivated;
     public event Action OnSetHitMarkerDeactivated;
+    public event Action OnWeaponFired;
+    public event Action OnWeaponReloaded;
+
     public void AmmoChanged(int currentMag, int currentAmmo)
     {
         OnAmmoChanged?.Invoke(currentMag, currentAmmo);
@@ -72,6 +75,14 @@ public class GameEvents : TemplateMonoBeheavior
     public void SetHitMarkerDeactivated()
     {
         OnSetHitMarkerDeactivated?.Invoke();
+    }
+    public void WeaponFired()
+    {
+        OnWeaponFired?.Invoke();
+    }
+    public void WeaponReloaded()
+    {
+        OnWeaponReloaded?.Invoke();
     }
 
 }

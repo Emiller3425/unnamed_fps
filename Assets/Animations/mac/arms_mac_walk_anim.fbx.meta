@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b2461b11b2cedb343af066c41c57a8cc
+guid: 90a950dfa99286243b85c9420a4cf87b
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -31,11 +31,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: fps_armature|mac_idle
-      takeName: fps_armature|mac_idle
-      internalID: 214979361084318464
+      name: fps_armature|mac_walk
+      takeName: fps_armature|mac_walk
+      internalID: 4346128555454794272
       firstFrame: 0
-      lastFrame: 11
+      lastFrame: 24
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

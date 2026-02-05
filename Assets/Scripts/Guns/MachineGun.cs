@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.TextCore.Text;
 
-public class MachineGun : FullAutoGun
+public class MachineGun : FullAutoGun, IUsesSMGAmmo
 {
     protected override void Awake()
     {
@@ -62,6 +62,7 @@ public class MachineGun : FullAutoGun
                currentMag = magSize; 
             }
             GameEvents.current.PlaySFX("reload");
+            GameEvents.current.WeaponReloaded();
         }
         // Enemy reload infinite ammo
         else if (!isPlayerGun)

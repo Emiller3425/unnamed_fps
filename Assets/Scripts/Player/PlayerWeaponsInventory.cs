@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Unity.VisualScripting;
@@ -10,6 +11,7 @@ using UnityEngine.TextCore.Text;
 public class PlayerWeaponInventory : MonoBehaviour
 {
     public Transform weaponHolder;
+    public PlayerAnimationController animController;
     public GameObject currentWeapon;
     private Dictionary<string, GameObject> weaponDictionary = new Dictionary<string, GameObject>();
 
@@ -24,7 +26,6 @@ public class PlayerWeaponInventory : MonoBehaviour
         foreach (Transform child in weaponHolder)
         {
             weaponDictionary.Add(child.name, child.gameObject);
-            Debug.Log(child.name);
 
             // Start with everything turned off
             child.gameObject.SetActive(false);
@@ -36,23 +37,48 @@ public class PlayerWeaponInventory : MonoBehaviour
     {
         if (weaponDictionary.ContainsKey(weaponName))
         {
-            if (currentWeapon != null)
+            if (currentWeapon == null) {
+                CompleteWeaponSwitch(weaponName);
+            } else
             {
-                currentWeapon.SetActive(false);
-            }
-            currentWeapon = weaponDictionary[weaponName];
-            currentWeapon.SetActive(true);
-            if (currentWeapon.GetComponent<Pistol>())
-            {
-                GameEvents.current.AmmoChanged(currentWeapon.GetComponent<Gun>().currentMag, PlayerStatsManager.Instance.GetPistolAmmo());
-            } else if (currentWeapon.GetComponent<MachineGun>())
-            {
-                GameEvents.current.AmmoChanged(currentWeapon.GetComponent<Gun>().currentMag, PlayerStatsManager.Instance.GetSMGAmmo());
-            } else if (currentWeapon.GetComponent<BurstRifle>())
-            {
-                GameEvents.current.AmmoChanged(currentWeapon.GetComponent<Gun>().currentMag, PlayerStatsManager.Instance.GetRifleAmmo());
+                animController.TriggerWeaponSwap(() => CompleteWeaponSwitch(weaponName));
             }
         }
     }
 
+    private void CompleteWeaponSwitch(string weaponName)
+    {
+        if (currentWeapon != null)
+        {
+            currentWeapon.SetActive(false);
+        }
+
+        currentWeapon = weaponDictionary[weaponName];
+        currentWeapon.SetActive(true);
+
+        Gun gunScript = currentWeapon.GetComponent<Gun>();
+
+        if (gunScript != null && gunScript.weaponAnimationOverride != null)
+        {
+            animController.animator.runtimeAnimatorController = gunScript.weaponAnimationOverride;
+        }
+
+        UpdateAmmoUI();
+    }
+
+    private void UpdateAmmoUI()
+    {
+        Gun gunScript = currentWeapon.GetComponent<Gun>();
+        if (gunScript == null)
+        {
+            return;
+        }
+
+        int reserveAmmo = 0;
+        if (gunScript.GetComponent<IUsesPistolAmmo>() is IUsesPistolAmmo) reserveAmmo = PlayerStatsManager.Instance.GetPistolAmmo();
+        if (gunScript.GetComponent<IUsesSMGAmmo>() is IUsesSMGAmmo) reserveAmmo = PlayerStatsManager.Instance.GetSMGAmmo();
+        if (gunScript.GetComponent<IUsesRifleAmmo>() is IUsesRifleAmmo) reserveAmmo = PlayerStatsManager.Instance.GetRifleAmmo();
+
+        GameEvents.current.AmmoChanged(gunScript.currentMag, reserveAmmo);
+    }
 }

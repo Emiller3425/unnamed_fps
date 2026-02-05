@@ -26,7 +26,6 @@ public class PlayerWeaponHolder : MonoBehaviour
     private void OnSwap(InputAction.CallbackContext context)
     {
         // implement weapon swap
-        Debug.Log("swap initiated");
         if (inventory.currentWeapon.name == "Pistol")
         {
             inventory.EquipWeapon("MachineGun");
