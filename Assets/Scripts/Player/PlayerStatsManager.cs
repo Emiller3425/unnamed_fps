@@ -35,8 +35,11 @@ public class PlayerStatsManager : StatsManager
 
     public override void HealthSubtracted(float damage)
     {
+        Debug.Log(currentHealth);
         base.HealthSubtracted(damage);
-        GameEvents.current.HealthSubtracted(damage, entityStats.GetMaxHealth(), currentHealth);
+        // Update Health UI
+        GameEvents.current.HealthSubtracted(damage, maxHealth, currentHealth);
+         Debug.Log(currentHealth);
         if (currentHealth <= 0f)
         {
             Destroy(gameObject);
@@ -45,7 +48,8 @@ public class PlayerStatsManager : StatsManager
     public override void HealthAdded(float healing)
     {
         base.HealthAdded(healing);
-        GameEvents.current.HealthAdded(healing, entityStats.GetMaxHealth(), currentHealth);
+        // Update Health UI
+        GameEvents.current.HealthAdded(healing, maxHealth, currentHealth);
     }
 
     public void ExperienceAdded(int experience)
@@ -98,6 +102,8 @@ public class PlayerStatsManager : StatsManager
     {
         IncreaseHealth();
         IncreaseExperienceToNextLevel(experienceOver);
+        // Update Health UI
+        GameEvents.current.HealthAdded(0f, maxHealth, currentHealth);
     }
 
     public void IncreaseHealth()

@@ -15,7 +15,7 @@ using UnityEngine.TextCore.Text;
 public class PlayerController : MonoBehaviour
 {
     public Camera playerCamera;
-    public float walkSpeed = 7f;
+    public float walkSpeed = 12f;
     public float adsWalkSpeed = 5f;
     public float sprintSpeed = 9f;
     public float crouchSpeed = 3f;
@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour
     public bool canSprint = false;
     private float rotationX = 0f;
     private bool canMove = true;
+    private bool isPaused = false;
     private bool adsEnabled = false;
     private float velocityY = 0f;
     private float velocityX = 0f;
@@ -90,6 +91,12 @@ public class PlayerController : MonoBehaviour
         emoteAction.started += OnEmote;
     }
 
+    private void OnEnable()
+    {
+        GameEvents.current.OnTogglePause += HandlePause;
+        GameEvents.current.OnTogglePlayerInventory += HandlePlayerInventory;
+    }
+
     private void Start()
     {
         // Game Events
@@ -102,11 +109,13 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         // movement logic
-        if (canMove)
+        if (canMove && !isPaused)
         {
             // Get WASD
             Vector2 moveValue = moveAction.ReadValue<Vector2>();
-            canSprint = moveValue.y > 0.1f;
+            
+            canSprint = false;
+            // canSprint = moveValue.y > 0.1f;
 
             Vector3 right = transform.TransformDirection(Vector3.right);
             Vector3 forward = transform.TransformDirection(Vector3.forward);
@@ -202,6 +211,10 @@ public class PlayerController : MonoBehaviour
     
     private void OnInteract(InputAction.CallbackContext context)
     {
+        if (isPaused)
+        {
+            return;
+        }
         GameObject interactObject = GetInteractionObject();
         if (interactObject != null)
         {
@@ -211,6 +224,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnJump(InputAction.CallbackContext context)
     {
+        if (isPaused)
+        {
+            return;
+        }
         if (canJump)
         {
             velocityY = jumpHeight;
@@ -220,11 +237,19 @@ public class PlayerController : MonoBehaviour
     
     private void OnAim(InputAction.CallbackContext context)
     {
+        if (isPaused)
+        {
+            return;
+        }
         adsEnabled = !adsEnabled;
     }
 
     private void OnEmote(InputAction.CallbackContext context)
     {
+        if (isPaused)
+        {
+            return;
+        }
         animator.SetTrigger("Emote");
     }
 
@@ -250,6 +275,22 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Dash Right");
         }
 
+    }
+
+    private void HandlePause(bool isToggled)
+    {
+       isPaused = isToggled;
+    }
+
+    private void HandlePlayerInventory(bool isToggled)
+    {
+        isPaused = isToggled;
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.current.OnTogglePause -= HandlePause;
+        GameEvents.current.OnTogglePlayerInventory -= HandlePlayerInventory;
     }
 
     private void OnDestroy()

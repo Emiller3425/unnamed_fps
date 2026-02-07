@@ -36,6 +36,7 @@ public abstract class Gun : MonoBehaviour
     protected Transform muzzleTransform;
     protected bool firstUpdate = true;
     protected Vector2 screenCenter;
+    protected bool isPaused = false;
     protected virtual void Awake()
     {
         // define listeners
@@ -57,6 +58,9 @@ public abstract class Gun : MonoBehaviour
             shootAction.started += OnShoot;
             reloadAction.started += OnReload;
         }
+
+        GameEvents.current.OnTogglePause += HandlePause;
+        GameEvents.current.OnTogglePlayerInventory += HandlePlayerInventory;
     }
 
     protected virtual void Start()
@@ -104,7 +108,7 @@ public abstract class Gun : MonoBehaviour
     // Shoots bullet
     protected virtual void ShootBullet()
     {
-        if (fireRateBuffer <= 0)
+        if (fireRateBuffer <= 0 && !isPaused)
         {
             // get ray for bullet
             Vector3 rayDirection = CalculateRay();
@@ -155,8 +159,18 @@ public abstract class Gun : MonoBehaviour
     protected virtual void Reload()
     {
         // Already in the middle of a reload
-        if (reloadBuffer > 0f)
+        if (reloadBuffer > 0f && !isPaused)
             return;
+    }
+
+    protected void HandlePause(bool isToggled)
+    {
+        isPaused = isToggled;
+    }
+
+    protected void HandlePlayerInventory(bool isToggled)
+    {
+        isPaused = isToggled;
     }
 
     // disable InputSystem subscriptions
@@ -170,5 +184,8 @@ public abstract class Gun : MonoBehaviour
             shootAction.Disable();
             reloadAction.Disable();
         }
+
+        GameEvents.current.OnTogglePause -= HandlePause;
+        GameEvents.current.OnTogglePlayerInventory -= HandlePlayerInventory;
     }
 }

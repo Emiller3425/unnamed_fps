@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -13,7 +14,7 @@ public class PlayerWeaponInventory : MonoBehaviour
     public Transform weaponHolder;
     public PlayerAnimationController animController;
     public GameObject currentWeapon;
-    private Dictionary<string, GameObject> weaponDictionary = new Dictionary<string, GameObject>();
+    public Dictionary<string, GameObject> weaponDictionary = new Dictionary<string, GameObject>();
 
     private void Start()
     {
@@ -26,13 +27,24 @@ public class PlayerWeaponInventory : MonoBehaviour
         foreach (Transform child in weaponHolder)
         {
             weaponDictionary.Add(child.name, child.gameObject);
+            int index = weaponDictionary.Keys.ToList().IndexOf(child.name);
 
             // Start with everything turned off
             child.gameObject.SetActive(false);
         }
     }
 
-    // TODO: We need to add more flexible logic to the typing of guns, make it ewasier to determine if a gun is a pistol a rifle or an smg -- maybe use an interface?
+    public void EquipNextWeapon()
+    {
+        int currentIndex = weaponDictionary.Keys.ToList().IndexOf(currentWeapon.name);
+
+        int nextIndex = (currentIndex + 1) % weaponDictionary.Count;
+
+        string nextWeaponName = weaponDictionary.Keys.ElementAt(nextIndex);
+
+        EquipWeapon(nextWeaponName);
+    }
+
     public void EquipWeapon(string weaponName)
     {
         if (weaponDictionary.ContainsKey(weaponName))

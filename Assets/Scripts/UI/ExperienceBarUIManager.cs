@@ -9,6 +9,8 @@ using UnityEngine.Rendering;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
+
+//TODO: Add progressing xp bar
 public class ExperienceBarUIManager : MonoBehaviour
 {
     public UnityEngine.UI.Image border;

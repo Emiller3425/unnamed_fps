@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -25,13 +26,6 @@ public class PlayerWeaponHolder : MonoBehaviour
 
     private void OnSwap(InputAction.CallbackContext context)
     {
-        // implement weapon swap
-        if (inventory.currentWeapon.name == "Pistol")
-        {
-            inventory.EquipWeapon("MachineGun");
-        } else
-        {
-            inventory.EquipWeapon("Pistol");
-        }
+        inventory.EquipNextWeapon();
     }
 }

@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
 using UnityEngine.TextCore.Text;
 using UnityEngine.VFX;
 
@@ -30,13 +31,17 @@ public class EnemyController : MonoBehaviour
     private CharacterController enemyController;
     private PlayerController playerTarget;
     private VisualEffect bloodVFX;
+    private float maxMeleeCooldown = 5f;
+    private float currentMeleeCooldown = 0f;
+    private float meleeRange = 10f;
+    private float meleeDamage = 5f;
 
-    void Start()
+    private void Start()
     {
         enemyController = GetComponent<CharacterController>();
         playerTarget = FindAnyObjectByType<PlayerController>();
     }
-    void Update()
+    private void Update()
     {
         // Get directional vectors
         Vector3 right = transform.TransformDirection(Vector3.right);
@@ -51,7 +56,7 @@ public class EnemyController : MonoBehaviour
             float distanceToPlayer = Vector3.Distance(transform.position, FindAnyObjectByType<PlayerController>().transform.position);
             if (distanceToPlayer < 100f)
             {
-                // Enemy Movemement Logic
+                AttemptMelee();
             }
 
             enemyController.Move(forward * Time.deltaTime);
@@ -67,6 +72,11 @@ public class EnemyController : MonoBehaviour
 
         enemyController.Move(movementDirection.y * Vector3.up * Time.deltaTime);
 
+        if (currentMeleeCooldown > 0f)
+        {
+            currentMeleeCooldown -= Time.deltaTime;
+        }
+
     }
 
     public CharacterController GetController()
@@ -78,4 +88,39 @@ public class EnemyController : MonoBehaviour
     {
         GameEvents.current.PlayVFX("bloodSplatter", hit.point, hit.normal * 2, null);
     }
+
+    // TODO: THIS IS A TEMP FUNCTION AT THE MOMENT - fix it idk
+
+    private void AttemptMelee()
+    {
+    if (currentMeleeCooldown <= 0f)
+    {
+        // 1. Define the Ray (Origin and Direction)
+        Vector3 rayOrigin = transform.position + Vector3.up; // Start at chest height
+        Vector3 rayDirection = transform.forward;
+
+        // 2. Fire the Raycast
+        if (Physics.Raycast(rayOrigin, rayDirection, out RaycastHit hit, meleeRange))
+        {
+            // 3. Check if the object hit has the IDamageable interface
+            IDamageable damageable = hit.collider.GetComponent<IDamageable>();
+
+            if (damageable != null)
+            {
+                // 4. Apply damage and trigger effects
+                damageable.HealthSubtracted(meleeDamage);
+                Debug.Log("Enemy Hit");
+                PlayBloodSplatter(hit); 
+            }
+        }
+
+        // Reset cooldown
+        currentMeleeCooldown = maxMeleeCooldown;
+    }
+    else
+    {
+        // Reduce cooldown over time (usually done in Update, but can be managed here)
+        currentMeleeCooldown -= Time.deltaTime;
+    }
+}
 }

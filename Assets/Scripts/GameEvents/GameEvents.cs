@@ -27,7 +27,8 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action OnSetHitMarkerDeactivated;
     public event Action OnWeaponFired;
     public event Action OnWeaponReloaded;
-
+    public event Action<bool> OnTogglePause;
+    public event Action<bool> OnTogglePlayerInventory;
     public void AmmoChanged(int currentMag, int currentAmmo)
     {
         OnAmmoChanged?.Invoke(currentMag, currentAmmo);
@@ -84,5 +85,12 @@ public class GameEvents : TemplateMonoBeheavior
     {
         OnWeaponReloaded?.Invoke();
     }
-
+    public void TogglePause(bool isPauseToggled)
+    {
+        OnTogglePause?.Invoke(isPauseToggled);
+    }
+    public void TogglePlayerInventory(bool isPlayerInventoryToggled)
+    {
+        OnTogglePause?.Invoke(isPlayerInventoryToggled);
+    }
 }
