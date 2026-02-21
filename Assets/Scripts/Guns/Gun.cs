@@ -27,6 +27,7 @@ public abstract class Gun : MonoBehaviour
     public float maxReloadBuffer = 2f;
     public float maxFireRateBuffer = 0.2f;
     public float maxRange = 100f;
+    public GameObject bulletHolePrefab;
     protected float reloadBuffer = 0f;
     protected float fireRateBuffer = 0f;
     protected int maxAmmo;
@@ -145,6 +146,9 @@ public abstract class Gun : MonoBehaviour
                     GameEvents.current.SetHitMarkerActivated();
                     GameEvents.current.PlaySFX("hitmarker");
                 }
+            } else
+            {
+                SpawnBulletHole(hit);
             }
             return (hit.point - muzzleLocation).normalized;
         }
@@ -153,6 +157,15 @@ public abstract class Gun : MonoBehaviour
             // we did not hit anything
             return Vector3.zero;
         }
+    }
+
+    protected void SpawnBulletHole(RaycastHit hit)
+    {
+        GameObject bulletHole = Instantiate(bulletHolePrefab, hit.point, Quaternion.LookRotation(-hit.normal));
+
+        bulletHole.transform.SetParent(hit.transform);
+
+        Destroy(bulletHole, 10f);
     }
 
     // Reloads
