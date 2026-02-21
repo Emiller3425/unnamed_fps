@@ -86,7 +86,7 @@ public class EnemyController : MonoBehaviour
 
     public void PlayBloodSplatter(UnityEngine.RaycastHit hit)
     {
-        GameEvents.current.PlayVFX("bloodSplatter", hit.point, hit.normal * 2, null);
+        GameEvents.current.PlayVFX("bloodSplatter", hit.point, Vector3.zero, hit.normal * 2, null);
     }
 
     // TODO: THIS IS A TEMP FUNCTION AT THE MOMENT - fix it idk

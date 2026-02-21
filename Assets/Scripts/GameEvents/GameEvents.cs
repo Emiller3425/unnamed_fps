@@ -17,7 +17,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action OnReloadStarted;
     public event Action OnReloadFinished;
     public event Action<string> OnPlaySFX;
-    public event Action<string, Vector3, Vector3, Transform> OnPlayVFX;
+    public event System.Action<string, Vector3, Vector3, Vector3, Transform> OnPlayVFX;
     public event Action<float, float, float> OnHealthAdded;
     public event Action<float, float, float> OnHealthSubtracted;
     public event Action<float, float> OnExperienceAdded;
@@ -45,9 +45,9 @@ public class GameEvents : TemplateMonoBeheavior
     {
         OnPlaySFX?.Invoke(clip);
     }
-    public void PlayVFX(string shader, Vector3 position, Vector3 velocity, Transform sourceToFollow)
+    public void PlayVFX(string shader, Vector3 position, Vector3 rotation, Vector3 velocity, Transform sourceToFollow)
     {
-        OnPlayVFX?.Invoke(shader, position, velocity, sourceToFollow);
+        OnPlayVFX?.Invoke(shader, position, rotation, velocity, sourceToFollow);
     }
     public void ExperienceAdded(float maxExperiencePoints, float currentExperiencePoints)
     {

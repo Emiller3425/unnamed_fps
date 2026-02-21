@@ -116,7 +116,7 @@ public abstract class Gun : MonoBehaviour
             // Play Gunshot
             GameEvents.current.PlaySFX("gunshot");
             // Handle Muzzle Flash
-            GameEvents.current.PlayVFX("glockMuzzleFlash", muzzleTransform.position, Vector3.zero, muzzleTransform);
+            GameEvents.current.PlayVFX("glockMuzzleFlash", muzzleTransform.position, muzzleTransform.rotation.eulerAngles, Vector3.zero, muzzleTransform);
             
             GameEvents.current.WeaponFired();
 

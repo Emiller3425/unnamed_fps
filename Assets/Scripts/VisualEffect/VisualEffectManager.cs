@@ -24,7 +24,7 @@ public class VisualEffectManager : MonoBehaviour
         GameEvents.current.OnPlayVFX += Play;
     }
 
-    private void Play(string name, Vector3 position, Vector3 velocity, Transform sourceToFollow)
+    private void Play(string name, Vector3 position, Vector3 rotation, Vector3 velocity, Transform sourceToFollow)
     {
         if (effectLookup.TryGetValue(name, out VisualEffectItem effectItem))
         {
@@ -33,16 +33,15 @@ public class VisualEffectManager : MonoBehaviour
                 position = sourceToFollow.position;
             }
 
-            GameObject vfxObject = Instantiate(effectItem.prefab, position, Quaternion.identity);
+            GameObject vfxObject = Instantiate(effectItem.prefab, position, Quaternion.Euler(rotation));
 
             if (vfxObject.TryGetComponent<VisualEffect>(out var vfx))
             if (velocity != Vector3.zero)
                 {
                     vfx.SetVector3("Velocity", velocity);
                 }
-            {
-                vfx.Play();
-            }
+                
+            vfx.Play();
             Destroy(vfxObject, vfx.GetFloat("EffectMaxDuration"));
 
             FollowSource(vfxObject, sourceToFollow, vfx.GetFloat("EffectMaxDuration"));
