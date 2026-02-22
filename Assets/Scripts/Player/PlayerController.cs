@@ -191,6 +191,21 @@ public class PlayerController : MonoBehaviour
             }
 
             transform.Rotate((adsEnabled ? adsLookSpeed : lookSpeed) * lookValue.x * Vector3.up);
+            
+            // Crosshairs bloom
+            if (!characterController.isGrounded)
+            {
+                GameEvents.current.PlayerVelocityChanged(8f);
+            } else if (Mathf.Abs(speedX) > crouchSpeed + 0.1f || Mathf.Abs(speedY) > crouchSpeed + 0.1f)
+            {
+                GameEvents.current.PlayerVelocityChanged(6f);
+            } else if (Mathf.Abs(speedX) > 0.1f || Mathf.Abs(speedY) > 0.1f)
+            {
+                GameEvents.current.PlayerVelocityChanged((Mathf.Abs(speedX) + Mathf.Abs(speedY)) / 2f);
+            } else
+            {
+                GameEvents.current.PlayerVelocityChanged(1f);
+            }
         }
     }
     private GameObject GetInteractionObject()
