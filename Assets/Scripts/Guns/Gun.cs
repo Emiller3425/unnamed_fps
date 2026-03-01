@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using TMPro;
@@ -10,6 +9,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Interactions;
 using UnityEngine.Rendering.UI;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.TextCore.Text;
 using UnityEngine.VFX;
 
@@ -20,6 +20,7 @@ public abstract class Gun : MonoBehaviour
     public Camera playerCamera;
     public EntityStats entityStats;
     public AnimatorOverrideController weaponAnimationOverride;
+    public Crosshairs crosshairs;
     public bool isPlayerGun = false;
     public int magSize = 30;
     public int damage = 10;
@@ -113,6 +114,8 @@ public abstract class Gun : MonoBehaviour
         {
             // get ray for bullet
             Vector3 rayDirection = CalculateRay();
+            // Bloom crosshairs
+            GameEvents.current.Bloom(15f, true);
             // Play Gunshot
             GameEvents.current.PlaySFX("gunshot");
             // Handle Muzzle Flash
@@ -127,9 +130,19 @@ public abstract class Gun : MonoBehaviour
 
     protected Vector3 CalculateRay()
     {
-        Ray cameraRay = playerCamera.ScreenPointToRay(screenCenter);
+        // Calculate bloom
+        Vector2 randomBloomOffset;
+        if (crosshairs) {
+            randomBloomOffset = Random.insideUnitCircle * crosshairs.currentBloomRadius;
+        } else
+        {
+            randomBloomOffset = Vector2.zero;
+        }
+        Vector3 bloomArea = new Vector3(screenCenter.x + randomBloomOffset.x, screenCenter.y + randomBloomOffset.y, 0f);
+        
+        Ray cameraRay = playerCamera.ScreenPointToRay(bloomArea);
 
-        Debug.DrawRay(cameraRay.origin, cameraRay.direction * 100f, Color.red, 0f);
+        // Debug.DrawRay(cameraRay.origin, cameraRay.direction * 100f, Color.red, 0f);
 
         RaycastHit hit;
 

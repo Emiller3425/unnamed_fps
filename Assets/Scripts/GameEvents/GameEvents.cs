@@ -29,7 +29,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action OnWeaponReloaded;
     public event Action<bool> OnTogglePause;
     public event Action<bool> OnTogglePlayerInventory;
-    public event Action<float> OnPlayerVelocityChanged;
+    public event Action<float, bool> OnBloom;
     public void AmmoChanged(int currentMag, int currentAmmo)
     {
         OnAmmoChanged?.Invoke(currentMag, currentAmmo);
@@ -95,8 +95,8 @@ public class GameEvents : TemplateMonoBeheavior
         OnTogglePause?.Invoke(isPlayerInventoryToggled);
     }
 
-    public void PlayerVelocityChanged(float velocity)
+    public void Bloom(float velocity, bool fromShotBullet)
     {
-        OnPlayerVelocityChanged?.Invoke(velocity);
+        OnBloom?.Invoke(velocity, fromShotBullet);
     }
 }

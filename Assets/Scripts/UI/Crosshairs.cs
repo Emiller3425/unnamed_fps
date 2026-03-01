@@ -1,5 +1,6 @@
 
 using TMPro;
+using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -17,14 +18,25 @@ public class Crosshairs : MonoBehaviour
     public Image left;
     public Image right;
     private RectTransform crossHairRectTransform;
+    public float bloomSize;
     private float targetOffset;
+    private float maxBloomFromShotReset = 0.05f;
+    private float currentBloomFromShotReset;
+
+    public float currentBloomRadius
+    {
+        get
+        {
+            return (top.rectTransform.anchoredPosition.y - bottom.rectTransform.anchoredPosition.y) / 2;
+        }
+    }
     private void Awake()
     {
         crossHairRectTransform = GetComponent<RectTransform>();
         crossHairRectTransform.anchoredPosition = Vector2.zero;
         GameEvents.current.OnSetCrossHairActivated += SetCrossHairActivated;
         GameEvents.current.OnSetCrossHairDeactivated += SetCrossHairDeactivated;
-        GameEvents.current.OnPlayerVelocityChanged += HandleCrossHairBloom;
+        GameEvents.current.OnBloom += HandleCrossHairBloom;
     }
 
     private void OnEnable()
@@ -44,6 +56,14 @@ public class Crosshairs : MonoBehaviour
         bottom.rectTransform.anchoredPosition = Vector2.Lerp(bottom.rectTransform.anchoredPosition, new Vector2(0f, -3f * absoluteValueTargetOffset), 0.075f);
         left.rectTransform.anchoredPosition = Vector2.Lerp(left.rectTransform.anchoredPosition, new Vector2(-3f * absoluteValueTargetOffset, 0f), 0.075f);
         right.rectTransform.anchoredPosition = Vector2.Lerp(right.rectTransform.anchoredPosition, new Vector2(3f * absoluteValueTargetOffset, 0f), 0.075f);
+
+        bloomSize = absoluteValueTargetOffset * 3f;
+        
+        // Decriments the bloom timer 
+        if (currentBloomFromShotReset > 0f)
+        {
+            currentBloomFromShotReset -= Time.deltaTime;
+        }
     }
 
     public void SetCrossHairActivated()
@@ -61,9 +81,17 @@ public class Crosshairs : MonoBehaviour
         crossHairRectTransform.anchoredPosition = newPosition;
     }
 
-    public void HandleCrossHairBloom(float velocity)
+    public void HandleCrossHairBloom(float velocity, bool fromShotBullet)
     {
-        targetOffset = velocity;
+        if (fromShotBullet)
+        {
+            targetOffset = velocity;
+            currentBloomFromShotReset = maxBloomFromShotReset;
+        }
+        else if (currentBloomFromShotReset  <= 0f)
+        {
+            targetOffset = velocity;
+        }
     }
 
     private void OnDestoy()

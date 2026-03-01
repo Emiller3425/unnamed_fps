@@ -193,18 +193,26 @@ public class PlayerController : MonoBehaviour
             transform.Rotate((adsEnabled ? adsLookSpeed : lookSpeed) * lookValue.x * Vector3.up);
             
             // Crosshairs bloom
+
+            // In air
             if (!characterController.isGrounded)
             {
-                GameEvents.current.PlayerVelocityChanged(8f);
-            } else if (Mathf.Abs(speedX) > crouchSpeed + 0.1f || Mathf.Abs(speedY) > crouchSpeed + 0.1f)
+                GameEvents.current.Bloom(8f, false);
+            } 
+            // Walking
+            else if (Mathf.Abs(speedX) > crouchSpeed + 0.1f || Mathf.Abs(speedY) > crouchSpeed + 0.1f)
             {
-                GameEvents.current.PlayerVelocityChanged(6f);
-            } else if (Mathf.Abs(speedX) > 0.1f || Mathf.Abs(speedY) > 0.1f)
+                GameEvents.current.Bloom(6f, false);
+            } 
+            // Crouch walking
+            else if (Mathf.Abs(speedX) > 0.1f || Mathf.Abs(speedY) > 0.1f)
             {
-                GameEvents.current.PlayerVelocityChanged((Mathf.Abs(speedX) + Mathf.Abs(speedY)) / 2f);
-            } else
+                GameEvents.current.Bloom(2.5f, false);
+            }
+            // Not moving
+            else
             {
-                GameEvents.current.PlayerVelocityChanged(1f);
+                GameEvents.current.Bloom(1f, false);
             }
         }
     }
