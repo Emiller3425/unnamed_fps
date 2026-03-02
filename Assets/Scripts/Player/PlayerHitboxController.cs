@@ -33,11 +33,19 @@ public class PlayerHitboxController : MonoBehaviour
 
     private IEnumerator LerpRoutine(float targetHeight, Vector3 targetCenter, float targetRadius)
     {
+        float startTime = Time.time;
+        float maxDuration = 0.2f;
         while (playerCharacterController.height != targetHeight || playerCharacterController.center != targetCenter || playerCharacterController.radius != targetRadius)
         {
             playerCharacterController.height = Mathf.Lerp(playerCharacterController.height, targetHeight, 0.1f);
             playerCharacterController.center = Vector3.Lerp(playerCharacterController.center, targetCenter, 0.1f);
             playerCharacterController.radius = Mathf.Lerp(playerCharacterController.radius, targetRadius, 0.1f);
+            if (Time.time > startTime + maxDuration)
+            {
+                playerCharacterController.height = targetHeight;
+                playerCharacterController.center = targetCenter;
+                playerCharacterController.radius = targetRadius;
+            }
             yield return null;
         }
     }

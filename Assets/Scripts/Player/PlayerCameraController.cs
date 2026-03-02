@@ -33,9 +33,15 @@ public class PlayerCameraController : MonoBehaviour
 
     private IEnumerator LerpRoutine(Vector3 targetLocalPosition)
     {
+        float startTime = Time.time;
+        float maxDuration = 0.2f;
         while (playerCamera.transform.localPosition != targetLocalPosition)
         {
             playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, targetLocalPosition, 0.1f);
+            if (Time.time > startTime + maxDuration)
+            {
+                playerCamera.transform.localPosition = targetLocalPosition;
+            }
             yield return null;
         }
     }
