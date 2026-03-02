@@ -1,15 +1,4 @@
-using System;
-using System.Data.Common;
-using System.Runtime.InteropServices;
-using Unity.VisualScripting;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
-using UnityEngine.TextCore.Text;
-using UnityEngine.UIElements;
-
 
 [RequireComponent(typeof(BoxCollider), typeof(Rigidbody))]
 public class Bullet : MonoBehaviour

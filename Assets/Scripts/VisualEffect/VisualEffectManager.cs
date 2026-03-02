@@ -1,9 +1,6 @@
 using UnityEngine;
-using System;
 using System.Collections.Generic;
 using UnityEngine.VFX;
-using JetBrains.Annotations;
-using Unity.VisualScripting;
 
 public class VisualEffectManager : MonoBehaviour
 {

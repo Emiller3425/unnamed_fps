@@ -1,18 +1,5 @@
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using TMPro;
-using Unity.VisualScripting;
-using UnityEditor;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Interactions;
-using UnityEngine.Rendering.UI;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.TextCore.Text;
-using UnityEngine.VFX;
-
 
 public abstract class Gun : MonoBehaviour
 {

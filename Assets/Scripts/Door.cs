@@ -1,11 +1,4 @@
-using System;
-using System.Runtime.InteropServices;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.AI;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
-using UnityEngine.TextCore.Text;
 
 public class Door : MonoBehaviour, IInteractable
 {

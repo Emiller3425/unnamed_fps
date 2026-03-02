@@ -1,14 +1,7 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
-using System.Runtime.InteropServices;
-using NUnit.Framework;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.TextCore.Text;
-// TODO: use velocity of x and z for dashing
 // TODO: Handle character controller and capsule collider hitboxes when crouched
 
 [RequireComponent(typeof(CharacterController))]
@@ -25,6 +18,9 @@ public class PlayerController : MonoBehaviour
     public Vector3 movementDirection = Vector3.zero;
     public bool isSprinting = false;
     public bool isCrouched = false;
+    private bool isDashing = false;
+    private float currentDashCooldown = 0f;
+    private float maxDashCooldown = 5f;
     public Animator animator;
     private CharacterController characterController;
     private CapsuleCollider capsuleCollider;
@@ -192,7 +188,7 @@ public class PlayerController : MonoBehaviour
 
             transform.Rotate((adsEnabled ? adsLookSpeed : lookSpeed) * lookValue.x * Vector3.up);
             
-            // Crosshairs bloom
+            // Crosshairs bloom logic
 
             // In air
             if (!characterController.isGrounded)
@@ -213,6 +209,11 @@ public class PlayerController : MonoBehaviour
             else
             {
                 GameEvents.current.Bloom(1f, false);
+            }
+
+            if (currentDashCooldown > 0f)
+            {
+                currentDashCooldown -= Time.deltaTime;
             }
         }
     }
@@ -278,26 +279,57 @@ public class PlayerController : MonoBehaviour
 
     private void OnDash(InputAction.CallbackContext context)
     {
-        float dashForceX = 0;
-        float dashForceZ = 0;
-        // TODO: Add dash logic -- initial burst then slows down
-        if (context.control == Keyboard.current.wKey)
+        if (currentDashCooldown <= 0f)
         {
-            Debug.Log("Dash Forwards");
+            // Dash Forward
+            if (context.control == Keyboard.current.wKey)
+            {
+                StartCoroutine(
+                    DashRoutine(transform.forward)
+                    );
+            }
+            // Dash Backwards
+            else if (context.control == Keyboard.current.sKey)
+            {
+                StartCoroutine(
+                    DashRoutine(-transform.forward)
+                    );
+            }
+            // Dash Right
+            else if (context.control == Keyboard.current.dKey)
+            {
+                StartCoroutine(
+                    DashRoutine(transform.right)
+                    );
+            }
+            // Dash Left
+            else if (context.control == Keyboard.current.aKey)
+            {
+                StartCoroutine(
+                    DashRoutine(-transform.right)
+                    );
+            }
         }
-        else if (context.control == Keyboard.current.sKey)
-        {
-            Debug.Log("Dash Backwards");
-        }
-        else if (context.control == Keyboard.current.aKey)
-        {
-            Debug.Log("Dash Left");
-        }
-        else if (context.control == Keyboard.current.dKey)
-        {
-            Debug.Log("Dash Right");
-        }
+    }
 
+    private IEnumerator DashRoutine(Vector3 dashDirection)
+    {
+        float startTime = Time.time;
+        float dashDuration = 0.25f;
+        float dashSpeed = 50f;
+
+        isDashing = true;
+        Debug.Log(Time.time);
+        Debug.Log(startTime + dashDuration);
+        while (Time.time < startTime + dashDuration) {
+            float normalizedTime = (Time.time - startTime) / dashDuration;
+            float currentSpeed = Mathf.Lerp(dashSpeed, walkSpeed, normalizedTime);
+            Debug.Log(currentSpeed * Time.deltaTime * dashDirection);
+            characterController.Move(currentSpeed * Time.deltaTime * dashDirection);
+            yield return null;
+        }
+        currentDashCooldown = maxDashCooldown;
+        isDashing = false;
     }
 
     private void HandlePause(bool isToggled)

@@ -1,11 +1,5 @@
-using System;
-using System.Runtime.InteropServices;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
-using UnityEngine.TextCore.Text;
 
 public class AmmoUIManager : MonoBehaviour
 {

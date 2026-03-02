@@ -1,14 +1,5 @@
-using System;
-using System.Net;
-using System.Runtime.InteropServices;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.TextCore.Text;
 
 public class PauseMenu : MonoBehaviour
 {

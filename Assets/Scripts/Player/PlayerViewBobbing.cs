@@ -1,13 +1,5 @@
-using System;
-using System.Runtime.InteropServices;
-using Unity.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
-using UnityEngine.TextCore.Text;
-using UnityEngine.UIElements;
 
 public class PlayerViewBobbing : MonoBehaviour
 {

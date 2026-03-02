@@ -1,12 +1,5 @@
-using System;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using Microsoft.Unity.VisualStudio.Editor;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
-using UnityEngine.TextCore.Text;
 
 [RequireComponent(typeof(RectTransform))]
 public class HitMarker : MonoBehaviour

@@ -1,13 +1,6 @@
 using System;
 using System.Collections;
-using System.Runtime.InteropServices;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
-using UnityEngine.Rendering.Universal;
-using UnityEngine.TextCore.Text;
-using UnityEngine.Tilemaps;
 
 [RequireComponent(typeof(PlayerController))]
 public class PlayerAnimationController : AnimationController
@@ -72,7 +65,7 @@ public class PlayerAnimationController : AnimationController
             animator.SetFloat("Speed", 1f, 0.2f, Time.deltaTime);
         }
         
-        // TODO: Add jumping, aiming
+        // TODO: Add jumping, (maybe aiming)
     }
 
     public void TriggerWeaponSwap(Action onSwapMidpoint)

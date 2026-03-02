@@ -1,13 +1,4 @@
-using System;
-using System.Runtime.InteropServices;
-using Microsoft.Unity.VisualStudio.Editor;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
-using UnityEngine.TextCore.Text;
-using UnityEngine.UI;
 
 
 //TODO: Add progressing xp bar

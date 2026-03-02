@@ -1,11 +1,4 @@
-using System;
-using System.Runtime.InteropServices;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
-using UnityEngine.Rendering;
-using UnityEngine.TextCore.Text;
 using UnityEngine.VFX;
 
 public enum EnemyState
@@ -89,7 +82,7 @@ public class EnemyController : MonoBehaviour
         GameEvents.current.PlayVFX("bloodSplatter", hit.point, Vector3.zero, hit.normal * 2, null);
     }
 
-    // TODO: THIS IS A TEMP FUNCTION AT THE MOMENT - fix it idk
+    // TODO: THIS IS A TEMP FUNCTION AT THE MOMENT - fix it idk, enemy logic has to be fleshed out better
 
     private void AttemptMelee()
     {

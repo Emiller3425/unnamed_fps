@@ -1,14 +1,5 @@
-
-using TMPro;
-using Unity.Burst.Intrinsics;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem;
-using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
-
-// TODO: make cross hair widen when walking, and after shot. instaed of hidding middle, should be within crosshair bounds
 
 [RequireComponent(typeof(RectTransform))]
 public class Crosshairs : MonoBehaviour
