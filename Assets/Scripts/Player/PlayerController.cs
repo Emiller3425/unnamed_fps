@@ -23,7 +23,6 @@ public class PlayerController : MonoBehaviour
     private float maxDashCooldown = 5f;
     public Animator animator;
     private CharacterController characterController;
-    private CapsuleCollider capsuleCollider;
     public bool canJump = true;
     public bool canSprint = false;
     private float rotationX = 0f;
@@ -85,6 +84,8 @@ public class PlayerController : MonoBehaviour
         aimAction.started += OnAim;
         interactAction.started += OnInteract;
         emoteAction.started += OnEmote;
+        crouchAction.started += OnCrouchEnabled;
+        crouchAction.canceled += OnCrouchDisabled;
     }
 
     private void OnEnable()
@@ -97,7 +98,6 @@ public class PlayerController : MonoBehaviour
     {
         // Game Events
         characterController = GetComponent<CharacterController>();
-        capsuleCollider = GetComponent<CapsuleCollider>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -121,6 +121,7 @@ public class PlayerController : MonoBehaviour
             float speedY = moveValue.y * (crouchAction.IsPressed() && characterController.isGrounded ? crouchSpeed : adsEnabled ? adsWalkSpeed : (sprintAction.IsPressed() && characterController.isGrounded && canSprint ? sprintSpeed : walkSpeed));
 
             isCrouched = crouchAction.IsPressed();
+
             isSprinting = sprintAction.IsPressed();
 
             movementDirection = (right * speedX) + (forward * speedY);
@@ -173,19 +174,6 @@ public class PlayerController : MonoBehaviour
             rotationX -= lookValue.y * (adsEnabled ? adsLookSpeed : lookSpeed);
             rotationX = Mathf.Clamp(rotationX, -80f, 80f);
             playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
-
-            // handle camera height for crouching
-            if (crouchAction.IsPressed() && characterController.isGrounded)
-            {
-                playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, (Vector3.up * characterController.height / 2f - new Vector3(0f, 1f, 0f)), 0.1f);
-                capsuleCollider.height = capsuleColliderCrouchHeight;
-            }
-            else
-            {
-                playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, Vector3.up * characterController.height / 2f - new Vector3(0f, 0.5f, 0f), 0.1f);
-                capsuleCollider.height = capsuleColliderStandHeight;
-            }
-
             transform.Rotate((adsEnabled ? adsLookSpeed : lookSpeed) * lookValue.x * Vector3.up);
             
             // Crosshairs bloom logic
@@ -275,6 +263,16 @@ public class PlayerController : MonoBehaviour
             return;
         }
         animator.SetTrigger("Emote");
+    }
+
+    private void OnCrouchEnabled(InputAction.CallbackContext context)
+    {
+        GameEvents.current.Crouch(true, characterController.isGrounded);
+    }
+
+    private void OnCrouchDisabled(InputAction.CallbackContext context)
+    {
+        GameEvents.current.Crouch(false, characterController.isGrounded);
     }
 
     private void OnDash(InputAction.CallbackContext context)
