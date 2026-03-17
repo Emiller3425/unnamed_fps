@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using UnityEngine;
 
+// TODO: Fix jerkiness when spamming swaps, figure out what the fuck onSwapMidpoint?.Invoke(); does
+
 [RequireComponent(typeof(PlayerController))]
 public class PlayerAnimationController : AnimationController
 {

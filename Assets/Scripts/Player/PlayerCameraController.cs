@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 
+// TODO: Make Camera dynamic and stay at a ratio of height instead of static  vector
+
 public class PlayerCameraController : MonoBehaviour
 {
     public Camera playerCamera;

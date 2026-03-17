@@ -35,8 +35,6 @@ public class PlayerController : MonoBehaviour
     private float gravity = 10f;
     private float walkingStepNoiseBuffer = 0.5f;
     private float sprintingStepNoiseBuffer = 0.4f;
-    private float capsuleColliderStandHeight = 2f;
-    private float capsuleColliderCrouchHeight = 1f;
     private Dictionary<string, int> movementValues;
     // new input system
     private InputAction moveAction;
