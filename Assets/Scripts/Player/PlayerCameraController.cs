@@ -1,13 +1,14 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 
-// TODO: Make Camera dynamic and stay at a ratio of height instead of static  vector
+// TODO: Make Camera dynamic and stay at a ratio of height instead of static vector
 
 public class PlayerCameraController : MonoBehaviour
 {
     public Camera playerCamera;
-    private Vector3 defaultLocalPosition;
-    private Vector3 crouchLocalPosition;
+    private float defaultHeight = 0.47f;
+    private float crouchHeight = -0.33f;
     private Coroutine activeLerp;
     private void OnEnable()
     {
@@ -15,8 +16,7 @@ public class PlayerCameraController : MonoBehaviour
     }
     private void Start()
     {
-        defaultLocalPosition = playerCamera.transform.localPosition;
-        crouchLocalPosition = playerCamera.transform.localPosition - new Vector3(0f, 0.8f, 0f);
+
     }
 
     private void ResizeHitbox(bool isCrouched, bool isGrounded)
@@ -26,23 +26,24 @@ public class PlayerCameraController : MonoBehaviour
 
         if (isCrouched && isGrounded)
         {
-            activeLerp = StartCoroutine(LerpRoutine(crouchLocalPosition));
+            activeLerp = StartCoroutine(LerpRoutine(crouchHeight));
         } else
         {
-            activeLerp = StartCoroutine(LerpRoutine(defaultLocalPosition));
+            activeLerp = StartCoroutine(LerpRoutine(defaultHeight));
         }
     }
 
-    private IEnumerator LerpRoutine(Vector3 targetLocalPosition)
+    private IEnumerator LerpRoutine(float targetHeight)
     {
         float startTime = Time.time;
         float maxDuration = 0.2f;
-        while (playerCamera.transform.localPosition != targetLocalPosition)
+        Vector3 targetPosition = new Vector3(0f, targetHeight, 0f);
+        while (playerCamera.transform.localPosition.y != targetHeight)
         {
-            playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, targetLocalPosition, 0.1f);
+            playerCamera.transform.localPosition = Vector3.Lerp(playerCamera.transform.localPosition, targetPosition, 0.1f);
             if (Time.time > startTime + maxDuration)
             {
-                playerCamera.transform.localPosition = targetLocalPosition;
+                playerCamera.transform.localPosition = targetPosition;
             }
             yield return null;
         }
