@@ -2,8 +2,6 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-// TODO: Make Camera dynamic and stay at a ratio of height instead of static vector
-
 public class PlayerCameraController : MonoBehaviour
 {
     public Camera playerCamera;
@@ -13,10 +11,6 @@ public class PlayerCameraController : MonoBehaviour
     private void OnEnable()
     {
         GameEvents.current.OnCrouch += ResizeHitbox;
-    }
-    private void Start()
-    {
-
     }
 
     private void ResizeHitbox(bool isCrouched, bool isGrounded)

@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-// TODO: Handle character controller and capsule collider hitboxes when crouched
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
