@@ -3,8 +3,9 @@ using UnityEngine;
 public class PlayerStatsManager : StatsManager
 {
     public static PlayerStatsManager Instance { get; private set; }
-    private int maxExperiencePoints = 100;
-    private int experienceToNextLevel;
+    private float maxExperiencePoints = 100;
+    private float currentExperiencePoints;
+    private float experienceToNextLevel;
 
     public override void Awake()
     {
@@ -22,17 +23,15 @@ public class PlayerStatsManager : StatsManager
     // initializes player UI on load with correct values
     private void Start()
     {
-        ExperienceAdded(0);
-        HealthAdded(0);
+        ExperienceAdded(currentExperiencePoints);
+        HealthAdded(currentHealth);
     }
 
     public override void HealthSubtracted(float damage)
     {
-        Debug.Log(currentHealth);
         base.HealthSubtracted(damage);
         // Update Health UI
         GameEvents.current.HealthSubtracted(damage, maxHealth, currentHealth);
-         Debug.Log(currentHealth);
         if (currentHealth <= 0f)
         {
             Destroy(gameObject);
@@ -45,7 +44,7 @@ public class PlayerStatsManager : StatsManager
         GameEvents.current.HealthAdded(healing, maxHealth, currentHealth);
     }
 
-    public void ExperienceAdded(int experience)
+    public void ExperienceAdded(float experience)
     {
         experienceToNextLevel -= experience;
         if (experienceToNextLevel <= 0)
@@ -80,7 +79,7 @@ public class PlayerStatsManager : StatsManager
         currentRifleAmmo -= ammo;
     }
 
-    public void LevelUp(int experienceOver)
+    public void LevelUp(float experienceOver)
     {
         if (currentLevel < maxLevel)
         {
@@ -91,7 +90,7 @@ public class PlayerStatsManager : StatsManager
             ExperienceAdded(experienceOver);
     }
 
-    public void IncreaseStatsOnLevelUp(int experienceOver)
+    public void IncreaseStatsOnLevelUp(float experienceOver)
     {
         IncreaseHealth();
         IncreaseExperienceToNextLevel(experienceOver);
@@ -99,20 +98,20 @@ public class PlayerStatsManager : StatsManager
         GameEvents.current.HealthAdded(0f, maxHealth, currentHealth);
     }
 
-    public void IncreaseHealth()
-    {
-        maxHealth += 10f;
-        currentHealth = maxHealth;
-    }
-    
-    public void IncreaseExperienceToNextLevel(int experienceOver)
+    public void IncreaseExperienceToNextLevel(float experienceOver)
     {
         maxExperiencePoints = currentLevel * 100;
         // experience over is negative
         experienceToNextLevel = maxExperiencePoints + experienceOver;
     }
+    public void IncreaseHealth()
+    {
+        maxHealth += 10f;
+        currentHealth = maxHealth;
+    }
     protected override void OnDestroy()
     {
         // TODO: Player death
     }
-}
+} 
+

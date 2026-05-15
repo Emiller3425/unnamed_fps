@@ -65,9 +65,7 @@ public class PlayerAnimationController : AnimationController
         } else
         {
             animator.SetFloat("Speed", 1f, 0.2f, Time.deltaTime);
-        }
-        
-        // TODO: Add jumping, (maybe aiming)
+        }        
     }
 
     public void TriggerWeaponSwap(Action onSwapMidpoint)
