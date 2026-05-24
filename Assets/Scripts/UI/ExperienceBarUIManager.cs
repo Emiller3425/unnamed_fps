@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-
-//TODO: Adjust Coroutine logic to handle when we receive over the max amount of xp needed
-// for level up
 public class ExperienceBarUIManager : MonoBehaviour
 {
     public UnityEngine.UI.Image border;
