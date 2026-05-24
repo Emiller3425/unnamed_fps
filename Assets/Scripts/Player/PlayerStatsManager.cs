@@ -46,10 +46,16 @@ public class PlayerStatsManager : StatsManager
 
     public void ExperienceAdded(float experience, bool isLevelUp = false)
     {
-        float previousExperiencePoints = maxExperiencePoints - experienceToNextLevel;
+        float previousExperiencePoints;
+        previousExperiencePoints = maxExperiencePoints - experienceToNextLevel;
 
         if (!isLevelUp)
+        {
             experienceToNextLevel -= experience;
+        } else
+        {
+            previousExperiencePoints = 0f;
+        }
 
         float currentExperiencePoints = maxExperiencePoints - experienceToNextLevel;
 

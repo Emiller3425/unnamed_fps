@@ -14,14 +14,12 @@ public class ExperienceBarUIManager : MonoBehaviour
     public static ExperienceBarUIManager Instance { get; private set; }
     public RectTransform blueRectTransform;
     private float blueWidthMax;
-    private Queue<IEnumerator> animationQueue;
+    private bool isAnimating = false;
     private void Awake()
     {
         Transform blueTransform = transform.Find("Blue");
         blueRectTransform = blueTransform.GetComponentInChildren<RectTransform>();
         blueWidthMax = blueRectTransform.rect.width;
-
-        animationQueue = new Queue<IEnumerator>();
 
         if (Instance == null)
         {
@@ -37,8 +35,7 @@ public class ExperienceBarUIManager : MonoBehaviour
 
     private void ExperienceAdded(float maxExperiencePoints, float currentExperiencePoints, float previousExperiencePoints)
     {
-        Debug.Log($"Max XP: {maxExperiencePoints}, Current XP: {currentExperiencePoints}, Previous XP: {previousExperiencePoints}");
-        StartCoroutine(AnimateExperienceBar(maxExperiencePoints, currentExperiencePoints, previousExperiencePoints));
+        StartCoroutine(handleAnimations(maxExperiencePoints, currentExperiencePoints, previousExperiencePoints));
     }
 
     private void ApplyToBlue(float maxExperiencePoints, float currentExperiencePoints)
@@ -46,15 +43,30 @@ public class ExperienceBarUIManager : MonoBehaviour
         blueRectTransform.sizeDelta = new Vector2(currentExperiencePoints / maxExperiencePoints * blueWidthMax, blueRectTransform.rect.height);
     }
 
+    private IEnumerator handleAnimations(float maxExperiencePoints, float currentExperiencePoints, float previousExperiencePoints)
+    {
+        while (isAnimating)
+        {
+            yield return null;
+        }
+
+       StartCoroutine(AnimateExperienceBar(maxExperiencePoints, currentExperiencePoints, previousExperiencePoints));
+    }
+
     private IEnumerator AnimateExperienceBar(float maxExperiencePoints, float currentExperiencePoints, float previousExperiencePoints)
     {
+        isAnimating = true;
         float targetExperiencePoints;
         float experiencePointsIterator = previousExperiencePoints;
+        // Init case where both are 0
         if (currentExperiencePoints == 0 && previousExperiencePoints == 0 )
         {
             ApplyToBlue(maxExperiencePoints, 0);
+            isAnimating = false;
             yield break;
         }
+
+        // Player gets more than the max experiencePoints, set target to max
         if (currentExperiencePoints < previousExperiencePoints || currentExperiencePoints > maxExperiencePoints)
         { 
             targetExperiencePoints = maxExperiencePoints;
@@ -62,17 +74,19 @@ public class ExperienceBarUIManager : MonoBehaviour
         {
             targetExperiencePoints = currentExperiencePoints;
         }
-        Debug.Log($"Target XP: {targetExperiencePoints}");
+        // Animate experience bar
         while (experiencePointsIterator < targetExperiencePoints)
         {
             experiencePointsIterator += Time.deltaTime * 100f;
             ApplyToBlue(maxExperiencePoints, experiencePointsIterator);
             yield return null;
         }
+        // Set back to zero for this animation if we reach the max
         if (targetExperiencePoints == maxExperiencePoints)
         {
             ApplyToBlue(maxExperiencePoints, 0);
         }
+        isAnimating = false;
     }
 
     private void OnDestroy()

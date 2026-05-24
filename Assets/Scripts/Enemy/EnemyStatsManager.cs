@@ -7,7 +7,7 @@ public class EnemyStatsManager : StatsManager
         if (currentHealth <= 0f)
         {
             Destroy(gameObject);
-            PlayerStatsManager.Instance.ExperienceAdded(150);
+            PlayerStatsManager.Instance.ExperienceAdded(325);
         }
     }
     protected override void OnDestroy()
