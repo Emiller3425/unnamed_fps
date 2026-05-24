@@ -44,15 +44,22 @@ public class PlayerStatsManager : StatsManager
         GameEvents.current.HealthAdded(healing, maxHealth, currentHealth);
     }
 
-    public void ExperienceAdded(float experience)
+    public void ExperienceAdded(float experience, bool isLevelUp = false)
     {
-        experienceToNextLevel -= experience;
+        float previousExperiencePoints = maxExperiencePoints - experienceToNextLevel;
+
+        if (!isLevelUp)
+            experienceToNextLevel -= experience;
+
+        float currentExperiencePoints = maxExperiencePoints - experienceToNextLevel;
+
+        // Update Experience UI
+        GameEvents.current.ExperienceAdded(maxExperiencePoints, currentExperiencePoints, previousExperiencePoints);
         if (experienceToNextLevel <= 0)
         {
-            LevelUp(experienceToNextLevel);
+            // experience over is negative
+            LevelUp(-experienceToNextLevel);
         }
-        // Update Experience UI
-        GameEvents.current.ExperienceAdded(maxExperiencePoints, maxExperiencePoints - experienceToNextLevel);
      }
     public int GetPistolAmmo()
     {
@@ -85,9 +92,10 @@ public class PlayerStatsManager : StatsManager
         {
             currentLevel += 1;
         }
+        Debug.Log(experienceOver);
         IncreaseStatsOnLevelUp(experienceOver);
         if (experienceOver > 0)
-            ExperienceAdded(experienceOver);
+            ExperienceAdded(experienceOver, true);
     }
 
     public void IncreaseStatsOnLevelUp(float experienceOver)
@@ -101,8 +109,7 @@ public class PlayerStatsManager : StatsManager
     public void IncreaseExperienceToNextLevel(float experienceOver)
     {
         maxExperiencePoints = currentLevel * 100;
-        // experience over is negative
-        experienceToNextLevel = maxExperiencePoints + experienceOver;
+        experienceToNextLevel = maxExperiencePoints - experienceOver;
     }
     public void IncreaseHealth()
     {
@@ -114,4 +121,3 @@ public class PlayerStatsManager : StatsManager
         // TODO: Player death
     }
 } 
-
