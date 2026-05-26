@@ -1,18 +1,55 @@
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
+
+// TODO: Add logic for picking up weapons in the environment
 
 public class PlayerWeaponInventory : MonoBehaviour
 {
     public Transform weaponHolder;
     public PlayerAnimationController animController;
-    public GameObject currentWeapon;
+    public GameObject equippedWeapon;
     public Dictionary<string, GameObject> weaponDictionary = new Dictionary<string, GameObject>();
+    private InputAction dropAction;
+    private Collider playerCollider;
 
+    public void EquipNextWeapon(bool wasDropped)
+    {
+        if (weaponDictionary.Count > 0) {
+            int currentIndex = weaponDictionary.Keys.ToList().IndexOf(equippedWeapon.name);
+            int nextIndex = (currentIndex + 1) % weaponDictionary.Count;
+            string nextWeaponName = weaponDictionary.Keys.ElementAt(nextIndex);
+
+            EquipWeapon(nextWeaponName, wasDropped);
+        }
+    }
+
+    public void EquipWeapon(string weaponName, bool wasDropped)
+    {
+        if (weaponDictionary.ContainsKey(weaponName))
+        {
+            if (equippedWeapon == null) {
+                CompleteWeaponSwitch(weaponName, wasDropped);
+            } else
+            {
+                animController.TriggerWeaponSwap(() => CompleteWeaponSwitch(weaponName, wasDropped));
+            }
+        }
+    }
+    private void Awake()
+    {
+        playerCollider = GetComponent<Collider>();
+    }
     private void Start()
     {
         PopulateInventory();
-        EquipWeapon("Pistol"); 
+        EquipWeapon(weaponHolder.GetChild(0).name, false);
+
+        dropAction = InputSystem.actions.FindAction("Drop");
+        dropAction.Enable();
+        dropAction.started += OnDrop;
     }
 
     private void PopulateInventory()
@@ -26,42 +63,46 @@ public class PlayerWeaponInventory : MonoBehaviour
             child.gameObject.SetActive(false);
         }
     }
-
-    public void EquipNextWeapon()
+    private void CompleteWeaponSwitch(string weaponName, bool wasDropped)
     {
-        int currentIndex = weaponDictionary.Keys.ToList().IndexOf(currentWeapon.name);
-
-        int nextIndex = (currentIndex + 1) % weaponDictionary.Count;
-
-        string nextWeaponName = weaponDictionary.Keys.ElementAt(nextIndex);
-
-        EquipWeapon(nextWeaponName);
-    }
-
-    public void EquipWeapon(string weaponName)
-    {
-        if (weaponDictionary.ContainsKey(weaponName))
+        if (equippedWeapon != null && !wasDropped)
         {
-            if (currentWeapon == null) {
-                CompleteWeaponSwitch(weaponName);
-            } else
+            equippedWeapon.SetActive(false);
+        } else if (wasDropped)
+        {
+            // Remove weapons from inventory in the player heirarchy
+            equippedWeapon.transform.SetParent(null, true);
+            weaponDictionary.Remove(equippedWeapon.name, out equippedWeapon);
+
+            // Disable gun script and enable physics components
+            equippedWeapon.GetComponent<Gun>().enabled = false;
+            equippedWeapon.GetComponent<Rigidbody>().isKinematic = false;
+            equippedWeapon.GetComponent<MeshCollider>().enabled = true;
+
+            // Ignore collision with player on drop
+            if (playerCollider != null)
             {
-                animController.TriggerWeaponSwap(() => CompleteWeaponSwitch(weaponName));
+                Physics.IgnoreCollision(equippedWeapon.GetComponent<MeshCollider>(), playerCollider, true);
+            }
+
+            // Apply throw force
+            Vector3 throwForce = transform.forward * 2f + Vector3.up * 100f;
+            Debug.Log(throwForce);
+            equippedWeapon.GetComponent<Rigidbody>().AddForce(throwForce, ForceMode.Impulse);
+           
+           // Clear equippedWeapon
+            equippedWeapon = null;
+            if (weaponDictionary.Count == 0)
+            {
+                UpdateAmmoUI();
+                return;
             }
         }
-    }
 
-    private void CompleteWeaponSwitch(string weaponName)
-    {
-        if (currentWeapon != null)
-        {
-            currentWeapon.SetActive(false);
-        }
+        equippedWeapon = weaponDictionary[weaponName];
+        equippedWeapon.SetActive(true);
 
-        currentWeapon = weaponDictionary[weaponName];
-        currentWeapon.SetActive(true);
-
-        Gun gunScript = currentWeapon.GetComponent<Gun>();
+        Gun gunScript = equippedWeapon.GetComponent<Gun>();
 
         if (gunScript != null && gunScript.weaponAnimationOverride != null)
         {
@@ -73,9 +114,11 @@ public class PlayerWeaponInventory : MonoBehaviour
 
     private void UpdateAmmoUI()
     {
-        Gun gunScript = currentWeapon.GetComponent<Gun>();
+        Gun gunScript = equippedWeapon?.GetComponent<Gun>();
         if (gunScript == null)
         {
+            // Negative value incdicates there is no equipped weapon
+            GameEvents.current.AmmoChanged(-1, -1);
             return;
         }
 
@@ -85,5 +128,16 @@ public class PlayerWeaponInventory : MonoBehaviour
         if (gunScript.GetComponent<IUsesRifleAmmo>() is IUsesRifleAmmo) reserveAmmo = PlayerStatsManager.Instance.GetRifleAmmo();
 
         GameEvents.current.AmmoChanged(gunScript.currentMag, reserveAmmo);
+    }
+
+    private void OnDrop(InputAction.CallbackContext context)
+    {
+        EquipNextWeapon(true);
+    }
+
+    private void OnDestroy()
+    {
+        dropAction.started -= OnDrop;
+        dropAction.Disable();
     }
 }

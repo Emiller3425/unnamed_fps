@@ -20,6 +20,6 @@ public class PlayerWeaponHolder : MonoBehaviour
 
     private void OnSwap(InputAction.CallbackContext context)
     {
-        inventory.EquipNextWeapon();
+        inventory.EquipNextWeapon(false);
     }
 }

@@ -28,7 +28,13 @@ public class AmmoUIManager : MonoBehaviour
     {
        if (ammoUIText != null) 
         {
-         ammoUIText.text = $"{currentMag} / {currentAmmo}";
+            if (currentMag != -1 && currentAmmo != -1) {
+                ammoUIText.text = $"{currentMag} / {currentAmmo}";
+            } else
+            {
+                // Clear Ammo UI when we are not holding a weapon
+                ammoUIText.text = null;
+            }
         } else
         {
             Debug.LogError("Ammo UI Text is null, check component hierachy");

@@ -1,3 +1,4 @@
+using TreeEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -26,6 +27,8 @@ public abstract class Gun : MonoBehaviour
     protected bool firstUpdate = true;
     protected Vector2 screenCenter;
     protected bool isPaused = false;
+    protected Rigidbody rigidBody;
+    protected MeshCollider meshCollider;
     protected virtual void Awake()
     {
         // define listeners
@@ -56,6 +59,12 @@ public abstract class Gun : MonoBehaviour
     {
         muzzleTransform = transform.Find("Muzzle");
         screenCenter = new Vector2 (Screen.width / 2f, Screen.height / 2f);
+
+        // Disable physics components
+        rigidBody = transform.GetComponent<Rigidbody>();
+        rigidBody.isKinematic = true;
+        meshCollider = transform.GetComponent<MeshCollider>();
+        meshCollider.enabled = true;
     }
 
     protected virtual void Update()
