@@ -27,6 +27,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action<bool> OnTogglePlayerInventory;
     public event Action<float, bool> OnBloom;
     public event Action<bool, bool> OnCrouch;
+    public event Action<GameObject> OnWeaponPickup;
     public void AmmoChanged(int currentMag, int currentAmmo)
     {
         OnAmmoChanged?.Invoke(currentMag, currentAmmo);
@@ -100,5 +101,10 @@ public class GameEvents : TemplateMonoBeheavior
     public void Crouch(bool isCrouched, bool isGrounded)
     {
         OnCrouch?.Invoke(isCrouched, isGrounded);
+    }
+
+    public void WeaponPickup(GameObject weapon)
+    {
+        OnWeaponPickup?.Invoke(weapon);
     }
 }

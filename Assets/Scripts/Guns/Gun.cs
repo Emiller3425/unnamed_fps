@@ -1,8 +1,11 @@
 using TreeEditor;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 
-public abstract class Gun : MonoBehaviour
+public abstract class Gun : MonoBehaviour, IInteractable
 {
     // public GameObject bulletPrefab;
     public Camera playerCamera;
@@ -28,7 +31,28 @@ public abstract class Gun : MonoBehaviour
     protected Vector2 screenCenter;
     protected bool isPaused = false;
     protected Rigidbody rigidBody;
-    protected MeshCollider meshCollider;
+    protected BoxCollider boxCollider;
+
+    public void HandleInteract()
+    {
+        GameEvents.current.WeaponPickup(gameObject);
+    }
+    public virtual void AttemptShoot()
+    {
+        // player shoot logic
+        if (currentMag > 0 && reloadBuffer <= 0f)
+        {
+            if (fireRateBuffer <= 0f)
+                ShootBullet();
+            if (currentMag <= 0)
+            {
+                Reload();
+            }
+        }
+        else {
+            Reload();
+        }
+    }
     protected virtual void Awake()
     {
         // define listeners
@@ -63,8 +87,8 @@ public abstract class Gun : MonoBehaviour
         // Disable physics components
         rigidBody = transform.GetComponent<Rigidbody>();
         rigidBody.isKinematic = true;
-        meshCollider = transform.GetComponent<MeshCollider>();
-        meshCollider.enabled = true;
+        boxCollider = transform.GetComponent<BoxCollider>();
+        boxCollider.enabled = true;
     }
 
     protected virtual void Update()
@@ -78,23 +102,6 @@ public abstract class Gun : MonoBehaviour
     }
 
     protected abstract void OnShoot(InputAction.CallbackContext context);
-
-    public virtual void AttemptShoot()
-    {
-        // player shoot logic
-        if (currentMag > 0 && reloadBuffer <= 0f)
-        {
-            if (fireRateBuffer <= 0f)
-                ShootBullet();
-            if (currentMag <= 0)
-            {
-                Reload();
-            }
-        }
-        else {
-            Reload();
-        }
-    }
 
     // Attempt reload on reload action
     protected void OnReload(InputAction.CallbackContext context)

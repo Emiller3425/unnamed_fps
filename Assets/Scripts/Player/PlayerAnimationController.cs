@@ -4,6 +4,7 @@ using UnityEngine;
 
 // TODO: Fix jerkiness when spamming swaps, figure out what the fuck onSwapMidpoint?.Invoke(); does
 
+
 [RequireComponent(typeof(PlayerController))]
 public class PlayerAnimationController : AnimationController
 {
@@ -68,12 +69,12 @@ public class PlayerAnimationController : AnimationController
         }        
     }
 
-    public void TriggerWeaponSwap(Action onSwapMidpoint)
+    public void TriggerWeaponSwap(Action onSwapMidpoint = null)
     {
         StartCoroutine(SwapRoutine(onSwapMidpoint));
     }
 
-    private IEnumerator SwapRoutine(Action onSwapMidpoint)
+    private IEnumerator SwapRoutine(Action onSwapMidpoint = null)
     {
         animator.SetLayerWeight(0, 0f);
         animator.SetFloat("SwapSpeed", 1f);
@@ -89,7 +90,6 @@ public class PlayerAnimationController : AnimationController
 
         yield return new WaitForEndOfFrame();
         yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(3).length);
-
 
         animator.Play("Empty State", 3, 0f);
         animator.SetLayerWeight(0, 1f);

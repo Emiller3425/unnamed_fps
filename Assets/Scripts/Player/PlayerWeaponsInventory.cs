@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 // TODO: Add logic for picking up weapons in the environment
+// Add max size to player iventory
 
 public class PlayerWeaponInventory : MonoBehaviour
 {
@@ -32,11 +33,20 @@ public class PlayerWeaponInventory : MonoBehaviour
         {
             if (equippedWeapon == null) {
                 CompleteWeaponSwitch(weaponName, wasDropped);
-            } else
+            } else if (wasDropped)
+            {
+                CompleteWeaponSwitch(weaponName, wasDropped);
+                animController.TriggerWeaponSwap();
+            } 
+            else
             {
                 animController.TriggerWeaponSwap(() => CompleteWeaponSwitch(weaponName, wasDropped));
             }
         }
+    }
+    private void OnEnable()
+    {
+        GameEvents.current.OnWeaponPickup += PickupWeapon;
     }
     private void Awake()
     {
@@ -63,6 +73,37 @@ public class PlayerWeaponInventory : MonoBehaviour
             child.gameObject.SetActive(false);
         }
     }
+
+    private void AddToInventory(GameObject weapon)
+    {
+        // Add weapon back to inventory
+        weaponDictionary.Add(weapon.name, weapon);
+        weapon.transform.SetParent(gameObject.transform, true);
+
+        // Enable gun script physics components
+        weapon.GetComponent<Gun>().enabled = true;
+        weapon.GetComponent<Rigidbody>().isKinematic = true;
+        weapon.GetComponent<BoxCollider>().enabled = false;
+
+        // TODO: Fix the position of the weapon after re-parenting it
+
+        // Enable collision with player
+        if (playerCollider != null)
+        {
+            Physics.IgnoreCollision(weapon.GetComponent<BoxCollider>(), playerCollider, false);
+        }
+
+        // If the newly added weapon is the only one in the inventory
+        if (equippedWeapon == null && weaponDictionary.Count == 1)
+        {
+            EquipWeapon(weapon.name, false);
+        }
+    }
+
+    private void RemoveFromInventory(GameObject weapon)
+    {
+        weaponDictionary.Remove(weapon.name);
+    }
     private void CompleteWeaponSwitch(string weaponName, bool wasDropped)
     {
         if (equippedWeapon != null && !wasDropped)
@@ -77,17 +118,16 @@ public class PlayerWeaponInventory : MonoBehaviour
             // Disable gun script and enable physics components
             equippedWeapon.GetComponent<Gun>().enabled = false;
             equippedWeapon.GetComponent<Rigidbody>().isKinematic = false;
-            equippedWeapon.GetComponent<MeshCollider>().enabled = true;
+            equippedWeapon.GetComponent<BoxCollider>().enabled = true;
 
             // Ignore collision with player on drop
             if (playerCollider != null)
             {
-                Physics.IgnoreCollision(equippedWeapon.GetComponent<MeshCollider>(), playerCollider, true);
+                Physics.IgnoreCollision(equippedWeapon.GetComponent<BoxCollider>(), playerCollider, true);
             }
 
             // Apply throw force
-            Vector3 throwForce = transform.forward * 2f + Vector3.up * 100f;
-            Debug.Log(throwForce);
+            Vector3 throwForce = transform.forward * 5f + Vector3.up * 20f;
             equippedWeapon.GetComponent<Rigidbody>().AddForce(throwForce, ForceMode.Impulse);
            
            // Clear equippedWeapon
@@ -128,6 +168,11 @@ public class PlayerWeaponInventory : MonoBehaviour
         if (gunScript.GetComponent<IUsesRifleAmmo>() is IUsesRifleAmmo) reserveAmmo = PlayerStatsManager.Instance.GetRifleAmmo();
 
         GameEvents.current.AmmoChanged(gunScript.currentMag, reserveAmmo);
+    }
+
+    private void PickupWeapon(GameObject weapon)
+    {
+        AddToInventory(weapon);
     }
 
     private void OnDrop(InputAction.CallbackContext context)

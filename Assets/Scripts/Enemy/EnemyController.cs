@@ -102,7 +102,6 @@ public class EnemyController : MonoBehaviour
             {
                 // 4. Apply damage and trigger effects
                 damageable.HealthSubtracted(meleeDamage);
-                Debug.Log("Enemy Hit");
                 PlayBloodSplatter(hit); 
             }
         }
