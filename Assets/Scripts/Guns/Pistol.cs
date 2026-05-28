@@ -6,7 +6,6 @@ public class Pistol : SemiAutoGun, IUsesPistolAmmo
     {
         base.Awake();
         magSize = 12;
-        PlayerStatsManager.Instance.SetPistolAmmo(PlayerStatsManager.Instance.GetPistolAmmo());
         currentMag = magSize;
     }
 
@@ -16,6 +15,7 @@ public class Pistol : SemiAutoGun, IUsesPistolAmmo
         damage = 10;
         maxReloadBuffer = 1.5f;
         maxFireRateBuffer = 0.2f;
+        PlayerStatsManager.Instance.SetPistolAmmo(PlayerStatsManager.Instance.GetPistolAmmo());
         // sets currentAmmo to maxAmmo
         base.Start();
     }

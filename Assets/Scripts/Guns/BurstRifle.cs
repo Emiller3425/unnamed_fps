@@ -6,7 +6,6 @@ public class BurstRifle : BurstGun, IUsesRifleAmmo
     {
         base.Awake();
         magSize = 35;
-        PlayerStatsManager.Instance.SetRifleAmmo(entityStats.GetCurrentRifleAmmo());
         currentMag = magSize;
     }
     protected override void Start()
@@ -15,6 +14,7 @@ public class BurstRifle : BurstGun, IUsesRifleAmmo
         damage = 12;
         maxReloadBuffer = 2.5f;
         maxFireRateBuffer = 0.1f;
+        PlayerStatsManager.Instance.SetRifleAmmo(entityStats.GetCurrentRifleAmmo());
         // sets currentAmmo to maxAmmo
         base.Start();
     }

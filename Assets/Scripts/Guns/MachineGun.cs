@@ -6,7 +6,6 @@ public class MachineGun : FullAutoGun, IUsesSMGAmmo
     {
         base.Awake();
         magSize = 35;
-        PlayerStatsManager.Instance.SetSMGAmmo(PlayerStatsManager.Instance.GetSMGAmmo());
         currentMag = magSize;
     }
     protected override void Start()
@@ -15,6 +14,7 @@ public class MachineGun : FullAutoGun, IUsesSMGAmmo
         damage = 5;
         maxReloadBuffer = 2.5f;
         maxFireRateBuffer = 0.05f;
+        PlayerStatsManager.Instance.SetSMGAmmo(PlayerStatsManager.Instance.GetSMGAmmo());
         // sets currentAmmo to maxAmmo
         base.Start();
     }

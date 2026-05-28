@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 
 // TODO: Add logic for picking up weapons in the environment
@@ -67,9 +68,8 @@ public class PlayerWeaponInventory : MonoBehaviour
         foreach (Transform child in weaponHolder)
         {
             weaponDictionary.Add(child.name, child.gameObject);
-            int index = weaponDictionary.Keys.ToList().IndexOf(child.name);
 
-            // Start with everything turned off
+            // Start with every wwapon inactvie
             child.gameObject.SetActive(false);
         }
     }
@@ -85,8 +85,9 @@ public class PlayerWeaponInventory : MonoBehaviour
         weapon.GetComponent<Rigidbody>().isKinematic = true;
         weapon.GetComponent<BoxCollider>().enabled = false;
 
-        // TODO: Fix the position of the weapon after re-parenting it
-
+        SetWeaponPositionAndRotation(weapon.transform
+        
+        );
         // Enable collision with player
         if (playerCollider != null)
         {
@@ -141,6 +142,7 @@ public class PlayerWeaponInventory : MonoBehaviour
 
         equippedWeapon = weaponDictionary[weaponName];
         equippedWeapon.SetActive(true);
+        SetWeaponPositionAndRotation(equippedWeapon.transform);
 
         Gun gunScript = equippedWeapon.GetComponent<Gun>();
 
@@ -168,6 +170,16 @@ public class PlayerWeaponInventory : MonoBehaviour
         if (gunScript.GetComponent<IUsesRifleAmmo>() is IUsesRifleAmmo) reserveAmmo = PlayerStatsManager.Instance.GetRifleAmmo();
 
         GameEvents.current.AmmoChanged(gunScript.currentMag, reserveAmmo);
+    }
+
+    private void SetWeaponPositionAndRotation(Transform weaponTransform)
+    {
+        weaponTransform.position = transform.parent.position;
+        weaponTransform.localPosition = Vector3.zero;
+        weaponTransform.localRotation = Quaternion.identity;
+
+        weaponTransform.localPosition -= weaponTransform.Find("GripAnchor").localPosition;
+        weaponTransform.rotation = weaponTransform.Find("GripAnchor").rotation;
     }
 
     private void PickupWeapon(GameObject weapon)

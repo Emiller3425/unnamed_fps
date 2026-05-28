@@ -32,6 +32,7 @@ public abstract class Gun : MonoBehaviour, IInteractable
     protected bool isPaused = false;
     protected Rigidbody rigidBody;
     protected BoxCollider boxCollider;
+    protected GameObject GripAnchor;
 
     public void HandleInteract()
     {
