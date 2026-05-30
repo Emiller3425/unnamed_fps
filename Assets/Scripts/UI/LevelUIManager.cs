@@ -31,7 +31,7 @@ public class LevelUIManager : MonoBehaviour
             levelUIText.text = $"Lvl: {currentLevel}";
         } else
         {
-            Debug.LogError("Ammo UI Text is null, check component hierachy");
+            Debug.LogError("Level UI Text is null, check component hierachy");
         }
     }
 
