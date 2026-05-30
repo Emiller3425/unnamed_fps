@@ -10,6 +10,7 @@ public class GameEvents : TemplateMonoBeheavior
         current = this;
     }
     public event Action<int, int> OnAmmoChanged;
+    public event Action<int> OnLevelChanged;
     public event Action OnReloadStarted;
     public event Action OnReloadFinished;
     public event Action<string> OnPlaySFX;
@@ -31,6 +32,10 @@ public class GameEvents : TemplateMonoBeheavior
     public void AmmoChanged(int currentMag, int currentAmmo)
     {
         OnAmmoChanged?.Invoke(currentMag, currentAmmo);
+    }
+    public void LevelChanged(int level)
+    {
+        OnLevelChanged?.Invoke(level);
     }
     public void ReloadStarted()
     {

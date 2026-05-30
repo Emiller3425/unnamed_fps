@@ -25,6 +25,7 @@ public class PlayerStatsManager : StatsManager
     {
         ExperienceAdded(currentExperiencePoints);
         HealthAdded(currentHealth);
+        GameEvents.current.LevelChanged(currentLevel);
     }
 
     public override void HealthSubtracted(float damage)
@@ -97,6 +98,7 @@ public class PlayerStatsManager : StatsManager
         if (currentLevel < maxLevel)
         {
             currentLevel += 1;
+            GameEvents.current.LevelChanged(currentLevel);
         }
         Debug.Log(experienceOver);
         IncreaseStatsOnLevelUp(experienceOver);
