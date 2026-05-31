@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+//TODO: make level  UI only increase when xp bar finishes   
+
 public class ExperienceBarUIManager : MonoBehaviour
 {
     public UnityEngine.UI.Image border;
@@ -30,9 +32,9 @@ public class ExperienceBarUIManager : MonoBehaviour
         GameEvents.current.OnExperienceAdded += ExperienceAdded;
     }
 
-    private void ExperienceAdded(float maxExperiencePoints, float currentExperiencePoints, float previousExperiencePoints)
+    private void ExperienceAdded(float maxExperiencePoints, float currentExperiencePoints, float previousExperiencePoints, int currentLevel)
     {
-        StartCoroutine(handleAnimations(maxExperiencePoints, currentExperiencePoints, previousExperiencePoints));
+        StartCoroutine(handleAnimations(maxExperiencePoints, currentExperiencePoints, previousExperiencePoints, currentLevel));
     }
 
     private void ApplyToBlue(float maxExperiencePoints, float currentExperiencePoints)
@@ -40,17 +42,17 @@ public class ExperienceBarUIManager : MonoBehaviour
         blueRectTransform.sizeDelta = new Vector2(currentExperiencePoints / maxExperiencePoints * blueWidthMax, blueRectTransform.rect.height);
     }
 
-    private IEnumerator handleAnimations(float maxExperiencePoints, float currentExperiencePoints, float previousExperiencePoints)
+    private IEnumerator handleAnimations(float maxExperiencePoints, float currentExperiencePoints, float previousExperiencePoints, int currentLevel)
     {
         while (isAnimating)
         {
             yield return null;
         }
 
-       StartCoroutine(AnimateExperienceBar(maxExperiencePoints, currentExperiencePoints, previousExperiencePoints));
+       StartCoroutine(AnimateExperienceBar(maxExperiencePoints, currentExperiencePoints, previousExperiencePoints, currentLevel));
     }
 
-    private IEnumerator AnimateExperienceBar(float maxExperiencePoints, float currentExperiencePoints, float previousExperiencePoints)
+    private IEnumerator AnimateExperienceBar(float maxExperiencePoints, float currentExperiencePoints, float previousExperiencePoints, int currentLevel)
     {
         isAnimating = true;
         float targetExperiencePoints;
@@ -82,6 +84,7 @@ public class ExperienceBarUIManager : MonoBehaviour
         if (targetExperiencePoints == maxExperiencePoints)
         {
             ApplyToBlue(maxExperiencePoints, 0);
+            GameEvents.current.LevelChanged(currentLevel + 1);
         }
         isAnimating = false;
     }

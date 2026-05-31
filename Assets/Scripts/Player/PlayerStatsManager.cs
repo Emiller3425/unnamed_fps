@@ -61,7 +61,7 @@ public class PlayerStatsManager : StatsManager
         float currentExperiencePoints = maxExperiencePoints - experienceToNextLevel;
 
         // Update Experience UI
-        GameEvents.current.ExperienceAdded(maxExperiencePoints, currentExperiencePoints, previousExperiencePoints);
+        GameEvents.current.ExperienceAdded(maxExperiencePoints, currentExperiencePoints, previousExperiencePoints, currentLevel);
         if (experienceToNextLevel <= 0)
         {
             // experience over is negative
@@ -98,9 +98,7 @@ public class PlayerStatsManager : StatsManager
         if (currentLevel < maxLevel)
         {
             currentLevel += 1;
-            GameEvents.current.LevelChanged(currentLevel);
         }
-        Debug.Log(experienceOver);
         IncreaseStatsOnLevelUp(experienceOver);
         if (experienceOver > 0)
             ExperienceAdded(experienceOver, true);

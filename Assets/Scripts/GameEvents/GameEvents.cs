@@ -17,7 +17,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event System.Action<string, Vector3, Vector3, Vector3, Transform> OnPlayVFX;
     public event Action<float, float, float> OnHealthAdded;
     public event Action<float, float, float> OnHealthSubtracted;
-    public event Action<float, float, float> OnExperienceAdded;
+    public event Action<float, float, float, int> OnExperienceAdded;
     public event Action OnSetCrossHairActivated;
     public event Action OnSetCrossHairDeactivated;
     public event Action OnSetHitMarkerActivated;
@@ -53,9 +53,9 @@ public class GameEvents : TemplateMonoBeheavior
     {
         OnPlayVFX?.Invoke(shader, position, rotation, velocity, sourceToFollow);
     }
-    public void ExperienceAdded(float maxExperiencePoints, float currentExperiencePoints, float previousExperiencePoints)
+    public void ExperienceAdded(float maxExperiencePoints, float currentExperiencePoints, float previousExperiencePoints, int currentLevel)
     {
-        OnExperienceAdded?.Invoke(maxExperiencePoints, currentExperiencePoints, previousExperiencePoints);
+        OnExperienceAdded?.Invoke(maxExperiencePoints, currentExperiencePoints, previousExperiencePoints, currentLevel);
     }
     public void HealthAdded(float damage, float maxHealth, float currentHealth)
     {
