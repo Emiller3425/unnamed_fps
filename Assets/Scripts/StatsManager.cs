@@ -13,6 +13,8 @@ public class StatsManager : MonoBehaviour, IDamageable, IHealable
     protected int maxSMGAmmo;
     protected int currentRifleAmmo;
     protected int maxRifleAmmo;
+    protected int maxEquipment;
+    protected int currentEquipmet;
     public virtual void Awake()
     {
         currentHealth = entityStats.GetCurrentHealth();
@@ -25,6 +27,8 @@ public class StatsManager : MonoBehaviour, IDamageable, IHealable
         maxSMGAmmo = entityStats.GetMaxSMGAmmo();
         currentRifleAmmo = entityStats.GetCurrentRifleAmmo();
         maxRifleAmmo = entityStats.GetMaxRifleAmmo();
+        currentEquipmet = entityStats.GetCurrentEquipment();
+        maxEquipment = entityStats.GetMaxEquipement();
     }
 
     public virtual void HealthSubtracted(float damage)

@@ -2,9 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
-
-//TODO: make level  UI only increase when xp bar finishes   
-
 public class ExperienceBarUIManager : MonoBehaviour
 {
     public UnityEngine.UI.Image border;

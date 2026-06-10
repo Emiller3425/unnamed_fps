@@ -5,8 +5,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 
-// TODO: Add logic for picking up weapons in the environment
-// Add max size to player iventory
+// TODO: Add max size to player iventory
 
 public class PlayerWeaponInventory : MonoBehaviour
 {
@@ -69,25 +68,27 @@ public class PlayerWeaponInventory : MonoBehaviour
         {
             weaponDictionary.Add(child.name, child.gameObject);
 
-            // Start with every wwapon inactvie
+            // Start with every weapon inactive
             child.gameObject.SetActive(false);
         }
     }
 
     private void AddToInventory(GameObject weapon)
     {
-        // Add weapon back to inventory
+        // Add weapon to inventory
         weaponDictionary.Add(weapon.name, weapon);
         weapon.transform.SetParent(gameObject.transform, true);
 
         // Enable gun script physics components
-        weapon.GetComponent<Gun>().enabled = true;
+        weapon.GetComponent<Gun>().enabled = false;
         weapon.GetComponent<Rigidbody>().isKinematic = true;
         weapon.GetComponent<BoxCollider>().enabled = false;
 
-        SetWeaponPositionAndRotation(weapon.transform
-        
-        );
+        SetWeaponPositionAndRotation(weapon.transform);
+
+        Debug.Log(equippedWeapon);
+        weapon.SetActive(false);
+
         // Enable collision with player
         if (playerCollider != null)
         {
@@ -107,6 +108,7 @@ public class PlayerWeaponInventory : MonoBehaviour
     }
     private void CompleteWeaponSwitch(string weaponName, bool wasDropped)
     {
+        Debug.Log($"{equippedWeapon} {!wasDropped}");
         if (equippedWeapon != null && !wasDropped)
         {
             equippedWeapon.SetActive(false);
@@ -145,6 +147,7 @@ public class PlayerWeaponInventory : MonoBehaviour
         SetWeaponPositionAndRotation(equippedWeapon.transform);
 
         Gun gunScript = equippedWeapon.GetComponent<Gun>();
+        gunScript.enabled = true;
 
         if (gunScript != null && gunScript.weaponAnimationOverride != null)
         {
