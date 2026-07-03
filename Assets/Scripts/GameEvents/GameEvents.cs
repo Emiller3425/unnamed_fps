@@ -10,6 +10,7 @@ public class GameEvents : TemplateMonoBeheavior
         current = this;
     }
     public event Action<int, int> OnAmmoChanged;
+    public event Action<int> OnEquipmentChanged;
     public event Action<int> OnLevelChanged;
     public event Action OnReloadStarted;
     public event Action OnReloadFinished;
@@ -24,14 +25,21 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action OnSetHitMarkerDeactivated;
     public event Action OnWeaponFired;
     public event Action OnWeaponReloaded;
+    public event Action OnEquipmentThrown;
     public event Action<bool> OnTogglePause;
     public event Action<bool> OnTogglePlayerInventory;
     public event Action<float, bool> OnBloom;
     public event Action<bool, bool> OnCrouch;
     public event Action<GameObject> OnWeaponPickup;
+    public event Action<GameObject> OnEquipmentPickup;
     public void AmmoChanged(int currentMag, int currentAmmo)
     {
         OnAmmoChanged?.Invoke(currentMag, currentAmmo);
+    }
+
+    public void EquipmentCountChanged(int currentEquipment)
+    {
+        OnEquipmentChanged?.Invoke(currentEquipment);
     }
     public void LevelChanged(int level)
     {
@@ -89,6 +97,10 @@ public class GameEvents : TemplateMonoBeheavior
     {
         OnWeaponReloaded?.Invoke();
     }
+    public void EquipmentThrown()
+    {
+        OnEquipmentThrown?.Invoke();
+    }
     public void TogglePause(bool isPauseToggled)
     {
         OnTogglePause?.Invoke(isPauseToggled);
@@ -111,5 +123,10 @@ public class GameEvents : TemplateMonoBeheavior
     public void WeaponPickup(GameObject weapon)
     {
         OnWeaponPickup?.Invoke(weapon);
+    }
+
+    public void EquipmentPickup(GameObject equipment)
+    {
+        OnEquipmentPickup?.Invoke(equipment);
     }
 }

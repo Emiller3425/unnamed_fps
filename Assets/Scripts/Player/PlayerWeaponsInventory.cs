@@ -6,6 +6,7 @@ using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 
 // TODO: Add max size to player iventory
+// TODO: When picking up a weapon with empty inventory, animation should start at midpoint. (only the raise no lower)
 
 public class PlayerWeaponInventory : MonoBehaviour
 {
@@ -18,7 +19,8 @@ public class PlayerWeaponInventory : MonoBehaviour
 
     public void EquipNextWeapon(bool wasDropped)
     {
-        if (weaponDictionary.Count > 0) {
+        // Swap or drop weapon
+        if (weaponDictionary.Count > 1 || wasDropped) {
             int currentIndex = weaponDictionary.Keys.ToList().IndexOf(equippedWeapon.name);
             int nextIndex = (currentIndex + 1) % weaponDictionary.Count;
             string nextWeaponName = weaponDictionary.Keys.ElementAt(nextIndex);
@@ -86,7 +88,6 @@ public class PlayerWeaponInventory : MonoBehaviour
 
         SetWeaponPositionAndRotation(weapon.transform);
 
-        Debug.Log(equippedWeapon);
         weapon.SetActive(false);
 
         // Enable collision with player
@@ -108,7 +109,6 @@ public class PlayerWeaponInventory : MonoBehaviour
     }
     private void CompleteWeaponSwitch(string weaponName, bool wasDropped)
     {
-        Debug.Log($"{equippedWeapon} {!wasDropped}");
         if (equippedWeapon != null && !wasDropped)
         {
             equippedWeapon.SetActive(false);

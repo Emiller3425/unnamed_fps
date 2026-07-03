@@ -90,7 +90,17 @@ public class PlayerStatsManager : StatsManager
     }
     public void SetRifleAmmo(int ammo)
     {
-        currentRifleAmmo -= ammo;
+        currentRifleAmmo = ammo;
+    }
+
+    public int GetEquipment()
+    {
+        return currentEquipment;
+    }
+
+    public void SetEquipment(int equipmentCount)
+    {
+        currentEquipment =  equipmentCount;
     }
 
     public void LevelUp(float experienceOver)
