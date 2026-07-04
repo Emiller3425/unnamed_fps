@@ -22,6 +22,7 @@ public class PlayerEquipmentManager: MonoBehaviour
     private void Start()
     {
         PlayerStatsManager.Instance.SetEquipment(PlayerStatsManager.Instance.GetEquipment());
+        GameEvents.current.EquipmentCountChanged(PlayerStatsManager.Instance.GetEquipment());
     }
 
     private void OnEnable()
@@ -34,15 +35,18 @@ public class PlayerEquipmentManager: MonoBehaviour
     private void OnThrow(InputAction.CallbackContext context)
     {
         if (PlayerStatsManager.Instance.GetEquipment() > 0)
+        {
             Throw();
+        }
     }
 
     private void Throw()
     {
         PlayerStatsManager.Instance.SetEquipment(PlayerStatsManager.Instance.GetEquipment() - 1);
+        // Update UI
+        GameEvents.current.EquipmentCountChanged(PlayerStatsManager.Instance.GetEquipment());
 
         GameObject thrownEquipment = Instantiate(equippedEquipment, transform.position, transform.rotation);
-
         Rigidbody thrownEquipmentRb = thrownEquipment.GetComponent<Rigidbody>();
 
         if (thrownEquipmentRb != null)

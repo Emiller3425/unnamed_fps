@@ -85,7 +85,12 @@ public class Crosshairs : MonoBehaviour
         }
     }
 
-    private void OnDestoy()
+    private void RecalculateCrosshairsPositionOnResize()
+    {
+        crossHairRectTransform.anchoredPosition = Vector2.zero;
+    }
+
+    private void OnDestroy()
     {
         GameEvents.current.OnSetCrossHairActivated -= SetCrossHairActivated;
         GameEvents.current.OnSetCrossHairDeactivated -= SetCrossHairDeactivated;

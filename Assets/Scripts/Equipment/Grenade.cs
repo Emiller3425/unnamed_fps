@@ -6,10 +6,9 @@ public class Grenade : TimedFuseEquipment
 {
     protected override void Start()
     {
-        Debug.Log("Grenade Spawned");
         fuseTimer = 3.5f;
-        damage = 10f;
-        areaOfEffect = 10f;
+        damage = 100f;
+        areaOfEffect = 3f;
         base.Start();
     }
 }

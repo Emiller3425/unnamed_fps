@@ -34,10 +34,10 @@ public class VisualEffectManager : MonoBehaviour
 
             if (vfxObject.TryGetComponent<VisualEffect>(out var vfx))
             if (velocity != Vector3.zero)
-                {
-                    vfx.SetVector3("Velocity", velocity);
-                }
-                
+            {
+                vfx.SetVector3("Velocity", velocity);
+            }
+            Debug.Log(vfx.name);
             vfx.Play();
             Destroy(vfxObject, vfx.GetFloat("EffectMaxDuration"));
 

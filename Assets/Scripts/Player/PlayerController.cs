@@ -274,6 +274,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnDash(InputAction.CallbackContext context)
     {
+        Debug.Log(currentDashCooldown);
         if (currentDashCooldown <= 0f)
         {
             // Dash Forward
@@ -314,12 +315,9 @@ public class PlayerController : MonoBehaviour
         float dashSpeed = 50f;
 
         isDashing = true;
-        Debug.Log(Time.time);
-        Debug.Log(startTime + dashDuration);
         while (Time.time < startTime + dashDuration) {
             float normalizedTime = (Time.time - startTime) / dashDuration;
             float currentSpeed = Mathf.Lerp(dashSpeed, walkSpeed, normalizedTime);
-            Debug.Log(currentSpeed * Time.deltaTime * dashDirection);
             characterController.Move(currentSpeed * Time.deltaTime * dashDirection);
             yield return null;
         }

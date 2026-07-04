@@ -32,6 +32,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action<bool, bool> OnCrouch;
     public event Action<GameObject> OnWeaponPickup;
     public event Action<GameObject> OnEquipmentPickup;
+    public event Action OnScreenResize;
     public void AmmoChanged(int currentMag, int currentAmmo)
     {
         OnAmmoChanged?.Invoke(currentMag, currentAmmo);
@@ -128,5 +129,10 @@ public class GameEvents : TemplateMonoBeheavior
     public void EquipmentPickup(GameObject equipment)
     {
         OnEquipmentPickup?.Invoke(equipment);
+    }
+
+    public void ScreenResize()
+    {
+        OnScreenResize?.Invoke();
     }
 }

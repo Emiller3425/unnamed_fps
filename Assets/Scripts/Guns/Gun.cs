@@ -78,6 +78,7 @@ public abstract class Gun : MonoBehaviour, IInteractable
 
         GameEvents.current.OnTogglePause += HandlePause;
         GameEvents.current.OnTogglePlayerInventory += HandlePlayerInventory;
+        GameEvents.current.OnScreenResize += RecalculateScreenCenter;
     }
 
     protected virtual void Start()
@@ -203,6 +204,11 @@ public abstract class Gun : MonoBehaviour, IInteractable
         isPaused = isToggled;
     }
 
+    protected void RecalculateScreenCenter()
+    {
+        screenCenter = screenCenter = new Vector2 (Screen.width / 2f, Screen.height / 2f);
+    }
+
     // disable InputSystem subscriptions
     protected void OnDisable()
     {
@@ -217,5 +223,6 @@ public abstract class Gun : MonoBehaviour, IInteractable
 
         GameEvents.current.OnTogglePause -= HandlePause;
         GameEvents.current.OnTogglePlayerInventory -= HandlePlayerInventory;
+        GameEvents.current.OnScreenResize -= RecalculateScreenCenter;
     }
 }

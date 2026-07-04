@@ -4,6 +4,7 @@ using TreeEditor;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.ProBuilder.Shapes;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 
@@ -49,8 +50,17 @@ public abstract class Equipment : MonoBehaviour, IInteractable
 
     protected virtual void Detonate()
     {
-        Debug.Log("Detonate");
-        Destroy(gameObject, 2.5f);
+        GameEvents.current.PlayVFX("grenadeExplosion", transform.position, Vector3.zero, Vector3.zero, null);
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, areaOfEffect);
+        foreach (Collider c in hitColliders)
+        {
+            if (c.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
+            {
+               damageable.HealthSubtracted(damage);
+               // Make it possible to play blood splatter vfx here
+            }
+        }
+        Destroy(gameObject);
     }
     protected void HandlePause(bool isToggled)
     {
@@ -64,5 +74,11 @@ public abstract class Equipment : MonoBehaviour, IInteractable
     protected void OnDestroy()
     {
          
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, areaOfEffect);
     }
 }
