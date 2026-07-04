@@ -9,6 +9,8 @@ public enum EnemyState
     RELOADING
 }
 
+// TODO: Implement a base EnemyController using nav meshes.
+
 [RequireComponent(typeof(CharacterController))]
 public class EnemyController : MonoBehaviour
 {
@@ -57,11 +59,16 @@ public class EnemyController : MonoBehaviour
 
         velocityY -= gravity * Time.deltaTime;
 
-        if (enemyController.isGrounded)
-        {
-            canJump = true;
-        }
-        movementDirection.y = velocityY;
+// --- FIX 2: Correctly reset and apply gravity ---
+    if (enemyController.isGrounded && velocityY < 0)
+    {
+        velocityY = -2f; // A small downward force keeps them snapped to slopes/ground
+        canJump = true;
+    }
+    else
+    {
+        velocityY -= gravity * Time.deltaTime;
+    }
 
         enemyController.Move(movementDirection.y * Vector3.up * Time.deltaTime);
 

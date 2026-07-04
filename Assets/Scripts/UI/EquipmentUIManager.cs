@@ -19,7 +19,7 @@ public class EquipmentUIManager : MonoBehaviour
         equipmentUIText = GetComponentInChildren<TextMeshProUGUI>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
         GameEvents.current.OnEquipmentChanged += UpdateEquipmentUI;
     }

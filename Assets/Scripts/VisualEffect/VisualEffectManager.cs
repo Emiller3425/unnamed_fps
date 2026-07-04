@@ -37,7 +37,6 @@ public class VisualEffectManager : MonoBehaviour
             {
                 vfx.SetVector3("Velocity", velocity);
             }
-            Debug.Log(vfx.name);
             vfx.Play();
             Destroy(vfxObject, vfx.GetFloat("EffectMaxDuration"));
 

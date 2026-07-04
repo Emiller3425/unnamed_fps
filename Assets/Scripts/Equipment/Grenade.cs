@@ -11,4 +11,10 @@ public class Grenade : TimedFuseEquipment
         areaOfEffect = 3f;
         base.Start();
     }
+
+    protected override void Detonate()
+    {
+        base.Detonate();
+        GameEvents.current.PlaySFX("explosion");
+    }
 }

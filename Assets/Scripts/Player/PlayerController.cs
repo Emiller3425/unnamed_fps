@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour
         // subscribe to function for immediately response on jump
         jumpAction.started += OnJump;
         dashAction.performed += OnDash;
-        aimAction.started += OnAim;
+        // aimAction.started += OnAim;
         interactAction.started += OnInteract;
         emoteAction.started += OnEmote;
         crouchAction.started += OnCrouchEnabled;
@@ -244,14 +244,14 @@ public class PlayerController : MonoBehaviour
         }
     }
     
-    private void OnAim(InputAction.CallbackContext context)
-    {
-        if (isPaused)
-        {
-            return;
-        }
-        adsEnabled = !adsEnabled;
-    }
+    // private void OnAim(InputAction.CallbackContext context)
+    // {
+    //     if (isPaused)
+    //     {
+    //         return;
+    //     }
+    //     adsEnabled = !adsEnabled;
+    // }
 
     private void OnEmote(InputAction.CallbackContext context)
     {
@@ -354,7 +354,7 @@ public class PlayerController : MonoBehaviour
         dashAction.performed -= OnDash;
         dashAction.Disable();
 
-        aimAction.started -= OnAim;
+        // aimAction.started -= OnAim;
         aimAction.Disable();
 
         interactAction.started -= OnInteract;

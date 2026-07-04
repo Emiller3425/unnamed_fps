@@ -100,7 +100,6 @@ public abstract class Gun : MonoBehaviour, IInteractable
         {
             fireRateBuffer -= Time.deltaTime;
         }
-        // GameEvents.current.SetCrossHairPosition(screenCenter);
     }
 
     protected abstract void OnShoot(InputAction.CallbackContext context);
@@ -151,7 +150,9 @@ public abstract class Gun : MonoBehaviour, IInteractable
 
         RaycastHit hit;
 
-        if (Physics.Raycast(cameraRay, out hit, maxRange))
+        int layerMask = ~(1 << LayerMask.NameToLayer("EquippedWeapon"));
+
+        if (Physics.Raycast(cameraRay, out hit, maxRange, layerMask))
         {
             if (hit.collider.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
             {
@@ -183,6 +184,12 @@ public abstract class Gun : MonoBehaviour, IInteractable
 
         bulletHole.transform.SetParent(hit.transform);
 
+        Vector3 vfxRotation = Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles;
+
+        Debug.Log(vfxRotation);
+
+        GameEvents.current.PlayVFX("bulletSurfaceHit", hit.point, vfxRotation, Vector3.zero, null);
+
         Destroy(bulletHole, 10f);
     }
 
@@ -206,7 +213,7 @@ public abstract class Gun : MonoBehaviour, IInteractable
 
     protected void RecalculateScreenCenter()
     {
-        screenCenter = screenCenter = new Vector2 (Screen.width / 2f, Screen.height / 2f);
+        screenCenter = new Vector2 (Screen.width / 2f, Screen.height / 2f);
     }
 
     // disable InputSystem subscriptions
