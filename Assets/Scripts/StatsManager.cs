@@ -3,6 +3,7 @@ using UnityEngine;
 public class StatsManager : MonoBehaviour, IDamageable, IHealable
 {
     public EntityStats entityStats;
+    public bool isDead;
     protected int currentLevel;
     protected int maxLevel;
     protected float maxHealth;
@@ -15,6 +16,7 @@ public class StatsManager : MonoBehaviour, IDamageable, IHealable
     protected int maxRifleAmmo;
     protected int maxEquipment;
     protected int currentEquipment;
+    protected int instanceId;
     public virtual void Awake()
     {
         currentHealth = entityStats.GetCurrentHealth();
@@ -29,9 +31,15 @@ public class StatsManager : MonoBehaviour, IDamageable, IHealable
         maxRifleAmmo = entityStats.GetMaxRifleAmmo();
         currentEquipment = entityStats.GetCurrentEquipment();
         maxEquipment = entityStats.GetMaxEquipement();
+        instanceId = gameObject.GetInstanceID();
     }
 
-    public virtual void HealthSubtracted(float damage)
+    public virtual void BulletDamage(float damage)
+    {
+        currentHealth -= damage;
+    }
+
+    public virtual void ExplosiveDamage(float damage, Vector3 explosionOrigin=default, float explosionRadius=0f, float explosionForce=0f)
     {
         currentHealth -= damage;
     }
@@ -43,6 +51,18 @@ public class StatsManager : MonoBehaviour, IDamageable, IHealable
         {
             currentHealth = entityStats.GetMaxHealth();
         }
+    }
+
+    protected virtual void HandleDeath(float timeToDestroy)
+    {
+        Destroy(gameObject, timeToDestroy);
+        isDead = true;
+        OmitInstanceIdOnDeath();
+    }
+
+    protected virtual void OmitInstanceIdOnDeath()
+    {
+        GameEvents.current.EntityDeath(instanceId);
     }
 
     protected virtual void OnDestroy()

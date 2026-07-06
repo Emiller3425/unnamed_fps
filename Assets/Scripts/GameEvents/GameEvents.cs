@@ -33,6 +33,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action<GameObject> OnWeaponPickup;
     public event Action<GameObject> OnEquipmentPickup;
     public event Action OnScreenResize;
+    public event Action<int> OnEntityDeath;
     public void AmmoChanged(int currentMag, int currentAmmo)
     {
         OnAmmoChanged?.Invoke(currentMag, currentAmmo);
@@ -134,5 +135,10 @@ public class GameEvents : TemplateMonoBeheavior
     public void ScreenResize()
     {
         OnScreenResize?.Invoke();
+    }
+
+    public void EntityDeath(int instanceId)
+    {
+        OnEntityDeath?.Invoke(instanceId);
     }
 }

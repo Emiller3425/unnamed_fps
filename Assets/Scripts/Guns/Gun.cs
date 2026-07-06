@@ -1,3 +1,4 @@
+using System.Data.Common;
 using TreeEditor;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -150,20 +151,22 @@ public abstract class Gun : MonoBehaviour, IInteractable
 
         RaycastHit hit;
 
+        // Ignore equipped weapon from what the raycast can hit
         int layerMask = ~(1 << LayerMask.NameToLayer("EquippedWeapon"));
 
         if (Physics.Raycast(cameraRay, out hit, maxRange, layerMask))
         {
             if (hit.collider.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
             {
-                damageable.HealthSubtracted(damage);
-                EnemyController enemyController = hit.collider.gameObject.GetComponent<EnemyController>();
-                enemyController.PlayBloodSplatter(hit);
-                if (isPlayerGun)
-                {
-                    // not awaited because hit marker is not used in anything else within this fucntion call
-                    GameEvents.current.SetHitMarkerActivated();
-                    GameEvents.current.PlaySFX("hitmarker");
+                if (!hit.collider.GetComponentInParent<StatsManager>().isDead) {
+                    damageable.BulletDamage(damage);
+                    GameEvents.current.PlayVFX("bloodSplatter", hit.point, Vector3.zero, hit.normal * 2, null);
+                    if (isPlayerGun)
+                    {
+                        // not awaited because hit marker is not used in anything else within this fucntion call
+                        GameEvents.current.SetHitMarkerActivated();
+                        GameEvents.current.PlaySFX("hitmarker");
+                    }
                 }
             } else
             {
@@ -185,8 +188,6 @@ public abstract class Gun : MonoBehaviour, IInteractable
         bulletHole.transform.SetParent(hit.transform);
 
         Vector3 vfxRotation = Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles;
-
-        Debug.Log(vfxRotation);
 
         GameEvents.current.PlayVFX("bulletSurfaceHit", hit.point, vfxRotation, Vector3.zero, null);
 

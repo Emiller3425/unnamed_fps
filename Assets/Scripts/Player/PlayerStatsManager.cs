@@ -28,14 +28,25 @@ public class PlayerStatsManager : StatsManager
         GameEvents.current.LevelChanged(currentLevel);
     }
 
-    public override void HealthSubtracted(float damage)
+    public override void BulletDamage(float damage)
     {
-        base.HealthSubtracted(damage);
+        base.BulletDamage(damage);
         // Update Health UI
         GameEvents.current.HealthSubtracted(damage, maxHealth, currentHealth);
         if (currentHealth <= 0f)
         {
-            Destroy(gameObject);
+            base.HandleDeath(0f);
+        }
+    }
+
+    public override void ExplosiveDamage(float damage, Vector3 explosionOrigin=default, float explosionRadius=0f, float explosionForce=0f)
+    {
+        base.ExplosiveDamage(damage);
+        // Update Health UI
+        GameEvents.current.HealthSubtracted(damage, maxHealth, currentHealth);
+        if (currentHealth <= 0f)
+        {
+            base.HandleDeath(0f);
         }
     }
     public override void HealthAdded(float healing)
@@ -134,6 +145,6 @@ public class PlayerStatsManager : StatsManager
     }
     protected override void OnDestroy()
     {
-        // TODO: Player death
+        // TODO: Player death screen
     }
 } 

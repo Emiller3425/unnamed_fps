@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using TreeEditor;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.ProBuilder.Shapes;
@@ -28,6 +29,7 @@ public abstract class Equipment : MonoBehaviour, IInteractable
     protected Collider meshCollider;
     protected float damage;
     protected float areaOfEffect;
+    protected float dentonateForce;
     public void HandleInteract()
     {
         GameEvents.current.EquipmentPickup(gameObject);
@@ -54,9 +56,12 @@ public abstract class Equipment : MonoBehaviour, IInteractable
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, areaOfEffect);
         foreach (Collider c in hitColliders)
         {
+            // TODO: Use a hashmap to apply apply damage to one body part of an enemy per explosion
             if (c.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
             {
-               damageable.HealthSubtracted(damage);
+                if (!c.GetComponentInParent<StatsManager>().isDead) {
+                    damageable.ExplosiveDamage(damage, transform.position, areaOfEffect, dentonateForce);
+                }
                // Make it possible to play blood splatter vfx here
             }
         }
