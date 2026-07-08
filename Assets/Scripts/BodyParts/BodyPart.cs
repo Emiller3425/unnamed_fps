@@ -10,6 +10,7 @@ public class BodyPart : MonoBehaviour, IDamageable
     protected Rigidbody rb;
     protected Collider bodyCollider;
     protected int parentInstanceId;
+    protected float bulletKnockbackMultiplier;
     protected virtual void OnEnable()
     {
         GameEvents.current.OnEntityDeath += DisableRigidBody;
@@ -20,6 +21,9 @@ public class BodyPart : MonoBehaviour, IDamageable
         rb = GetComponent<Rigidbody>();
         bodyCollider = GetComponent<Collider>();
         parentInstanceId = statsManager.gameObject.GetInstanceID();
+
+        rb.isKinematic = true;
+        bulletKnockbackMultiplier = 20f;
     }
 
     protected virtual void Update()
@@ -27,15 +31,20 @@ public class BodyPart : MonoBehaviour, IDamageable
 
     }
     public virtual bool isDead => statsManager != null && statsManager.isDead;
-    public virtual void BulletDamage(float damage)
+    public virtual void BulletDamage(float damage, Vector3 hitNormal)
     {
         if (statsManager)
         {
-            statsManager.BulletDamage(damage * damageMultiplier);
+            statsManager.BulletDamage(damage * damageMultiplier, hitNormal);
         }
         else
         {
             Debug.LogError($"No Stats Manager found in {gameObject.name} parent");
+        }
+
+        if (rb != null && !rb.isKinematic)
+        {
+            rb.AddForceAtPosition(hitNormal.normalized * bulletKnockbackMultiplier, hitNormal, ForceMode.Impulse);
         }
     }
 

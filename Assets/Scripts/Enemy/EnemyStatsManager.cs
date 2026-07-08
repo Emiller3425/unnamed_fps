@@ -8,10 +8,11 @@ public class EnemyStatsManager : StatsManager
     protected void Start()
     {
         animator = GetComponent<Animator>();
+        animator.enabled = false;
     }
-    public override void BulletDamage(float damage)
+    public override void BulletDamage(float damage, Vector3 hitNormal)
     {
-        base.BulletDamage(damage);
+        base.BulletDamage(damage, hitNormal);
         if (currentHealth <= 0f)
         {
             HandleDeath(5f);
@@ -37,9 +38,5 @@ public class EnemyStatsManager : StatsManager
     protected void AddExperienceToPlayer()
     {
         PlayerStatsManager.Instance.ExperienceAdded(325);
-    }
-    protected override void OnDestroy()
-    {
-        // TODO: Enemy death -- Probably just use the ragdoll don't think we need animation
     }
 }

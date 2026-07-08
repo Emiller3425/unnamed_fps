@@ -159,7 +159,7 @@ public abstract class Gun : MonoBehaviour, IInteractable
             if (hit.collider.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
             {
                 if (!hit.collider.GetComponentInParent<StatsManager>().isDead) {
-                    damageable.BulletDamage(damage);
+                    damageable.BulletDamage(damage, -hit.normal);
                     GameEvents.current.PlayVFX("bloodSplatter", hit.point, Vector3.zero, hit.normal * 2, null);
                     if (isPlayerGun)
                     {
@@ -170,7 +170,7 @@ public abstract class Gun : MonoBehaviour, IInteractable
                 }
             } else
             {
-                SpawnBulletHole(hit);
+                SpawnBulletHole(hit, cameraRay);
             }
             return (hit.point - muzzleLocation).normalized;
         }
@@ -181,14 +181,20 @@ public abstract class Gun : MonoBehaviour, IInteractable
         }
     }
 
-    protected void SpawnBulletHole(RaycastHit hit)
+    protected void SpawnBulletHole(RaycastHit hit, Ray cameraRay)
     {
-        GameObject bulletHole = Instantiate(bulletHolePrefab, hit.point, Quaternion.LookRotation(-hit.normal));
+        // Orientate bullet in direction it was shot
+        Vector3 bulletDirection = cameraRay.direction;
+        Vector3 surfaceProjectionDirection = Vector3.ProjectOnPlane(bulletDirection, hit.normal);
+        Quaternion hitOrientation = Quaternion.LookRotation(-hit.normal, surfaceProjectionDirection);
+
+        // Spanw bullet hole based on this position and orientation
+        GameObject bulletHole = Instantiate(bulletHolePrefab, hit.point, hitOrientation);
 
         bulletHole.transform.SetParent(hit.transform);
 
+        // VFX
         Vector3 vfxRotation = Quaternion.FromToRotation(Vector3.up, hit.normal).eulerAngles;
-
         GameEvents.current.PlayVFX("bulletSurfaceHit", hit.point, vfxRotation, Vector3.zero, null);
 
         Destroy(bulletHole, 10f);

@@ -82,7 +82,7 @@ public abstract class EnemyGun : MonoBehaviour
         {
             if (hit.collider.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
             {
-                damageable.BulletDamage(damage);
+                damageable.BulletDamage(damage, -hit.normal);
                 GameEvents.current.PlayVFX("bloodSplatter", hit.point, Vector3.zero, hit.normal * 2, null);
             }
             return (hit.point - muzzleLocation).normalized;

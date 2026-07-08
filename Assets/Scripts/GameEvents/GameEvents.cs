@@ -15,7 +15,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action OnReloadStarted;
     public event Action OnReloadFinished;
     public event Action<string> OnPlaySFX;
-    public event System.Action<string, Vector3, Vector3, Vector3, Transform> OnPlayVFX;
+    public event Action<string, Vector3, Vector3, Vector3, Transform> OnPlayVFX;
     public event Action<float, float, float> OnHealthAdded;
     public event Action<float, float, float> OnHealthSubtracted;
     public event Action<float, float, float, int> OnExperienceAdded;

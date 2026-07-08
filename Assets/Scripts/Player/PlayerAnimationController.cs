@@ -2,14 +2,15 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-// TODO: Fix jerkiness when spamming swaps, figure out what the fuck onSwapMidpoint?.Invoke(); does
+// TODO: make it so you can queue animations, spamming swaps should still be smooth but should not block swaps if an animation isn't complete
 
 
 [RequireComponent(typeof(PlayerController))]
 public class PlayerAnimationController : AnimationController
 {
     private PlayerController playerController;
-
+    private Coroutine activeSwapRoutine;
+    
     protected override void Awake()
     {
         playerController = GetComponent<PlayerController>();
@@ -71,7 +72,16 @@ public class PlayerAnimationController : AnimationController
 
     public void TriggerWeaponSwap(Action onSwapMidpoint = null)
     {
-        StartCoroutine(SwapRoutine(onSwapMidpoint));
+        if (activeSwapRoutine != null) return;
+
+        activeSwapRoutine = StartCoroutine(SwapRoutine(onSwapMidpoint));
+    }
+
+    public void TriggerWeaponPickup()
+    {
+        if (activeSwapRoutine != null) return;
+        
+       activeSwapRoutine = StartCoroutine(PickupRoutine());
     }
 
     private IEnumerator SwapRoutine(Action onSwapMidpoint = null)
@@ -93,6 +103,22 @@ public class PlayerAnimationController : AnimationController
 
         animator.Play("Empty State", 3, 0f);
         animator.SetLayerWeight(0, 1f);
+
+        activeSwapRoutine = null;
+    }
+
+    private IEnumerator PickupRoutine()
+    {
+        animator.SetFloat("SwapSpeed", -1f);
+        animator.Play("Swap", 3, 1f);
+
+        yield return new WaitForEndOfFrame();
+        yield return new WaitForSeconds(animator.GetCurrentAnimatorStateInfo(3).length);
+
+        animator.Play("Empty State", 3, 0f);
+        animator.SetLayerWeight(0, 1f);
+
+        activeSwapRoutine = null;
     }
 
     protected override void OnDestroy()

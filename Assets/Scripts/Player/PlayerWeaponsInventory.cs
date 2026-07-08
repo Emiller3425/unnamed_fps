@@ -20,7 +20,7 @@ public class PlayerWeaponInventory : MonoBehaviour
     public void EquipNextWeapon(bool wasDropped)
     {
         // Swap or drop weapon
-        if (weaponDictionary.Count > 1 || wasDropped) {
+        if (weaponDictionary.Count > 1 || (wasDropped && equippedWeapon != null)) {
             int currentIndex = weaponDictionary.Keys.ToList().IndexOf(equippedWeapon.name);
             int nextIndex = (currentIndex + 1) % weaponDictionary.Count;
             string nextWeaponName = weaponDictionary.Keys.ElementAt(nextIndex);
@@ -140,6 +140,12 @@ public class PlayerWeaponInventory : MonoBehaviour
                 UpdateAmmoUI();
                 return;
             }
+        }
+
+        // If there are no weapons equipped on switch, play the pickup animation
+        if (equippedWeapon == null)
+        {
+            animController.TriggerWeaponPickup();
         }
 
         equippedWeapon = weaponDictionary[weaponName];

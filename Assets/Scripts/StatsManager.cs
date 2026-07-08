@@ -34,7 +34,7 @@ public class StatsManager : MonoBehaviour, IDamageable, IHealable
         instanceId = gameObject.GetInstanceID();
     }
 
-    public virtual void BulletDamage(float damage)
+    public virtual void BulletDamage(float damage, Vector3 hitNormal)
     {
         currentHealth -= damage;
     }

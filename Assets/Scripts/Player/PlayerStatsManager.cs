@@ -28,9 +28,9 @@ public class PlayerStatsManager : StatsManager
         GameEvents.current.LevelChanged(currentLevel);
     }
 
-    public override void BulletDamage(float damage)
+    public override void BulletDamage(float damage, Vector3 hitNormal)
     {
-        base.BulletDamage(damage);
+        base.BulletDamage(damage, hitNormal);
         // Update Health UI
         GameEvents.current.HealthSubtracted(damage, maxHealth, currentHealth);
         if (currentHealth <= 0f)

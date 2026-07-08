@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using TreeEditor;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime.Misc;
@@ -54,15 +55,21 @@ public abstract class Equipment : MonoBehaviour, IInteractable
     {
         GameEvents.current.PlayVFX("grenadeExplosion", transform.position, Vector3.zero, Vector3.zero, null);
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, areaOfEffect);
+
+        // Hashset to ensure we only damage an enemy once
+        HashSet<int> damagedParentInstanceIds = new HashSet<int>();
         foreach (Collider c in hitColliders)
         {
-            // TODO: Use a hashmap to apply apply damage to one body part of an enemy per explosion
+            int damagedParentInstanceId = c.gameObject.GetInstanceID();
+            if (damagedParentInstanceIds.Contains(damagedParentInstanceId)) continue;
+
+            damagedParentInstanceIds.Add(damagedParentInstanceId);
             if (c.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
             {
                 if (!c.GetComponentInParent<StatsManager>().isDead) {
+                    Debug.Log("Explosive Damage Applied");
                     damageable.ExplosiveDamage(damage, transform.position, areaOfEffect, dentonateForce);
                 }
-               // Make it possible to play blood splatter vfx here
             }
         }
         Destroy(gameObject);
