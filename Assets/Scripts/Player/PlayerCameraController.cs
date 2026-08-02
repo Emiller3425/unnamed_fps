@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
 
+// TODO: Screenshake from explosions, recoil, etc
 public class PlayerCameraController : MonoBehaviour
 {
     public Camera playerCamera;
@@ -20,14 +21,14 @@ public class PlayerCameraController : MonoBehaviour
 
         if (isCrouched && isGrounded)
         {
-            activeLerp = StartCoroutine(LerpRoutine(crouchHeight));
+            activeLerp = StartCoroutine(LerpCrouchRoutine(crouchHeight));
         } else
         {
-            activeLerp = StartCoroutine(LerpRoutine(defaultHeight));
+            activeLerp = StartCoroutine(LerpCrouchRoutine(defaultHeight));
         }
     }
 
-    private IEnumerator LerpRoutine(float targetHeight)
+    private IEnumerator LerpCrouchRoutine(float targetHeight)
     {
         float startTime = Time.time;
         float maxDuration = 0.2f;
@@ -41,5 +42,16 @@ public class PlayerCameraController : MonoBehaviour
             }
             yield return null;
         }
+    }
+
+    // Apply screenshake by a magnitude and speeds.
+    private void ApplyScreenShake(float shakeSpeed, float shakeMagnitude)
+    {
+        
+    }
+
+    private IEnumerator LerpShakeRoutine(float targetPosition)
+    {
+        yield return null;
     }
 }

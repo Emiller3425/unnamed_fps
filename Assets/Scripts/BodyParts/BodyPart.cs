@@ -20,6 +20,7 @@ public class BodyPart : MonoBehaviour, IDamageable
         statsManager = GetComponentInParent<StatsManager>();
         rb = GetComponent<Rigidbody>();
         bodyCollider = GetComponent<Collider>();
+
         parentInstanceId = statsManager.gameObject.GetInstanceID();
 
         rb.isKinematic = true;
@@ -75,6 +76,11 @@ public class BodyPart : MonoBehaviour, IDamageable
         {
             rb.isKinematic = false;
         }
+    }
+
+    protected virtual void OnDisable()
+    {
+        GameEvents.current.OnEntityDeath -= DisableRigidBody;
     }
 
     protected virtual void OnDestroy()
