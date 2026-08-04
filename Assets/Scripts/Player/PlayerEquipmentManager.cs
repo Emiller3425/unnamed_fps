@@ -56,4 +56,11 @@ public class PlayerEquipmentManager: MonoBehaviour
             thrownEquipmentRb.AddForce(throwDirection * throwForce, ForceMode.Impulse);
         }
     }
+
+    private void OnDisable()
+    {
+        throwAction.Disable();
+        throwAction.started -= OnThrow;
+
+    }
 }

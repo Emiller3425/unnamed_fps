@@ -33,9 +33,10 @@ public class PlayerStatsManager : StatsManager
         base.BulletDamage(damage, hitNormal);
         // Update Health UI
         GameEvents.current.HealthSubtracted(damage, maxHealth, currentHealth);
+        Debug.Log(currentHealth);
         if (currentHealth <= 0f)
         {
-            base.HandleDeath(0f);
+            HandleDeath(0f);
         }
     }
 
@@ -46,7 +47,7 @@ public class PlayerStatsManager : StatsManager
         GameEvents.current.HealthSubtracted(damage, maxHealth, currentHealth);
         if (currentHealth <= 0f)
         {
-            base.HandleDeath(0f);
+            HandleDeath(0f);
         }
     }
     public override void HealthAdded(float healing)
@@ -54,6 +55,11 @@ public class PlayerStatsManager : StatsManager
         base.HealthAdded(healing);
         // Update Health UI
         GameEvents.current.HealthAdded(healing, maxHealth, currentHealth);
+    }
+    protected override void HandleDeath(float timeToDestroy)
+    {
+        // base.HandleDeath(timeToDestroy);
+        GameEvents.current.PlayerDeath();
     }
 
     public void ExperienceAdded(float experience, bool isLevelUp = false)

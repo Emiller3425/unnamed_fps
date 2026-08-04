@@ -31,7 +31,7 @@ public class BodyPart : MonoBehaviour, IDamageable
     {
 
     }
-    public virtual bool isDead => statsManager != null && statsManager.isDead;
+    public virtual bool IsDead => statsManager != null && statsManager.isDead;
     public virtual void BulletDamage(float damage, Vector3 hitNormal)
     {
         if (statsManager)

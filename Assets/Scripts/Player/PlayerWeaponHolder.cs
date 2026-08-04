@@ -22,4 +22,12 @@ public class PlayerWeaponHolder : MonoBehaviour
     {
         inventory.EquipNextWeapon(false);
     }
+
+    private void OnDisable()
+    {
+        // enable listeners
+        swapWeapon.Disable();
+        // subscribe
+        swapWeapon.started -= OnSwap;
+    }
 }

@@ -4,6 +4,10 @@ using UnityEngine.SceneManagement;
 
 public class SceneController : MonoBehaviour
 {
+    private void OnEnable()
+    {
+        GameEvents.current.OnPlayerDeath += ResetScene;
+    }
     public void LoadSceneAsync(string sceneName)
     {
         StartCoroutine(LoadSceneAsyncCoroutine(sceneName));
@@ -23,5 +27,14 @@ public class SceneController : MonoBehaviour
     public void LoadSampleScene()
     {
         LoadSceneAsync("SampleScene");
+    }
+    private void ResetScene()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(sceneName);
+    }
+    private void OnDisable()
+    {
+        GameEvents.current.OnPlayerDeath += ResetScene;
     }
 }
