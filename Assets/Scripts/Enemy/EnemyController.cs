@@ -43,12 +43,12 @@ public class EnemyController : MonoBehaviour
     protected HashSet<GameObject> detectedObjects;
     protected GameObject detectedTarget;
     protected float maxCheckTimer = 0.5f;
-    protected float checkTimer;
+    protected float currentCheckTimer;
     protected bool isRunningChecks = false;
     protected int parentInstanceId;
     protected EnemyState currentState;
     
-    // Encapsulate State 
+    // Encapsulate state 
     public EnemyState State
     {
         get => currentState;
@@ -65,7 +65,7 @@ public class EnemyController : MonoBehaviour
     }
     protected void Start()
     {
-        checkTimer = maxCheckTimer;
+        currentCheckTimer = maxCheckTimer;
         navAgent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
         detectedObjects = new HashSet<GameObject>();
@@ -80,29 +80,30 @@ public class EnemyController : MonoBehaviour
         {
             if (!isRunningChecks)
             {
-                StartCoroutine(EnemyChecks());
+                StartCoroutine(EnemyChecksRoutine());
             }
         }
     }
 
-    protected IEnumerator EnemyChecks()
+    protected IEnumerator EnemyChecksRoutine()
     {
         isRunningChecks = true;
-        while (checkTimer >= 0)
+        while (currentCheckTimer >= 0)
         {
+            // If enemy is dead we should not be updating state
             if (State == EnemyState.DEAD)
             {
-                Debug.Log("This Check");
                 yield break;
             }
-            checkTimer -= Time.deltaTime;
+            currentCheckTimer -= Time.deltaTime;
             yield return null;
         }
+        // Run detection checks and update state
         CheckForDetectableObjects();
         RemoveDetectableObjects();
         HandleState();
         ProcessState();
-        checkTimer = maxCheckTimer;
+        currentCheckTimer = maxCheckTimer;
         isRunningChecks = false;
     }
     protected void CheckForDetectableObjects()

@@ -1,21 +1,29 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SceneController : MonoBehaviour
 {
+    private static int activeSceneIndex;
     private void OnEnable()
     {
         GameEvents.current.OnPlayerDeath += ResetScene;
-    }
-    public void LoadSceneAsync(string sceneName)
-    {
-        StartCoroutine(LoadSceneAsyncCoroutine(sceneName));
+        GameEvents.current.OnLevelEnd += LoadNextScene;
     }
 
-    public IEnumerator LoadSceneAsyncCoroutine(string sceneName)
+    private void Start()
     {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+        activeSceneIndex = SceneManager.GetActiveScene().buildIndex;
+    }
+    public void LoadSceneAsync(int index)
+    {
+        StartCoroutine(LoadSceneAsyncCoroutine(index));
+    }
+
+    public IEnumerator LoadSceneAsyncCoroutine(int index)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(index);
 
         while (!asyncLoad.isDone)
         {
@@ -23,10 +31,11 @@ public class SceneController : MonoBehaviour
             yield return null;
         }
     }
-    
-    public void LoadSampleScene()
+    private void LoadNextScene()
     {
-        LoadSceneAsync("SampleScene");
+        activeSceneIndex += 1;
+        LoadSceneAsync(activeSceneIndex);
+
     }
     private void ResetScene()
     {
@@ -35,6 +44,7 @@ public class SceneController : MonoBehaviour
     }
     private void OnDisable()
     {
-        GameEvents.current.OnPlayerDeath += ResetScene;
+        GameEvents.current.OnPlayerDeath -= ResetScene;
+        GameEvents.current.OnLevelEnd -= LoadNextScene;
     }
 }

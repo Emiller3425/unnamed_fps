@@ -6,7 +6,6 @@ using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 
 // TODO: Add max size to player iventory
-// TODO: When picking up a weapon with empty inventory, animation should start at midpoint. (only the raise no lower)
 
 public class PlayerWeaponInventory : MonoBehaviour
 {

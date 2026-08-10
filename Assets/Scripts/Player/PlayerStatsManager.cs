@@ -6,7 +6,7 @@ public class PlayerStatsManager : StatsManager
     private float maxExperiencePoints = 100;
     private float currentExperiencePoints;
     private float experienceToNextLevel;
-
+    private static Vector3? respawnPosition;
     public override void Awake()
     {
         base.Awake();
@@ -20,12 +20,21 @@ public class PlayerStatsManager : StatsManager
         experienceToNextLevel = maxExperiencePoints;
     }
 
+    public void OnEnable()
+    {
+        GameEvents.current.OnUpdateRespawnPosition += UpdatePlayerRespawnPosition;
+    }
+
     // initializes player UI on load with correct values
     private void Start()
     {
         ExperienceAdded(currentExperiencePoints);
         HealthAdded(currentHealth);
         GameEvents.current.LevelChanged(currentLevel);
+        if (respawnPosition != null)
+        {
+            transform.position = respawnPosition.Value;
+        }
     }
 
     public override void BulletDamage(float damage, Vector3 hitNormal)
@@ -149,6 +158,17 @@ public class PlayerStatsManager : StatsManager
         maxHealth += 10f;
         currentHealth = maxHealth;
     }
+
+    public void UpdatePlayerRespawnPosition(Vector3 newRespawnPosition)
+    {
+        respawnPosition = newRespawnPosition;
+    }
+
+    public void OnDisable()
+    {
+        GameEvents.current.OnUpdateRespawnPosition -= UpdatePlayerRespawnPosition;
+    }
+
     protected override void OnDestroy()
     {
         // TODO: Player death screen

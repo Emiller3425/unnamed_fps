@@ -67,6 +67,6 @@ public class StatsManager : MonoBehaviour, IDamageable, IHealable
 
     protected virtual void OnDestroy()
     {
-        // TODO: Player death
+        // TODO: What to do on player death in regards to stats
     }
 }

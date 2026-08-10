@@ -1,4 +1,4 @@
-// TODO: Define Animation Events
+// TODO: Define Animation Events -- maybe
 using System;
 using UnityEngine;
 
@@ -35,6 +35,8 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action OnScreenResize;
     public event Action<int> OnEntityDeath;
     public event Action OnPlayerDeath;
+    public event Action<Vector3> OnUpdateRespawnPosition;
+    public event Action OnLevelEnd;
     public void AmmoChanged(int currentMag, int currentAmmo)
     {
         OnAmmoChanged?.Invoke(currentMag, currentAmmo);
@@ -145,5 +147,14 @@ public class GameEvents : TemplateMonoBeheavior
     public void PlayerDeath()
     {
         OnPlayerDeath?.Invoke();
+    }
+    public void UpdateRespawnPosition(Vector3 newRespawnPosition)
+    {
+        OnUpdateRespawnPosition?.Invoke(newRespawnPosition);
+    }
+
+    public void LevelEnd()
+    {
+        OnLevelEnd?.Invoke();
     }
 }
