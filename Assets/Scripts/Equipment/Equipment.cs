@@ -67,7 +67,6 @@ public abstract class Equipment : MonoBehaviour, IInteractable
             if (c.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
             {
                 if (!c.GetComponentInParent<StatsManager>().isDead) {
-                    Debug.Log("Explosive Damage Applied");
                     damageable.ExplosiveDamage(damage, transform.position, areaOfEffect, dentonateForce);
                 }
             }

@@ -42,7 +42,6 @@ public class PlayerStatsManager : StatsManager
         base.BulletDamage(damage, hitNormal);
         // Update Health UI
         GameEvents.current.HealthSubtracted(damage, maxHealth, currentHealth);
-        Debug.Log(currentHealth);
         if (currentHealth <= 0f)
         {
             HandleDeath(0f);

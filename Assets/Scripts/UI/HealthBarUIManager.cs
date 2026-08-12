@@ -11,8 +11,8 @@ public class HealthBarUIManager : MonoBehaviour
     private float greenWidthMax;
     private float chunkStartPosition;
     private float chunkEndPosition;
-    private float chunkCollapseSpeed = 0.075f;
-    private float maxChunkPauseTime = 1f;
+    private float chunkCollapseSpeed = 2f;
+    private float maxChunkPauseTime = 0.5f;
     private bool shouldChunkPause = true;
     private float currentChunkPauseTime;
     private void Awake()
@@ -75,9 +75,8 @@ public class HealthBarUIManager : MonoBehaviour
     private void HealthSubtracted(float damage, float maxHealth, float currentHealth)
     {
         chunkEndPosition = greenRectTransform.anchoredPosition.x + greenRectTransform.sizeDelta.x;
-        currentHealth -= damage;
         ApplyToGreen(maxHealth, currentHealth);
-        chunkStartPosition = greenRectTransform.anchoredPosition.x + greenRectTransform.sizeDelta.x;
+        chunkStartPosition = greenRectTransform.anchoredPosition.x + greenRectTransform.rect.width;
         SetHealthbarChunking(chunkStartPosition, chunkEndPosition);
     }
 
@@ -87,10 +86,8 @@ public class HealthBarUIManager : MonoBehaviour
     }
 
     private void SetHealthbarChunking(float chunkStartPosition, float chunkEndPosition)
-    {
-        float chunkCenter = (chunkStartPosition + chunkEndPosition) / 2;
-        chunkCenter -= (chunkEndPosition - chunkStartPosition) / 2;
-        chunkRectTransform.anchoredPosition = new Vector3(chunkCenter, greenRectTransform.anchoredPosition.y);
+    { 
+        chunkRectTransform.anchoredPosition = new Vector3(chunkStartPosition, greenRectTransform.anchoredPosition.y);
         chunkRectTransform.sizeDelta = new Vector2(chunkEndPosition - chunkStartPosition, greenRectTransform.rect.height);
     }
 

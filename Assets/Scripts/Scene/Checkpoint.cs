@@ -1,10 +1,13 @@
 using UnityEngine;
 
-public class Checkpoint : CubeZoneDetector
+public class Checkpoint : PlayerCubeZoneDetector
 {
     protected override void OnTriggerEnter(Collider c)
     {
         base.OnTriggerEnter(c);
-        GameEvents.current.UpdateRespawnPosition(transform.position);
+        if (isPlayer)
+        {
+            GameEvents.current.UpdateRespawnPosition(transform.position);
+        }
     }
 }

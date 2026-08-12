@@ -46,8 +46,11 @@ public class EnemyController : MonoBehaviour
     protected float currentCheckTimer;
     protected bool isRunningChecks = false;
     protected int parentInstanceId;
+    protected float attackCooldown;
+    protected float maxAttackCooldown = 2f;
+    protected float damage = 10f;
     protected EnemyState currentState;
-    
+
     // Encapsulate state 
     public EnemyState State
     {
@@ -73,6 +76,7 @@ public class EnemyController : MonoBehaviour
         State = EnemyState.IDLE;
 
         parentInstanceId = gameObject.GetInstanceID();
+        attackCooldown = 0f;
     }
     protected void Update()
     {
@@ -82,6 +86,10 @@ public class EnemyController : MonoBehaviour
             {
                 StartCoroutine(EnemyChecksRoutine());
             }
+        }
+        if (attackCooldown >= 0f)
+        {
+            attackCooldown -= Time.deltaTime;
         }
     }
 
@@ -203,11 +211,36 @@ public class EnemyController : MonoBehaviour
                 navAgent.SetDestination(detectedTarget.transform.position);
                 break;
             case EnemyState.ATTACKING:
-                navAgent.isStopped = true;
+            if (attackCooldown < 0f)
+                {
+                    navAgent.isStopped = true;
+                    Attack();
+                }
                 break;
             default:
                 break;
         }
+    }
+
+    protected void Attack()
+    {
+        Debug.Log("Enemy Attack");
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5f);
+
+        foreach(Collider c in hitColliders)
+        {
+            if (c.IsPlayer())
+            {
+                if (c.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
+                {
+                    if (!c.GetComponentInParent<StatsManager>().isDead) {
+                        damageable.BulletDamage(damage, transform.position);
+                    }
+                }
+            }
+        }
+
+        attackCooldown = maxAttackCooldown;
     }
 
     protected void SetDeadState(int instanceId)
