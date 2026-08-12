@@ -178,19 +178,24 @@ public class PlayerController : MonoBehaviour, IDetectable
             // In air
             if (!characterController.isGrounded)
             {
-                GameEvents.current.Bloom(8f, false);
+                GameEvents.current.Bloom(5f, false);
             } 
             // Walking
             else if (Mathf.Abs(speedX) > crouchSpeed + 0.1f || Mathf.Abs(speedY) > crouchSpeed + 0.1f)
             {
-                GameEvents.current.Bloom(6f, false);
+                GameEvents.current.Bloom(3.5f, false);
             } 
             // Crouch walking
             else if (Mathf.Abs(speedX) > 0.1f || Mathf.Abs(speedY) > 0.1f)
             {
                 GameEvents.current.Bloom(2.5f, false);
             }
-            // Not moving
+            // Crouched not moving
+            else if (isCrouched)
+            {
+                GameEvents.current.Bloom(0.5f, false);
+            }
+            // Standing not moving
             else
             {
                 GameEvents.current.Bloom(1f, false);

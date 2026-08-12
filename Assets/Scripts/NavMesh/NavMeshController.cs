@@ -39,7 +39,7 @@ public class NavMeshController : MonoBehaviour
 
     private async void ShouldUpdateNavMesh(NavMeshData navMeshData)
     {
-        // TODO: Only update navmesh if data has changed
+        // TODO: Only update navmesh if data has changed, how to do this, fuck
     }
 
 

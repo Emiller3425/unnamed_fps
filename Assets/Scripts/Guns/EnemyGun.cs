@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+// TODO: refactor this fucking mess, we will want actual projectiles for enemy guns
 public abstract class EnemyGun : MonoBehaviour
 {
     public EntityStats entityStats;
@@ -71,7 +72,6 @@ public abstract class EnemyGun : MonoBehaviour
         } 
     }
 
-    // TODO: Fix the fucking calculate ray, we might want to use projectiles from enemies
     protected Vector3 CalculateRay()
     {
         Ray cameraRay = new Ray(muzzleTransform.position, muzzleTransform.forward);

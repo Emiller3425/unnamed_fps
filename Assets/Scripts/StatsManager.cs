@@ -67,6 +67,8 @@ public class StatsManager : MonoBehaviour, IDamageable, IHealable
 
     protected virtual void OnDestroy()
     {
-        // TODO: What to do on player death in regards to stats
+        // TODO: What to do on player death in regards to stats....
+        // - should xp stay?
+        // - should current ammo stay?
     }
 }

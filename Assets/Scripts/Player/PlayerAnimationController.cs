@@ -3,8 +3,6 @@ using System.Collections;
 using UnityEngine;
 
 // TODO: make it so you can queue animations, spamming swaps should still be smooth but should not block swaps if an animation isn't complete
-
-
 [RequireComponent(typeof(PlayerController))]
 public class PlayerAnimationController : AnimationController
 {

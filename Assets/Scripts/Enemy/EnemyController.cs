@@ -25,7 +25,6 @@ public enum EnemyState
     DEAD
 }
 
-// TODO: Implement a base EnemyController using nav meshes, create a new enemy prefab using the new model.
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyController : MonoBehaviour
