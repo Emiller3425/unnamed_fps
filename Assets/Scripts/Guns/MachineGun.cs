@@ -11,7 +11,7 @@ public class MachineGun : FullAutoGun, IUsesSMGAmmo
     protected override void Start()
     {
         // Set default values for MachineGun
-        damage = 5;
+        damage = 25;
         maxReloadBuffer = 2.5f;
         maxFireRateBuffer = 0.05f;
         PlayerStatsManager.Instance.SetSMGAmmo(PlayerStatsManager.Instance.GetSMGAmmo());

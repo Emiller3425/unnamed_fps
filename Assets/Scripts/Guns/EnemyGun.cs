@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// TODO: refactor this fucking mess, we will want actual projectiles for enemy guns
+// TODO: refactor this fucking mess, we will want actual projectiles for enemy guns do we need this? who fuckiong knows?
 public abstract class EnemyGun : MonoBehaviour
 {
     public EntityStats entityStats;

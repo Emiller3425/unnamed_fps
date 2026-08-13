@@ -12,7 +12,7 @@ public class Pistol : SemiAutoGun, IUsesPistolAmmo
     protected override void Start()
     {
         // Set default values for Pistol
-        damage = 10;
+        damage = 75;
         maxReloadBuffer = 1.5f;
         maxFireRateBuffer = 0.2f;
         PlayerStatsManager.Instance.SetPistolAmmo(PlayerStatsManager.Instance.GetPistolAmmo());

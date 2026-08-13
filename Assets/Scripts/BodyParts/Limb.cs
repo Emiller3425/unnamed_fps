@@ -4,7 +4,7 @@ public class Limb : BodyPart
 {
     protected override void Start()
     {
-        damageMultiplier = 1.0f;
+        damageMultiplier = 0.75f;
         base.Start();
     }
 }

@@ -60,15 +60,22 @@ public abstract class Equipment : MonoBehaviour, IInteractable
         HashSet<int> damagedParentInstanceIds = new HashSet<int>();
         foreach (Collider c in hitColliders)
         {
-            int damagedParentInstanceId = c.gameObject.GetInstanceID();
-            if (damagedParentInstanceIds.Contains(damagedParentInstanceId)) continue;
-
-            damagedParentInstanceIds.Add(damagedParentInstanceId);
-            if (c.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
+            if (c.GetComponentInParent<IDamageable>() is not null)
             {
-                if (!c.GetComponentInParent<StatsManager>().isDead) {
-                    damageable.ExplosiveDamage(damage, transform.position, areaOfEffect, dentonateForce);
+                int damagedParentInstanceId = c.gameObject.GetComponentInParent<StatsManager>().GetInstanceID();
+                if (damagedParentInstanceIds.Contains(damagedParentInstanceId)) continue;
+
+                damagedParentInstanceIds.Add(damagedParentInstanceId);
+                if (c.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
+                {
+                    if (!c.GetComponentInParent<StatsManager>().isDead) {
+                        damageable.ExplosiveDamage(damage, transform.position, areaOfEffect, dentonateForce);
+                    }
                 }
+            } else if (c.attachedRigidbody != null)
+            {
+                Debug.Log("RB");
+                c.attachedRigidbody.AddExplosionForce(dentonateForce, transform.position, areaOfEffect);
             }
         }
         Destroy(gameObject);

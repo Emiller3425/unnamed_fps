@@ -4,7 +4,7 @@ public class Head : BodyPart
 {
     protected override void Start()
     {
-        damageMultiplier = 1.5f;
+        damageMultiplier = 1.25f;
         base.Start();
     }
 }

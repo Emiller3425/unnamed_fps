@@ -129,7 +129,7 @@ public class PlayerWeaponInventory : MonoBehaviour
             }
 
             // Apply throw force
-            Vector3 throwForce = transform.forward * 5f + Vector3.up * 20f;
+            Vector3 throwForce = transform.forward + Vector3.up;
             equippedWeapon.GetComponent<Rigidbody>().AddForce(throwForce, ForceMode.Impulse);
            
            // Clear equippedWeapon
