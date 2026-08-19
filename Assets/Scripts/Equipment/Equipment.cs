@@ -38,10 +38,6 @@ public abstract class Equipment : MonoBehaviour, IInteractable
 
     protected virtual void OnEnable()
     {
-        if (isPlayerEquipment)
-        {
-            throwAction.Enable();
-        }
         GameEvents.current.OnTogglePause += HandlePause;
     }
     protected virtual void Start()
@@ -49,6 +45,12 @@ public abstract class Equipment : MonoBehaviour, IInteractable
         rigidBody = transform.GetComponent<Rigidbody>();
         meshCollider = transform.GetComponent<Collider>();
         meshCollider.enabled = true;
+    }
+
+    protected virtual void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("Collision");
+        rigidBody.mass = 10f;
     }
 
     protected virtual void Detonate()
@@ -74,7 +76,6 @@ public abstract class Equipment : MonoBehaviour, IInteractable
                 }
             } else if (c.attachedRigidbody != null)
             {
-                Debug.Log("RB");
                 c.attachedRigidbody.AddExplosionForce(dentonateForce, transform.position, areaOfEffect);
             }
         }
@@ -93,7 +94,6 @@ public abstract class Equipment : MonoBehaviour, IInteractable
     {
          
     }
-
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;

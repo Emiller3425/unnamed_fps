@@ -21,7 +21,7 @@ public class VisualEffectManager : MonoBehaviour
         GameEvents.current.OnPlayVFX += Play;
     }
 
-    private void Play(string name, Vector3 position, Vector3 rotation, Vector3 velocity, Transform sourceToFollow)
+    private void Play(string name, Vector3 position, Vector3 rotation, Vector3 velocity, Transform sourceToFollow, GameObject light)
     {
         if (effectLookup.TryGetValue(name, out VisualEffectItem effectItem))
         {
@@ -41,6 +41,13 @@ public class VisualEffectManager : MonoBehaviour
             Destroy(vfxObject, vfx.GetFloat("EffectMaxDuration"));
 
             FollowSource(vfxObject, sourceToFollow, vfx.GetFloat("EffectMaxDuration"));
+        }
+        // TODO: General light spawning class and gameevent outside of vfx, 
+        if (light)
+        {
+            var vfxLight = Instantiate(light, position, Quaternion.Euler(rotation));
+
+            Destroy(vfxLight, 0.05f);
         }
     }
 

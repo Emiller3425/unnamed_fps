@@ -170,7 +170,7 @@ public class PlayerController : MonoBehaviour, IDetectable
 
             rotationX -= lookValue.y * (adsEnabled ? adsLookSpeed : lookSpeed);
             rotationX = Mathf.Clamp(rotationX, -80f, 80f);
-            playerCamera.transform.localRotation = Quaternion.Euler(rotationX, 0f, 0f);
+            GameEvents.current.PlayerRotation(rotationX);
             transform.Rotate((adsEnabled ? adsLookSpeed : lookSpeed) * lookValue.x * Vector3.up);
             
             // Crosshairs bloom logic

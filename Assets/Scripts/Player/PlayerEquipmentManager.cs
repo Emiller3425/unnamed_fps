@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using TreeEditor;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -11,9 +12,10 @@ public class PlayerEquipmentManager: MonoBehaviour
     public EntityStats entityStats;
     public GameObject equippedEquipment;
     private InputAction throwAction;
+    private GameObject primedEquipment;
     private int currentEquipment;
     private int maxEquipment;
-    private float throwForce = 8f;
+    private float throwForce = 1f;
     private void Awake()
     {
         throwAction = InputSystem.actions.FindAction("UseEquipment");
@@ -29,6 +31,7 @@ public class PlayerEquipmentManager: MonoBehaviour
     {
         throwAction.Enable();
         throwAction.started += OnThrow;
+        throwAction.canceled += OnRelease;
 
     }
 
@@ -36,31 +39,52 @@ public class PlayerEquipmentManager: MonoBehaviour
     {
         if (PlayerStatsManager.Instance.GetEquipment() > 0)
         {
-            Throw();
+            Prime();
         }
     }
 
-    private void Throw()
+    private void OnRelease(InputAction.CallbackContext context)
+    {
+        if (primedEquipment)
+        {
+            Release();
+        }
+    }
+
+    private void Prime()
     {
         PlayerStatsManager.Instance.SetEquipment(PlayerStatsManager.Instance.GetEquipment() - 1);
         // Update UI
         GameEvents.current.EquipmentCountChanged(PlayerStatsManager.Instance.GetEquipment());
 
-        GameObject thrownEquipment = Instantiate(equippedEquipment, transform.position, transform.rotation);
-        Rigidbody thrownEquipmentRb = thrownEquipment.GetComponent<Rigidbody>();
+        GameObject equipment = Instantiate(equippedEquipment, transform.position, transform.rotation);
+        equipment.transform.SetParent(gameObject.transform);
+        Rigidbody equipmentRb = equipment.GetComponent<Rigidbody>();
+        equipmentRb.isKinematic = true;
 
-        if (thrownEquipmentRb != null)
+        if (equipmentRb != null)
         {
-            Vector3 throwDirection = transform.forward + transform.up * 0.8f;
-
-            thrownEquipmentRb.AddForce(throwDirection * throwForce, ForceMode.Impulse);
+            primedEquipment = equipment;
         }
+    }
+
+    private void Release()
+    {
+        Rigidbody primedEquipmentRb = primedEquipment.GetComponent<Rigidbody>();
+        Vector3 throwDirection = transform.forward + transform.up * 0.4f;
+
+        primedEquipmentRb.isKinematic = false;
+        primedEquipment.transform.SetParent(null);
+        primedEquipmentRb.AddForce(throwDirection * throwForce, ForceMode.Impulse);
+
+        primedEquipment = null;
     }
 
     private void OnDisable()
     {
         throwAction.Disable();
         throwAction.started -= OnThrow;
+        throwAction.canceled -= OnRelease;
 
     }
 }

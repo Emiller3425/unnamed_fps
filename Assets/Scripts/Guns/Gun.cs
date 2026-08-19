@@ -2,6 +2,7 @@ using System.Data.Common;
 using TreeEditor;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
@@ -13,6 +14,7 @@ public abstract class Gun : MonoBehaviour, IInteractable
     public EntityStats entityStats;
     public AnimatorOverrideController weaponAnimationOverride;
     public Crosshairs crosshairs;
+    public GameObject muzzleFlashLight;
     public bool isPlayerGun = false;
     public int magSize = 30;
     public int damage = 10;
@@ -124,7 +126,7 @@ public abstract class Gun : MonoBehaviour, IInteractable
             // Play Gunshot
             GameEvents.current.PlaySFX("gunshot");
             // Handle Muzzle Flash
-            GameEvents.current.PlayVFX("glockMuzzleFlash", muzzleTransform.position, muzzleTransform.rotation.eulerAngles, Vector3.zero, muzzleTransform);
+            GameEvents.current.PlayVFX("glockMuzzleFlash", muzzleTransform.position, muzzleTransform.rotation.eulerAngles, Vector3.zero, muzzleTransform, muzzleFlashLight);
             
             GameEvents.current.WeaponFired();
 

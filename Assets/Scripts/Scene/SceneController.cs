@@ -15,6 +15,7 @@ public class SceneController : MonoBehaviour
     private void Start()
     {
         activeSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        Debug.Log(activeSceneIndex);
     }
     public void LoadSceneAsync(int index)
     {
@@ -34,6 +35,7 @@ public class SceneController : MonoBehaviour
     private void LoadNextScene()
     {
         activeSceneIndex += 1;
+        Debug.Log(activeSceneIndex);
         LoadSceneAsync(activeSceneIndex);
 
     }

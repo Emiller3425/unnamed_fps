@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEngine.UIElements;
 
 // TODO: Screenshake from explosions, recoil, etc
 public class PlayerCameraController : MonoBehaviour
@@ -8,10 +9,26 @@ public class PlayerCameraController : MonoBehaviour
     public Camera playerCamera;
     private float defaultHeight = 0.47f;
     private float crouchHeight = -0.33f;
+    private float recoilOffset = 0f;
+    private float recoilOffSetMax = -10f;
+    private Vector3 currentRecoilRotation = Vector3.zero;
     private Coroutine activeLerp;
     private void OnEnable()
     {
         GameEvents.current.OnCrouch += ResizeHitbox;
+        GameEvents.current.OnWeaponFired += Recoil;
+        GameEvents.current.OnPlayerRotation += Rotate;
+    }
+
+    private void Update ()
+    {
+        // Remove recoil offset based on deltatime if it exists
+        if (recoilOffset <= 0)
+        {
+            recoilOffset = Mathf.MoveTowards(recoilOffset, 0f, Time.deltaTime * 20);
+        }
+        // lerp the current recoil rotation towards the target
+        currentRecoilRotation = Vector3.Lerp(currentRecoilRotation, new Vector3(recoilOffset, 0f, 0f), 0.4f);
     }
 
     private void ResizeHitbox(bool isCrouched, bool isGrounded)
@@ -44,6 +61,17 @@ public class PlayerCameraController : MonoBehaviour
         }
     }
 
+    private void Rotate(float rotation)
+    {
+        playerCamera.transform.localRotation = Quaternion.Euler(rotation, 0f, 0f) * Quaternion.Euler(currentRecoilRotation);
+    }
+
+    private void Recoil()
+    {
+        if (recoilOffset > recoilOffSetMax)
+            recoilOffset += -2f;
+    }
+
     // Apply screenshake by a magnitude and speeds.
     private void ApplyScreenShake(float shakeSpeed, float shakeMagnitude)
     {
@@ -53,5 +81,12 @@ public class PlayerCameraController : MonoBehaviour
     private IEnumerator LerpShakeRoutine(float targetPosition)
     {
         yield return null;
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.current.OnCrouch -= ResizeHitbox;
+        GameEvents.current.OnWeaponFired -= Recoil;
+        GameEvents.current.OnPlayerRotation -= Rotate;
     }
 }

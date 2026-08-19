@@ -15,7 +15,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action OnReloadStarted;
     public event Action OnReloadFinished;
     public event Action<string> OnPlaySFX;
-    public event Action<string, Vector3, Vector3, Vector3, Transform> OnPlayVFX;
+    public event Action<string, Vector3, Vector3, Vector3, Transform, GameObject> OnPlayVFX;
     public event Action<float, float, float> OnHealthAdded;
     public event Action<float, float, float> OnHealthSubtracted;
     public event Action<float, float, float, int> OnExperienceAdded;
@@ -37,6 +37,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action OnPlayerDeath;
     public event Action<Vector3> OnUpdateRespawnPosition;
     public event Action OnLevelEnd;
+    public event Action<float> OnPlayerRotation;
     public void AmmoChanged(int currentMag, int currentAmmo)
     {
         OnAmmoChanged?.Invoke(currentMag, currentAmmo);
@@ -62,9 +63,9 @@ public class GameEvents : TemplateMonoBeheavior
     {
         OnPlaySFX?.Invoke(clip);
     }
-    public void PlayVFX(string shader, Vector3 position, Vector3 rotation, Vector3 velocity, Transform sourceToFollow)
+    public void PlayVFX(string shader, Vector3 position, Vector3 rotation, Vector3 velocity, Transform sourceToFollow, GameObject light = null)
     {
-        OnPlayVFX?.Invoke(shader, position, rotation, velocity, sourceToFollow);
+        OnPlayVFX?.Invoke(shader, position, rotation, velocity, sourceToFollow, light);
     }
     public void ExperienceAdded(float maxExperiencePoints, float currentExperiencePoints, float previousExperiencePoints, int currentLevel)
     {
@@ -152,9 +153,12 @@ public class GameEvents : TemplateMonoBeheavior
     {
         OnUpdateRespawnPosition?.Invoke(newRespawnPosition);
     }
-
     public void LevelEnd()
     {
         OnLevelEnd?.Invoke();
+    }
+    public void PlayerRotation(float rotation)
+    {
+        OnPlayerRotation?.Invoke(rotation);
     }
 }

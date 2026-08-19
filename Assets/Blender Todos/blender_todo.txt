@@ -1,5 +1,7 @@
+TODO: Unequipped animation
 TODO: Grenade model
     - Equipment animations, can have it be cooked off screen so can use a single animation for all equipment
 TODO: Texture Paint Mac-10
 TODO: Famas Model and texture paint
     - animations
+    
