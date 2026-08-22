@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 // TODO: make it so you can queue animations, spamming swaps should still be smooth but should not block swaps if an animation isn't complete
+// TODO: Make it so grenade is throw at hand, and wat midpoint of anim
 [RequireComponent(typeof(PlayerController))]
 public class PlayerAnimationController : AnimationController
 {

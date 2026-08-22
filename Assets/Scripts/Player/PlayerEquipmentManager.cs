@@ -15,7 +15,7 @@ public class PlayerEquipmentManager: MonoBehaviour
     private GameObject primedEquipment;
     private int currentEquipment;
     private int maxEquipment;
-    private float throwForce = 1f;
+    private float throwForce = 1.5f;
     private void Awake()
     {
         throwAction = InputSystem.actions.FindAction("UseEquipment");
@@ -72,7 +72,7 @@ public class PlayerEquipmentManager: MonoBehaviour
     {
         GameEvents.current.EquipmentThrown();
         Rigidbody primedEquipmentRb = primedEquipment.GetComponent<Rigidbody>();
-        Vector3 throwDirection = transform.forward + transform.up * 0.4f;
+        Vector3 throwDirection = transform.forward + transform.up * 0.3f;
 
         primedEquipmentRb.isKinematic = false;
         primedEquipment.transform.SetParent(null);
