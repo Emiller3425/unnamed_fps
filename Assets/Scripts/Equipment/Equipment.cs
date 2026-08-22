@@ -10,6 +10,8 @@ using UnityEngine.ProBuilder.Shapes;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 
+// TODO: Equipment cooldown
+
 public enum EquipmentTypes
 {
     NONE,

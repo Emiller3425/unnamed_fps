@@ -24,6 +24,15 @@ public class AnimationController : MonoBehaviour
     {
         
     }
+
+    protected virtual void StartEquipmentAnimation()
+    {
+
+    }
+    protected virtual void PlayEquipmentAnimation()
+    {
+        
+    }
     protected virtual void Update()
     {
        HandleAnimations();

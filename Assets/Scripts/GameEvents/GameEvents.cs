@@ -25,6 +25,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action OnSetHitMarkerDeactivated;
     public event Action OnWeaponFired;
     public event Action OnWeaponReloaded;
+    public event Action OnEquipmentPrimed;
     public event Action OnEquipmentThrown;
     public event Action<bool> OnTogglePause;
     public event Action<bool> OnTogglePlayerInventory;
@@ -38,6 +39,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action<Vector3> OnUpdateRespawnPosition;
     public event Action OnLevelEnd;
     public event Action<float> OnPlayerRotation;
+    public event Action OnEquipmentThrownComplete;
     public void AmmoChanged(int currentMag, int currentAmmo)
     {
         OnAmmoChanged?.Invoke(currentMag, currentAmmo);
@@ -107,6 +109,10 @@ public class GameEvents : TemplateMonoBeheavior
     {
         OnEquipmentThrown?.Invoke();
     }
+    public void EquipmentPrimed()
+    {
+        OnEquipmentPrimed?.Invoke();
+    }
     public void TogglePause(bool isPauseToggled)
     {
         OnTogglePause?.Invoke(isPauseToggled);
@@ -160,5 +166,9 @@ public class GameEvents : TemplateMonoBeheavior
     public void PlayerRotation(float rotation)
     {
         OnPlayerRotation?.Invoke(rotation);
+    }
+    public void EquipmentThrownComplete()
+    {
+        OnEquipmentThrownComplete?.Invoke();
     }
 }

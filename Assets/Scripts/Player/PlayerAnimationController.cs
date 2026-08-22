@@ -1,6 +1,9 @@
 using System;
 using System.Collections;
+using System.Threading.Tasks.Sources;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 // TODO: make it so you can queue animations, spamming swaps should still be smooth but should not block swaps if an animation isn't complete
 [RequireComponent(typeof(PlayerController))]
@@ -24,6 +27,8 @@ public class PlayerAnimationController : AnimationController
         // Subscribe to events
         GameEvents.current.OnWeaponFired += PlayShootAnimation;
         GameEvents.current.OnWeaponReloaded += PlayReloadAnimation;
+        GameEvents.current.OnEquipmentPrimed += StartEquipmentAnimation;
+        GameEvents.current.OnEquipmentThrown += PlayEquipmentAnimation;
     }
 
     protected override void PlayShootAnimation()
@@ -34,7 +39,16 @@ public class PlayerAnimationController : AnimationController
     {
         animator.SetTrigger("Reload");
     }
-
+    protected override void StartEquipmentAnimation()
+    {
+        animator.SetTrigger("Equipment_Hold");
+    }
+    protected override void PlayEquipmentAnimation()
+    {
+        Debug.Log("Throw");
+        animator.SetTrigger("Equipment_Throw");
+        StartCoroutine(WaitForAnimationEnd("Equipment_Throw", OnEquipmentComplete, 4));
+    }
     protected override void Update()
     {
         base.Update();
@@ -119,9 +133,38 @@ public class PlayerAnimationController : AnimationController
         activeSwapRoutine = null;
     }
 
+private IEnumerator WaitForAnimationEnd(string stateName, Action onComplete, int layerIndex)
+{
+    yield return null; // Wait one frame for transition to register
+
+    AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(layerIndex);
+
+    // Wait until theAnimator enters the targeted state
+    while (!info.IsName(stateName))
+    {
+        yield return null;
+        info = animator.GetCurrentAnimatorStateInfo(layerIndex);
+    }
+
+    // Wait until the state reaches 100% completion (normalizedTime < 1.0)
+    while (info.IsName(stateName) && info.normalizedTime < 1.0f)
+    {
+        yield return null;
+        info = animator.GetCurrentAnimatorStateInfo(layerIndex);
+    }
+        onComplete?.Invoke();
+    }
+
     protected override void OnDestroy()
     {
         GameEvents.current.OnWeaponFired -= PlayShootAnimation;
         GameEvents.current.OnWeaponReloaded -= PlayReloadAnimation;
+        GameEvents.current.OnEquipmentThrown -= PlayEquipmentAnimation;
+    }
+
+    private void OnEquipmentComplete()
+    {
+        Debug.Log("dfdfvdsefs");
+        GameEvents.current.EquipmentThrownComplete();
     }
 }

@@ -32,7 +32,6 @@ public class PlayerEquipmentManager: MonoBehaviour
         throwAction.Enable();
         throwAction.started += OnThrow;
         throwAction.canceled += OnRelease;
-
     }
 
     private void OnThrow(InputAction.CallbackContext context)
@@ -64,12 +63,14 @@ public class PlayerEquipmentManager: MonoBehaviour
 
         if (equipmentRb != null)
         {
+            GameEvents.current.EquipmentPrimed();
             primedEquipment = equipment;
         }
     }
 
     private void Release()
     {
+        GameEvents.current.EquipmentThrown();
         Rigidbody primedEquipmentRb = primedEquipment.GetComponent<Rigidbody>();
         Vector3 throwDirection = transform.forward + transform.up * 0.4f;
 

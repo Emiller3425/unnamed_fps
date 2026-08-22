@@ -16,6 +16,13 @@ public class PlayerWeaponInventory : MonoBehaviour
     private InputAction dropAction;
     private Collider playerCollider;
 
+    private void OnEnable()
+    {
+        GameEvents.current.OnWeaponPickup += PickupWeapon;
+        GameEvents.current.OnEquipmentPrimed += DisableEquippedWeapon;
+        GameEvents.current.OnEquipmentThrownComplete += EnableEquippedWeapon;
+    }
+
     public void EquipNextWeapon(bool wasDropped)
     {
         // Swap or drop weapon
@@ -44,10 +51,6 @@ public class PlayerWeaponInventory : MonoBehaviour
                 animController.TriggerWeaponSwap(() => CompleteWeaponSwitch(weaponName, wasDropped));
             }
         }
-    }
-    private void OnEnable()
-    {
-        GameEvents.current.OnWeaponPickup += PickupWeapon;
     }
     private void Awake()
     {
@@ -198,6 +201,22 @@ public class PlayerWeaponInventory : MonoBehaviour
     private void OnDrop(InputAction.CallbackContext context)
     {
         EquipNextWeapon(true);
+    }
+
+    private void DisableEquippedWeapon()
+    {
+        equippedWeapon.SetActive(false);
+    }
+    private void EnableEquippedWeapon()
+    {
+        equippedWeapon.SetActive(true);
+    }
+
+    private void OnDisable()
+    {
+        GameEvents.current.OnWeaponPickup -= PickupWeapon;
+        GameEvents.current.OnEquipmentPrimed -= DisableEquippedWeapon;
+        GameEvents.current.OnEquipmentThrownComplete -= EnableEquippedWeapon;
     }
 
     private void OnDestroy()

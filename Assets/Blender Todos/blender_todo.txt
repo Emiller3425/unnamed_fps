@@ -1,7 +1,6 @@
-TODO: Unequipped animation
-TODO: Grenade model
-    - Equipment animations, can have it be cooked off screen so can use a single animation for all equipment
-TODO: Texture Paint Mac-10
+TODO: Unequipped animations
+    - walk, jump, crouch
+       - might just be walk, and jump, can probably hide arms off screen for crouch / idle
 TODO: Famas Model and texture paint
     - animations
-    
+     

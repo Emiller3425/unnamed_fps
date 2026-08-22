@@ -8,7 +8,7 @@ public class Grenade : TimedFuseEquipment
     {
         fuseTimer = 3.5f;
         damage = 100f;
-        areaOfEffect = 3f;
+        areaOfEffect = 5f;
         dentonateForce = 400f;
         base.Start();
     }
