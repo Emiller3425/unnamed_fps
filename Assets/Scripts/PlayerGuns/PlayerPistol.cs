@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Pistol : SemiAutoGun, IUsesPistolAmmo
+public class PlayerPistol : PlayerSemiAutoGun, IUsesPistolAmmo
 {
     protected override void Awake()
     {
@@ -43,7 +43,7 @@ public class Pistol : SemiAutoGun, IUsesPistolAmmo
     {
         base.Reload();
         // Reload player mag if is less than max and we have ammo in reserves
-        if (PlayerStatsManager.Instance.GetPistolAmmo() > 0 && currentMag < magSize && reloadBuffer <= 0f && isPlayerGun)
+        if (PlayerStatsManager.Instance.GetPistolAmmo() > 0 && currentMag < magSize && reloadBuffer <= 0f)
         {
             GameEvents.current.ReloadStarted();
             reloadBuffer = maxReloadBuffer;
@@ -59,20 +59,12 @@ public class Pistol : SemiAutoGun, IUsesPistolAmmo
             GameEvents.current.PlaySFX("reload");
             GameEvents.current.WeaponReloaded();
         }
-        // Enemy reload infinite ammo
-        else if (!isPlayerGun)
-        {
-            reloadBuffer = maxReloadBuffer;
-            currentMag = magSize;
-        }
     }
 
     protected override void ShootBullet()
     {
         base.ShootBullet();
-        if (isPlayerGun)
-        {
-            GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetPistolAmmo());
-        }
+
+        GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetPistolAmmo());
     }
 } 

@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 
+// TODO: add editable sliders to private fileds in unity inspector
 public class PlayerEquipmentManager: MonoBehaviour
 
 {

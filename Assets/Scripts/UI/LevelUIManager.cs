@@ -18,12 +18,10 @@ public class LevelUIManager : MonoBehaviour
         }
         levelUIText = GetComponentInChildren<TextMeshProUGUI>();
     }
-
-    private void Start()
+    private void OnEnable()
     {
         GameEvents.current.OnLevelChanged += UpdateLevelUI;
     }
-
     private void UpdateLevelUI(int currentLevel)
     {
        if (levelUIText != null) 
@@ -34,10 +32,8 @@ public class LevelUIManager : MonoBehaviour
             Debug.LogError("Level UI Text is null, check component hierachy");
         }
     }
-
-    private void OnDestroy()
+    private void OnDisable()
     {
         GameEvents.current.OnLevelChanged -= UpdateLevelUI;
     }
-
 }

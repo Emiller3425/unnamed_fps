@@ -30,6 +30,7 @@ public class PlayerStatsManager : StatsManager
     {
         ExperienceAdded(currentExperiencePoints);
         HealthAdded(currentHealth);
+        Debug.Log(currentLevel);
         GameEvents.current.LevelChanged(currentLevel);
         if (respawnPosition != null)
         {

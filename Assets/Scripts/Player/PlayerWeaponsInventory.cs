@@ -84,7 +84,7 @@ public class PlayerWeaponInventory : MonoBehaviour
         weapon.transform.SetParent(gameObject.transform, true);
 
         // Enable gun script physics components
-        weapon.GetComponent<Gun>().enabled = false;
+        weapon.GetComponent<PlayerGun>().enabled = false;
         weapon.GetComponent<Rigidbody>().isKinematic = true;
         weapon.GetComponent<BoxCollider>().enabled = false;
 
@@ -121,7 +121,7 @@ public class PlayerWeaponInventory : MonoBehaviour
             weaponDictionary.Remove(equippedWeapon.name, out equippedWeapon);
 
             // Disable gun script and enable physics components
-            equippedWeapon.GetComponent<Gun>().enabled = false;
+            equippedWeapon.GetComponent<PlayerGun>().enabled = false;
             equippedWeapon.GetComponent<Rigidbody>().isKinematic = false;
             equippedWeapon.GetComponent<BoxCollider>().enabled = true;
 
@@ -154,7 +154,7 @@ public class PlayerWeaponInventory : MonoBehaviour
         equippedWeapon.SetActive(true);
         SetWeaponPositionAndRotation(equippedWeapon.transform);
 
-        Gun gunScript = equippedWeapon.GetComponent<Gun>();
+        PlayerGun gunScript = equippedWeapon.GetComponent<PlayerGun>();
         gunScript.enabled = true;
 
         if (gunScript != null && gunScript.weaponAnimationOverride != null)
@@ -167,7 +167,7 @@ public class PlayerWeaponInventory : MonoBehaviour
 
     private void UpdateAmmoUI()
     {
-        Gun gunScript = equippedWeapon?.GetComponent<Gun>();
+        PlayerGun gunScript = equippedWeapon?.GetComponent<PlayerGun>();
         if (gunScript == null)
         {
             // Negative value incdicates there is no equipped weapon
@@ -205,10 +205,12 @@ public class PlayerWeaponInventory : MonoBehaviour
 
     private void DisableEquippedWeapon()
     {
-        equippedWeapon.SetActive(false);
+        if (equippedWeapon)
+            equippedWeapon.SetActive(false);
     }
     private void EnableEquippedWeapon()
     {
+        if (equippedWeapon)
         equippedWeapon.SetActive(true);
     }
 

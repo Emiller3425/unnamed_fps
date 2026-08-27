@@ -1,6 +1,6 @@
 using UnityEngine.InputSystem;
 
-public class SemiAutoGun : Gun
+public class PlayerSemiAutoGun : PlayerGun
 {
     protected override void OnShoot(InputAction.CallbackContext context)
     {

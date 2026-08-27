@@ -32,13 +32,14 @@ public class EnemyController : MonoBehaviour
     public float walkSpeed = 0.5f;
     public float sprintSpeed = 7f;
     public float lookSpeed = 10f;
-    public EnemyGun enemyGun;
     public NavMeshAgent navAgent;
     public Animator animator;
+    public event Action OnShoot;
+    public event Action OnDeath;
     protected float detectDistance = 10f;
     protected float detectArcDegrees = 120f;
     protected float attackRange = 3f;
-    protected float pursuitRange = 30f;
+    protected float pursuitRange = 200f;
     protected HashSet<GameObject> detectedObjects;
     protected GameObject detectedTarget;
     protected float maxCheckTimer = 0.5f;
@@ -49,7 +50,6 @@ public class EnemyController : MonoBehaviour
     protected float maxAttackCooldown = 2f;
     protected float damage = 10f;
     protected EnemyState currentState;
-
     // Encapsulate state 
     public EnemyState State
     {
@@ -139,7 +139,7 @@ public class EnemyController : MonoBehaviour
     {
         // If detected objects are far enough away remove them from the list of detected objects
         detectedObjects.RemoveWhere(detected => 
-            detected == null || Vector3.Distance(transform.position, detected.transform.position) > detectDistance
+            detected == null || Vector3.Distance(transform.position, detected.transform.position) > pursuitRange
         );
         // Clear target
         if (detectedObjects.Count == 0)
@@ -168,16 +168,18 @@ public class EnemyController : MonoBehaviour
         {
             if (detectedTarget)
             {
-                if (Vector3.Distance(transform.position, detectedTarget.transform.position) < attackRange)
+                float targetDistance = Vector3.Distance(transform.position, detectedTarget.transform.position);
+                if (targetDistance < attackRange)
                 {
                     currentState = EnemyState.ATTACKING;
                     return;
+                } else if (targetDistance < pursuitRange)
+                {
+                    return;
                 }
-            } else
-            {
-                State = EnemyState.IDLE;
-                return;
-            }
+            } 
+            State = EnemyState.IDLE;
+            return;
         }
 
         // HANDLE ATTACKING
@@ -208,12 +210,13 @@ public class EnemyController : MonoBehaviour
             case EnemyState.PURSUIT:
                 navAgent.isStopped = false;
                 navAgent.SetDestination(detectedTarget.transform.position);
+                Shoot();
                 break;
             case EnemyState.ATTACKING:
             if (attackCooldown < 0f)
                 {
                     navAgent.isStopped = true;
-                    Attack();
+                    Melee();
                 }
                 break;
             default:
@@ -221,7 +224,7 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    protected void Attack()
+    protected void Melee()
     {
         Debug.Log("Enemy Attack");
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5f);
@@ -242,6 +245,11 @@ public class EnemyController : MonoBehaviour
         attackCooldown = maxAttackCooldown;
     }
 
+    protected void Shoot()
+    {
+        OnShoot?.Invoke();
+    }
+
     protected void SetDeadState(int instanceId)
     {
         if (instanceId == parentInstanceId)
@@ -249,6 +257,7 @@ public class EnemyController : MonoBehaviour
             State = EnemyState.DEAD;
             navAgent.velocity = Vector3.zero;
             navAgent.isStopped = true;
+            OnDeath?.Invoke();
         }
     }
 

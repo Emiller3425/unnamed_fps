@@ -15,7 +15,7 @@ public class EntityStats : ScriptableObject
     [SerializeField] protected int maxSMGAmmo = 160;
     [SerializeField] protected int currentRifleAmmo = 180;
     [SerializeField] protected int maxRifleAmmo = 180;
-    [SerializeField] protected int maxEquipment = 5;
+    [SerializeField] protected int maxEquipment = 99;
     [SerializeField] protected int currentEquipment = 5;
 
     public int GetCurrentLevel()

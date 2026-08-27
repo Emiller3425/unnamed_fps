@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour, IDetectable
     public float crouchSpeed = 3f;
     public float lookSpeed = 0.6f;
     public float adsLookSpeed = 0.3f;
-    public float jumpHeight = 4f;
+    public float jumpHeight = 30f;
     public Vector3 movementDirection = Vector3.zero;
     public bool isSprinting = false;
     public bool isCrouched = false;
@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour, IDetectable
         dashAction.performed += OnDash;
         // aimAction.started += OnAim;
         interactAction.started += OnInteract;
-        emoteAction.started += OnEmote;
+        // emoteAction.started += OnEmote;
         crouchAction.started += OnCrouchEnabled;
         crouchAction.canceled += OnCrouchDisabled;
     }
@@ -258,14 +258,14 @@ public class PlayerController : MonoBehaviour, IDetectable
     //     adsEnabled = !adsEnabled;
     // }
 
-    private void OnEmote(InputAction.CallbackContext context)
-    {
-        if (isPaused)
-        {
-            return;
-        }
-        animator.SetTrigger("Emote");
-    }
+    // private void OnEmote(InputAction.CallbackContext context)
+    // {
+    //     if (isPaused)
+    //     {
+    //         return;
+    //     }
+    //     animator.SetTrigger("Emote");
+    // }
 
     private void OnCrouchEnabled(InputAction.CallbackContext context)
     {
@@ -351,6 +351,9 @@ public class PlayerController : MonoBehaviour, IDetectable
         moveAction.Disable();
         lookAction.Disable();
         sprintAction.Disable();
+        
+        crouchAction.started -= OnCrouchEnabled;
+        crouchAction.canceled -= OnCrouchDisabled;
         crouchAction.Disable();
 
         jumpAction.started -= OnJump;
@@ -365,8 +368,8 @@ public class PlayerController : MonoBehaviour, IDetectable
         interactAction.started -= OnInteract;
         interactAction.Disable();
 
-        emoteAction.started -= OnEmote;
-        emoteAction.Disable();
+    //     emoteAction.started -= OnEmote;
+    //     emoteAction.Disable();
+    // }
     }
-
 }

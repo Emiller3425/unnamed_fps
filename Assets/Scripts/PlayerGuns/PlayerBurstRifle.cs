@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class BurstRifle : BurstGun, IUsesRifleAmmo
+public class PlayeBurstRifle : PlayerBurstGun, IUsesRifleAmmo
 {
     protected override void Awake()
     {
@@ -42,7 +42,7 @@ public class BurstRifle : BurstGun, IUsesRifleAmmo
     {
         base.Reload();
         // Reload player mag if is less than max and we have ammo in reserves
-        if (PlayerStatsManager.Instance.GetRifleAmmo() > 0 && currentMag < magSize && reloadBuffer <= 0f && isPlayerGun)
+        if (PlayerStatsManager.Instance.GetRifleAmmo() > 0 && currentMag < magSize && reloadBuffer <= 0f )
         {
             GameEvents.current.ReloadStarted();
             reloadBuffer = maxReloadBuffer;
@@ -58,20 +58,12 @@ public class BurstRifle : BurstGun, IUsesRifleAmmo
             GameEvents.current.PlaySFX("reload");
             GameEvents.current.WeaponReloaded();
         }
-        // Enemy reload infinite ammo
-        else if (!isPlayerGun)
-        {
-            reloadBuffer = maxReloadBuffer;
-            currentMag = magSize;
-        }
     }
 
     protected override void ShootBullet()
     {
         base.ShootBullet();
-        if (isPlayerGun)
-        {
-            GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetRifleAmmo());
-        }
+
+        GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetRifleAmmo());
     }
 }

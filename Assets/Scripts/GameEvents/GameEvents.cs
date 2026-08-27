@@ -1,5 +1,6 @@
 // TODO: Define Animation Events -- maybe
 using System;
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
 
 public class GameEvents : TemplateMonoBeheavior
@@ -15,7 +16,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action OnReloadStarted;
     public event Action OnReloadFinished;
     public event Action<string> OnPlaySFX;
-    public event Action<string, Vector3, Vector3, Vector3, Transform, GameObject> OnPlayVFX;
+    public event Action<string, Vector3, Vector3, Vector3, Transform> OnPlayVFX;
     public event Action<float, float, float> OnHealthAdded;
     public event Action<float, float, float> OnHealthSubtracted;
     public event Action<float, float, float, int> OnExperienceAdded;
@@ -40,6 +41,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action OnLevelEnd;
     public event Action<float> OnPlayerRotation;
     public event Action OnEquipmentThrownComplete;
+    public event Action<GameObject, Vector3, Vector3, float> OnSpawnLight;
     public void AmmoChanged(int currentMag, int currentAmmo)
     {
         OnAmmoChanged?.Invoke(currentMag, currentAmmo);
@@ -65,9 +67,9 @@ public class GameEvents : TemplateMonoBeheavior
     {
         OnPlaySFX?.Invoke(clip);
     }
-    public void PlayVFX(string shader, Vector3 position, Vector3 rotation, Vector3 velocity, Transform sourceToFollow, GameObject light = null)
+    public void PlayVFX(string shader, Vector3 position, Vector3 rotation, Vector3 velocity, Transform sourceToFollow)
     {
-        OnPlayVFX?.Invoke(shader, position, rotation, velocity, sourceToFollow, light);
+        OnPlayVFX?.Invoke(shader, position, rotation, velocity, sourceToFollow);
     }
     public void ExperienceAdded(float maxExperiencePoints, float currentExperiencePoints, float previousExperiencePoints, int currentLevel)
     {
@@ -170,5 +172,9 @@ public class GameEvents : TemplateMonoBeheavior
     public void EquipmentThrownComplete()
     {
         OnEquipmentThrownComplete?.Invoke();
+    }
+    public void SpawnLight(GameObject light, Vector3 position, Vector3 rotation, float destroyTimer)
+    {
+        OnSpawnLight?.Invoke(light, position, rotation, destroyTimer);
     }
 }

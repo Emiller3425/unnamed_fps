@@ -1,6 +1,6 @@
 using UnityEngine.InputSystem;
 
-public class BurstGun : Gun
+public class PlayerBurstGun : PlayerGun
 {
     public int burstRounds = 3;
     private int burstRoundsLeft = 0;

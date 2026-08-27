@@ -73,7 +73,7 @@ public class PlayerCameraController : MonoBehaviour
     }
 
     // Apply screenshake by a magnitude and speeds.
-    private void ApplyScreenShake(float shakeSpeed, float shakeMagnitude)
+    private void ApplyScreenShake(float shakeSpeed, float shakeMagnitude, float shakeTime)
     {
         
     }

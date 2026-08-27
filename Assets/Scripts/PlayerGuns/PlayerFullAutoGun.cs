@@ -1,6 +1,6 @@
 using UnityEngine.InputSystem;
 
-public class FullAutoGun : Gun
+public class PlayerFullAutoGun : PlayerGun
 {
     protected override void Update()
     {

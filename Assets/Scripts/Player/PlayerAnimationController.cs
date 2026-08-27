@@ -42,6 +42,7 @@ public class PlayerAnimationController : AnimationController
     }
     protected override void StartEquipmentAnimation()
     {
+        Debug.Log("Hold");
         animator.SetTrigger("Equipment_Hold");
     }
     protected override void PlayEquipmentAnimation()
@@ -160,12 +161,12 @@ private IEnumerator WaitForAnimationEnd(string stateName, Action onComplete, int
     {
         GameEvents.current.OnWeaponFired -= PlayShootAnimation;
         GameEvents.current.OnWeaponReloaded -= PlayReloadAnimation;
+        GameEvents.current.OnEquipmentPrimed -= StartEquipmentAnimation;
         GameEvents.current.OnEquipmentThrown -= PlayEquipmentAnimation;
     }
 
     private void OnEquipmentComplete()
     {
-        Debug.Log("dfdfvdsefs");
         GameEvents.current.EquipmentThrownComplete();
     }
 }

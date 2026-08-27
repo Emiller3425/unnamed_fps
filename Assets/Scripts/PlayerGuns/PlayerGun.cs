@@ -7,7 +7,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 
-public abstract class Gun : MonoBehaviour, IInteractable
+public abstract class PlayerGun : MonoBehaviour, IInteractable
 {
     // public GameObject bulletPrefab;
     public Camera playerCamera;
@@ -15,7 +15,6 @@ public abstract class Gun : MonoBehaviour, IInteractable
     public AnimatorOverrideController weaponAnimationOverride;
     public Crosshairs crosshairs;
     public GameObject muzzleFlashLight;
-    public bool isPlayerGun = false;
     public int magSize = 30;
     public int damage = 10;
     public int currentMag;
@@ -28,14 +27,13 @@ public abstract class Gun : MonoBehaviour, IInteractable
     protected int maxAmmo;
     protected InputAction shootAction;
     protected InputAction reloadAction;
-    protected Vector3 muzzleLocation;
     protected Transform muzzleTransform;
     protected bool firstUpdate = true;
     protected Vector2 screenCenter;
     protected bool isPaused = false;
     protected Rigidbody rigidBody;
     protected BoxCollider boxCollider;
-    protected GameObject GripAnchor;
+    protected GameObject gripAnchor;
 
     public void HandleInteract()
     {
@@ -59,25 +57,17 @@ public abstract class Gun : MonoBehaviour, IInteractable
     }
     protected virtual void Awake()
     {
-        // define listeners
-        if (isPlayerGun)
-        {
-            shootAction = InputSystem.actions.FindAction("Attack");
-            reloadAction = InputSystem.actions.FindAction("Reload");
-        }
+        shootAction = InputSystem.actions.FindAction("Attack");
+        reloadAction = InputSystem.actions.FindAction("Reload");
     }
 
     protected virtual void OnEnable()
     {
-        if (isPlayerGun)
-        {
-            // enable listeners
-            shootAction.Enable();
-            reloadAction.Enable();
-            // subscribe
-            shootAction.started += OnShoot;
-            reloadAction.started += OnReload;
-        }
+        shootAction.Enable();
+        reloadAction.Enable();
+
+        shootAction.started += OnShoot;
+        reloadAction.started += OnReload;
 
         GameEvents.current.OnTogglePause += HandlePause;
         GameEvents.current.OnTogglePlayerInventory += HandlePlayerInventory;
@@ -121,13 +111,13 @@ public abstract class Gun : MonoBehaviour, IInteractable
         {
             // get ray for bullet
             Vector3 rayDirection = CalculateRay();
-            // Bloom crosshairs
+
             GameEvents.current.Bloom(15f, true);
-            // Play Gunshot
             GameEvents.current.PlaySFX("gunshot");
-            // Handle Muzzle Flash
-            GameEvents.current.PlayVFX("glockMuzzleFlash", muzzleTransform.position, muzzleTransform.rotation.eulerAngles, Vector3.zero, muzzleTransform, muzzleFlashLight);
-            
+            GameEvents.current.PlayVFX("glockMuzzleFlash", muzzleTransform.position, muzzleTransform.rotation.eulerAngles, Vector3.zero, muzzleTransform);
+            GameEvents.current.SpawnLight(muzzleFlashLight, muzzleTransform.position, muzzleTransform.rotation.eulerAngles, 0.05f);
+
+            // Handle animations and recoil
             GameEvents.current.WeaponFired();
 
             currentMag--;
@@ -153,7 +143,7 @@ public abstract class Gun : MonoBehaviour, IInteractable
 
         RaycastHit hit;
 
-        // Ignore equipped weapon from what the raycast can hit
+        // Bitwise to ignore equipped weapon from what the raycast can hit
         int layerMask = ~(1 << LayerMask.NameToLayer("EquippedWeapon"));
 
         if (Physics.Raycast(cameraRay, out hit, maxRange, layerMask))
@@ -163,20 +153,17 @@ public abstract class Gun : MonoBehaviour, IInteractable
                 if (!hit.collider.GetComponentInParent<StatsManager>().isDead) {
                     damageable.BulletDamage(damage, -hit.normal);
                     GameEvents.current.PlayVFX("bloodSplatter", hit.point, Vector3.zero, hit.normal * 2, null);
-                    if (isPlayerGun)
-                    {
-                        // not awaited because hit marker is not used in anything else within this fucntion call
-                        GameEvents.current.SetHitMarkerActivated();
-                        GameEvents.current.PlaySFX("hitmarker");
-                    }
+
+                    // not awaited because hit marker is not used in anything else within this fucntion call
+                    GameEvents.current.SetHitMarkerActivated();
+                    GameEvents.current.PlaySFX("hitmarker");
                 }
             } else
             {
                 SpawnBulletHole(hit, cameraRay);
             }
-            return (hit.point - muzzleLocation).normalized;
-        }
-       else
+            return (hit.point - muzzleTransform.position).normalized;
+        } else
         {
             // we did not hit anything
             return Vector3.zero;
@@ -228,14 +215,11 @@ public abstract class Gun : MonoBehaviour, IInteractable
     // disable InputSystem subscriptions
     protected void OnDisable()
     {
-        // unsubscribe and disable listeners
-        if (isPlayerGun)
-        {
-            shootAction.started -= OnShoot;
-            reloadAction.started -= OnReload;
-            shootAction.Disable();
-            reloadAction.Disable();
-        }
+
+        shootAction.started -= OnShoot;
+        reloadAction.started -= OnReload;
+        shootAction.Disable();
+        reloadAction.Disable();
 
         GameEvents.current.OnTogglePause -= HandlePause;
         GameEvents.current.OnTogglePlayerInventory -= HandlePlayerInventory;

@@ -4,3 +4,5 @@ TODO: Unequipped animations
 TODO: Famas Model and texture paint
     - animations
      
+TODO:
+ - Fix every single broken animation
