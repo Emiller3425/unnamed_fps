@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c566bbd88631d8d44928223ef498c98d
+guid: c13daccc9a5634545b6c57dc1678bf70
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -31,9 +31,9 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: rig_player|glock_walk
-      takeName: rig_player|glock_walk
-      internalID: -4027792867892618988
+      name: rig_player|shotgun_crouch
+      takeName: rig_player|shotgun_crouch
+      internalID: 5987009272807703790
       firstFrame: 0
       lastFrame: 24
       wrapMode: 0
@@ -131,7 +131,7 @@ ModelImporter:
   humanoidOversampling: 1
   avatarSetup: 2
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
-  importBlendShapeDeformPercent: 1
+  importBlendShapeDeformPercent: 0
   remapMaterialsIfMaterialImportModeIsNone: 0
   additionalBone: 0
   userData: 

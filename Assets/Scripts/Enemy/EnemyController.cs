@@ -1,19 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.Common;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.InteropServices;
-using Unity.VisualScripting;
-using UnityEditor.MPE;
-using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Animations;
-using UnityEngine.InputSystem.XR.Haptics;
-using UnityEngine.VFX;
+
+
+// TODO: We need to have melee types and ranged type enemy controllers:
+// I think the attack should reference different functions one being shoot and the other melee
+// ranged enemy should require an enemyGun refrence, melee type should not require a weapon 
+// but can have one, ranged enemy should be able to melee.
 
 public enum EnemyState
 {
@@ -34,11 +30,11 @@ public class EnemyController : MonoBehaviour
     public float lookSpeed = 10f;
     public NavMeshAgent navAgent;
     public Animator animator;
-    public event Action OnShoot;
+    public event Action OnAttack;
     public event Action OnDeath;
-    protected float detectDistance = 10f;
+    protected virtual float detectDistance => 10f;
     protected float detectArcDegrees = 120f;
-    protected float attackRange = 3f;
+    protected virtual float attackRange => 3f;
     protected float pursuitRange = 200f;
     protected HashSet<GameObject> detectedObjects;
     protected GameObject detectedTarget;
@@ -46,8 +42,6 @@ public class EnemyController : MonoBehaviour
     protected float currentCheckTimer;
     protected bool isRunningChecks = false;
     protected int parentInstanceId;
-    protected float attackCooldown;
-    protected float maxAttackCooldown = 2f;
     protected float damage = 10f;
     protected EnemyState currentState;
     // Encapsulate state 
@@ -65,7 +59,7 @@ public class EnemyController : MonoBehaviour
     {
         GameEvents.current.OnEntityDeath += SetDeadState;
     }
-    protected void Start()
+    protected virtual void Start()
     {
         currentCheckTimer = maxCheckTimer;
         navAgent = GetComponent<NavMeshAgent>();
@@ -75,9 +69,8 @@ public class EnemyController : MonoBehaviour
         State = EnemyState.IDLE;
 
         parentInstanceId = gameObject.GetInstanceID();
-        attackCooldown = 0f;
     }
-    protected void Update()
+    protected virtual void Update()
     {
         if (State != EnemyState.DEAD)
         {
@@ -85,10 +78,6 @@ public class EnemyController : MonoBehaviour
             {
                 StartCoroutine(EnemyChecksRoutine());
             }
-        }
-        if (attackCooldown >= 0f)
-        {
-            attackCooldown -= Time.deltaTime;
         }
     }
 
@@ -199,55 +188,14 @@ public class EnemyController : MonoBehaviour
         }
     }
 
-    protected void ProcessState()
+    protected virtual void ProcessState()
     {
-        switch (State) {
-            case EnemyState.IDLE:
-                navAgent.isStopped = true;
-                break;
-            case EnemyState.PATROL:
-                break;
-            case EnemyState.PURSUIT:
-                navAgent.isStopped = false;
-                navAgent.SetDestination(detectedTarget.transform.position);
-                Shoot();
-                break;
-            case EnemyState.ATTACKING:
-            if (attackCooldown < 0f)
-                {
-                    navAgent.isStopped = true;
-                    Melee();
-                }
-                break;
-            default:
-                break;
-        }
+        // Empty because each inheritor should have it's own implementation
     }
 
-    protected void Melee()
+    protected virtual void Attack()
     {
-        Debug.Log("Enemy Attack");
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, 5f);
-
-        foreach(Collider c in hitColliders)
-        {
-            if (c.IsPlayer())
-            {
-                if (c.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
-                {
-                    if (!c.GetComponentInParent<StatsManager>().isDead) {
-                        damageable.BulletDamage(damage, transform.position);
-                    }
-                }
-            }
-        }
-
-        attackCooldown = maxAttackCooldown;
-    }
-
-    protected void Shoot()
-    {
-        OnShoot?.Invoke();
+        OnAttack?.Invoke();
     }
 
     protected void SetDeadState(int instanceId)

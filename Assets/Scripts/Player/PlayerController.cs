@@ -216,7 +216,6 @@ public class PlayerController : MonoBehaviour, IDetectable
         {
             if (hit.collider.gameObject.GetComponentInParent<IInteractable>() != null)
             {
-                Debug.Log("Interact PlayerController");
                 return hit.collider.gameObject;
             }
         }
@@ -351,7 +350,7 @@ public class PlayerController : MonoBehaviour, IDetectable
         moveAction.Disable();
         lookAction.Disable();
         sprintAction.Disable();
-        
+
         crouchAction.started -= OnCrouchEnabled;
         crouchAction.canceled -= OnCrouchDisabled;
         crouchAction.Disable();

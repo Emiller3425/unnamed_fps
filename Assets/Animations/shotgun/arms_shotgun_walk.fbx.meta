@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 1808e12ae9c7edb4ea0d6f05e9006275
+guid: 2f8d9faaafd8e3047b190f534315f7d6
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -31,11 +31,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: rig_player|glock_idle
-      takeName: rig_player|glock_idle
-      internalID: 5300513952241227168
+      name: rig_player|shotgun_walk
+      takeName: rig_player|shotgun_walk
+      internalID: -6083108763422945388
       firstFrame: 0
-      lastFrame: 10
+      lastFrame: 24
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

@@ -14,23 +14,35 @@ public class StatsManager : MonoBehaviour, IDamageable, IHealable
     protected int maxSMGAmmo;
     protected int currentRifleAmmo;
     protected int maxRifleAmmo;
+    protected int maxShotgunAmmo;
+    protected int currentShotgunAmmo;
     protected int maxEquipment;
     protected int currentEquipment;
     protected int instanceId;
     public virtual void Awake()
     {
+        // Health
         currentHealth = entityStats.GetCurrentHealth();
         maxHealth = entityStats.GetMaxHealth();
+        // Level
         currentLevel = entityStats.GetCurrentLevel();
         maxLevel = entityStats.GetMaxLevel();
+        // Pistol Ammo
         currentPistolAmmo = entityStats.GetCurrentPistolAmmo();
         maxPistolAmmo = entityStats.GetMaxPistolAmmo();
+        // SMG Ammo
         currentSMGAmmo = entityStats.GetCurrentSMGAmmo();
         maxSMGAmmo = entityStats.GetMaxSMGAmmo();
+        // Rifle Ammo
         currentRifleAmmo = entityStats.GetCurrentRifleAmmo();
         maxRifleAmmo = entityStats.GetMaxRifleAmmo();
+        // Shotgun Ammo
+        currentShotgunAmmo = entityStats.GetCurrentShotgunAmmo();
+        maxShotgunAmmo = entityStats.GetMaxShotgunAmmo();
+        // Equipment
         currentEquipment = entityStats.GetCurrentEquipment();
         maxEquipment = entityStats.GetMaxEquipement();
+        // Instance Id
         instanceId = gameObject.GetInstanceID();
     }
 

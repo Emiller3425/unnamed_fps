@@ -24,6 +24,7 @@ public abstract class PlayerGun : MonoBehaviour, IInteractable
     public GameObject bulletHolePrefab;
     protected float reloadBuffer = 0f;
     protected float fireRateBuffer = 0f;
+    protected float minimumCrosshairsWidth = 3f;
     protected int maxAmmo;
     protected InputAction shootAction;
     protected InputAction reloadAction;
@@ -72,6 +73,8 @@ public abstract class PlayerGun : MonoBehaviour, IInteractable
         GameEvents.current.OnTogglePause += HandlePause;
         GameEvents.current.OnTogglePlayerInventory += HandlePlayerInventory;
         GameEvents.current.OnScreenResize += RecalculateScreenCenter;
+
+        GameEvents.current.ToggleMinimumCrosshairsWidth(minimumCrosshairsWidth);
     }
 
     protected virtual void Start()
@@ -109,8 +112,10 @@ public abstract class PlayerGun : MonoBehaviour, IInteractable
     {
         if (fireRateBuffer <= 0 && !isPaused)
         {
+            // Bitwise to ignore equipped weapon from what the raycast can hit
+            int layerMask = ~(1 << LayerMask.NameToLayer("EquippedWeapon"));
             // get ray for bullet
-            Vector3 rayDirection = CalculateRay();
+            Vector3 rayDirection = CalculateRay(layerMask);
 
             GameEvents.current.Bloom(15f, true);
             GameEvents.current.PlaySFX("gunshot");
@@ -125,7 +130,8 @@ public abstract class PlayerGun : MonoBehaviour, IInteractable
         } 
     }
 
-    protected Vector3 CalculateRay()
+// TODO: Damage falloff
+    protected virtual Vector3 CalculateRay(int layerMask)
     {
         // Calculate bloom
         Vector2 randomBloomOffset;
@@ -142,9 +148,6 @@ public abstract class PlayerGun : MonoBehaviour, IInteractable
         // Debug.DrawRay(cameraRay.origin, cameraRay.direction * 100f, Color.red, 0f);
 
         RaycastHit hit;
-
-        // Bitwise to ignore equipped weapon from what the raycast can hit
-        int layerMask = ~(1 << LayerMask.NameToLayer("EquippedWeapon"));
 
         if (Physics.Raycast(cameraRay, out hit, maxRange, layerMask))
         {

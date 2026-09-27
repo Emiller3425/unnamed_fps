@@ -9,6 +9,12 @@ public class PlayerPistol : PlayerSemiAutoGun, IUsesPistolAmmo
         currentMag = magSize;
     }
 
+    protected override void OnEnable()
+    {
+        minimumCrosshairsWidth = 3f;
+        base.OnEnable();
+    }
+
     protected override void Start()
     {
         // Set default values for Pistol

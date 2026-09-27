@@ -42,6 +42,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action<float> OnPlayerRotation;
     public event Action OnEquipmentThrownComplete;
     public event Action<GameObject, Vector3, Vector3, float> OnSpawnLight;
+    public event Action<float> OnToggleMinimumCrossHairsWidth;
     public void AmmoChanged(int currentMag, int currentAmmo)
     {
         OnAmmoChanged?.Invoke(currentMag, currentAmmo);
@@ -176,5 +177,10 @@ public class GameEvents : TemplateMonoBeheavior
     public void SpawnLight(GameObject light, Vector3 position, Vector3 rotation, float destroyTimer)
     {
         OnSpawnLight?.Invoke(light, position, rotation, destroyTimer);
+    }
+
+    public void ToggleMinimumCrosshairsWidth(float minimumBloom)
+    {
+        OnToggleMinimumCrossHairsWidth?.Invoke(minimumBloom);
     }
 }

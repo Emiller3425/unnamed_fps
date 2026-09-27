@@ -1,27 +1,27 @@
 using UnityEngine;
 
-public class PlayerMachineGun : PlayerFullAutoGun, IUsesSMGAmmo
+public class PlayerDoubleBarrelShotgun : PlayerShotgun, IUsesShotgunAmmo
 {
     protected override void Awake()
     {
         base.Awake();
-        magSize = 35;
+        magSize = 2;
         currentMag = magSize;
     }
 
     protected override void OnEnable()
     {
-        minimumCrosshairsWidth = 8f;
+        minimumCrosshairsWidth = 25f;
         base.OnEnable();
     }
 
     protected override void Start()
     {
-        // Set default values for MachineGun
-        damage = 25;
-        maxReloadBuffer = 2.5f;
-        maxFireRateBuffer = 0.05f;
-        PlayerStatsManager.Instance.SetSMGAmmo(PlayerStatsManager.Instance.GetSMGAmmo());
+        // Set default values for Double Barrel Shotgun
+        damage = 5; // damage per pellet
+        maxReloadBuffer = 1.5f;
+        maxFireRateBuffer = 0.5f;
+        PlayerStatsManager.Instance.SetShotgunAmmo(PlayerStatsManager.Instance.GetShotgunAmmo());
         // sets currentAmmo to maxAmmo
         base.Start();
     }
@@ -30,7 +30,7 @@ public class PlayerMachineGun : PlayerFullAutoGun, IUsesSMGAmmo
     {
         if (firstUpdate)
         {
-            GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetSMGAmmo());
+            GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetShotgunAmmo());
             firstUpdate = false;
         }
         if (reloadBuffer > 0f)
@@ -39,7 +39,7 @@ public class PlayerMachineGun : PlayerFullAutoGun, IUsesSMGAmmo
             if (reloadBuffer <= 0f)
             {
                 GameEvents.current.ReloadFinished();
-                GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetSMGAmmo());
+                GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetShotgunAmmo());
             }
         }
         base.Update();
@@ -49,15 +49,15 @@ public class PlayerMachineGun : PlayerFullAutoGun, IUsesSMGAmmo
     {
         base.Reload();
         // Reload player mag if is less than max and we have ammo in reserves
-        if (PlayerStatsManager.Instance.GetSMGAmmo() > 0 && currentMag < magSize && reloadBuffer <= 0f)
+        if (PlayerStatsManager.Instance.GetShotgunAmmo() > 0 && currentMag < magSize && reloadBuffer <= 0f)
         {
             GameEvents.current.ReloadStarted();
             reloadBuffer = maxReloadBuffer;
-            PlayerStatsManager.Instance.SetSMGAmmo(PlayerStatsManager.Instance.GetSMGAmmo() - (magSize - currentMag));
-            if (PlayerStatsManager.Instance.GetSMGAmmo() < 0)
+            PlayerStatsManager.Instance.SetShotgunAmmo(PlayerStatsManager.Instance.GetShotgunAmmo() - (magSize - currentMag));
+            if (PlayerStatsManager.Instance.GetShotgunAmmo() < 0)
             {
-                currentMag = magSize + PlayerStatsManager.Instance.GetSMGAmmo();
-                PlayerStatsManager.Instance.SetSMGAmmo(0);
+                currentMag = magSize + PlayerStatsManager.Instance.GetShotgunAmmo();
+                PlayerStatsManager.Instance.SetShotgunAmmo(0);
             } else
             {
                currentMag = magSize; 
@@ -71,6 +71,6 @@ public class PlayerMachineGun : PlayerFullAutoGun, IUsesSMGAmmo
     {
         base.ShootBullet();
 
-        GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetSMGAmmo());
+        GameEvents.current.AmmoChanged(currentMag, PlayerStatsManager.Instance.GetShotgunAmmo());
     }
-}
+} 

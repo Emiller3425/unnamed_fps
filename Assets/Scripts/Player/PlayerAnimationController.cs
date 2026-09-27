@@ -42,12 +42,10 @@ public class PlayerAnimationController : AnimationController
     }
     protected override void StartEquipmentAnimation()
     {
-        Debug.Log("Hold");
         animator.SetTrigger("Equipment_Hold");
     }
     protected override void PlayEquipmentAnimation()
     {
-        Debug.Log("Throw");
         animator.SetTrigger("Equipment_Throw");
         StartCoroutine(WaitForAnimationEnd("Equipment_Throw", OnEquipmentComplete, 4));
     }

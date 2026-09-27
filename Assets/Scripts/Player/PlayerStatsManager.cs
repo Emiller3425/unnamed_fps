@@ -6,6 +6,7 @@ public class PlayerStatsManager : StatsManager
     private float maxExperiencePoints = 100;
     private float currentExperiencePoints;
     private float experienceToNextLevel;
+    protected int maxInventorySize { get; private set; } = 5;
     private static Vector3? respawnPosition;
     public override void Awake()
     {
@@ -118,7 +119,22 @@ public class PlayerStatsManager : StatsManager
     {
         currentRifleAmmo = ammo;
     }
-
+    public int GetShotgunAmmo()
+    {
+        return currentShotgunAmmo;
+    }
+    public void SetShotgunAmmo(int ammo)
+    {
+        currentShotgunAmmo = ammo;
+    }
+    public int GetMaxInventory()
+    {
+        return maxInventorySize;
+    }
+    public void SetMaxInventory(int size)
+    {
+        maxInventorySize = size;
+    }
     public int GetEquipment()
     {
         return currentEquipment;

@@ -13,6 +13,7 @@ public class Crosshairs : MonoBehaviour
     private float targetOffset;
     private float maxBloomFromShotReset = 0.05f;
     private float currentBloomFromShotReset;
+    private float minimumCrosshairWidth = 3f;
 
     public float currentBloomRadius
     {
@@ -28,27 +29,37 @@ public class Crosshairs : MonoBehaviour
         GameEvents.current.OnSetCrossHairActivated += SetCrossHairActivated;
         GameEvents.current.OnSetCrossHairDeactivated += SetCrossHairDeactivated;
         GameEvents.current.OnBloom += HandleCrossHairBloom;
+        GameEvents.current.OnToggleMinimumCrossHairsWidth += SetMinimumBloom;
     }
 
     private void OnEnable()
     {
-            top.rectTransform.anchoredPosition = new Vector2(0f, 3f);
-            bottom.rectTransform.anchoredPosition = new Vector2(0f, -3f);
-            left.rectTransform.anchoredPosition = new Vector2(-3f, 0f);
-            right.rectTransform.anchoredPosition = new Vector2(3f, 0f);
+        top.rectTransform.anchoredPosition = new Vector2(0f, minimumCrosshairWidth);
+        bottom.rectTransform.anchoredPosition = new Vector2(0f, -minimumCrosshairWidth);
+        left.rectTransform.anchoredPosition = new Vector2(-minimumCrosshairWidth, 0f);
+        right.rectTransform.anchoredPosition = new Vector2(minimumCrosshairWidth, 0f);
+    }
+
+    private void SetMinimumBloom(float minimumWidth)
+    {
+        minimumCrosshairWidth = minimumWidth;
     }
 
     private void Update()
     {
         float absoluteValueTargetOffset = Mathf.Abs(targetOffset);
 
-        // calculations
-        top.rectTransform.anchoredPosition = Vector2.Lerp(top.rectTransform.anchoredPosition, new Vector2(0f, 3f * absoluteValueTargetOffset), 0.075f);
-        bottom.rectTransform.anchoredPosition = Vector2.Lerp(bottom.rectTransform.anchoredPosition, new Vector2(0f, -3f * absoluteValueTargetOffset), 0.075f);
-        left.rectTransform.anchoredPosition = Vector2.Lerp(left.rectTransform.anchoredPosition, new Vector2(-3f * absoluteValueTargetOffset, 0f), 0.075f);
-        right.rectTransform.anchoredPosition = Vector2.Lerp(right.rectTransform.anchoredPosition, new Vector2(3f * absoluteValueTargetOffset, 0f), 0.075f);
+// Add the offset to keep the bloom growth linear and controlled.
+    // (Optional: Multiply absoluteValueTargetOffset by a sensitivity float here if it needs tweaking)
+    float currentSpread = minimumCrosshairWidth + absoluteValueTargetOffset;
 
-        bloomSize = absoluteValueTargetOffset * 3f;
+    // calculations
+    top.rectTransform.anchoredPosition = Vector2.Lerp(top.rectTransform.anchoredPosition, new Vector2(0f, currentSpread), 0.075f);
+    bottom.rectTransform.anchoredPosition = Vector2.Lerp(bottom.rectTransform.anchoredPosition, new Vector2(0f, -currentSpread), 0.075f);
+    left.rectTransform.anchoredPosition = Vector2.Lerp(left.rectTransform.anchoredPosition, new Vector2(-currentSpread, 0f), 0.075f);
+    right.rectTransform.anchoredPosition = Vector2.Lerp(right.rectTransform.anchoredPosition, new Vector2(currentSpread, 0f), 0.075f);
+
+    bloomSize = currentSpread;
         
         // Decriments the bloom timer 
         if (currentBloomFromShotReset > 0f)
@@ -94,6 +105,7 @@ public class Crosshairs : MonoBehaviour
     {
         GameEvents.current.OnSetCrossHairActivated -= SetCrossHairActivated;
         GameEvents.current.OnSetCrossHairDeactivated -= SetCrossHairDeactivated;
+        GameEvents.current.OnToggleMinimumCrossHairsWidth -= SetMinimumBloom;
     }
 
 }

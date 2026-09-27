@@ -8,6 +8,13 @@ public class PlayeBurstRifle : PlayerBurstGun, IUsesRifleAmmo
         magSize = 35;
         currentMag = magSize;
     }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        minimumCrosshairsWidth = 3f;
+    }
+
     protected override void Start()
     {
         // Set default values for BurstRifle

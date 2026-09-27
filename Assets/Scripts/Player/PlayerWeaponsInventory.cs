@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem;
@@ -15,6 +16,7 @@ public class PlayerWeaponInventory : MonoBehaviour
     public Dictionary<string, GameObject> weaponDictionary = new Dictionary<string, GameObject>();
     private InputAction dropAction;
     private Collider playerCollider;
+    private PlayerStatsManager playerStatsManager;
 
     private void OnEnable()
     {
@@ -22,8 +24,22 @@ public class PlayerWeaponInventory : MonoBehaviour
         GameEvents.current.OnEquipmentPrimed += DisableEquippedWeapon;
         GameEvents.current.OnEquipmentThrownComplete += EnableEquippedWeapon;
     }
+    private void Awake()
+    {
+        playerCollider = GetComponent<Collider>();
+        playerStatsManager = GetComponent<PlayerStatsManager>();
+    }
+    private void Start()
+    {
+        PopulateInventory();
+        EquipWeapon(weaponHolder.GetChild(0).name, false);
 
-    public void EquipNextWeapon(bool wasDropped)
+        dropAction = InputSystem.actions.FindAction("Drop");
+        dropAction.Enable();
+        dropAction.started += OnDrop;
+    }
+
+        public void EquipNextWeapon(bool wasDropped)
     {
         // Swap or drop weapon
         if (weaponDictionary.Count > 1 || (wasDropped && equippedWeapon != null)) {
@@ -52,25 +68,16 @@ public class PlayerWeaponInventory : MonoBehaviour
             }
         }
     }
-    private void Awake()
-    {
-        playerCollider = GetComponent<Collider>();
-    }
-    private void Start()
-    {
-        PopulateInventory();
-        EquipWeapon(weaponHolder.GetChild(0).name, false);
-
-        dropAction = InputSystem.actions.FindAction("Drop");
-        dropAction.Enable();
-        dropAction.started += OnDrop;
-    }
 
     private void PopulateInventory()
     {
         foreach (Transform child in weaponHolder)
         {
             weaponDictionary.Add(child.name, child.gameObject);
+
+            // Disable physics for all weapons in inventory
+            child.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+            child.gameObject.GetComponent<BoxCollider>().enabled = false;
 
             // Start with every weapon inactive
             child.gameObject.SetActive(false);
@@ -179,6 +186,7 @@ public class PlayerWeaponInventory : MonoBehaviour
         if (gunScript.GetComponent<IUsesPistolAmmo>() is IUsesPistolAmmo) reserveAmmo = PlayerStatsManager.Instance.GetPistolAmmo();
         if (gunScript.GetComponent<IUsesSMGAmmo>() is IUsesSMGAmmo) reserveAmmo = PlayerStatsManager.Instance.GetSMGAmmo();
         if (gunScript.GetComponent<IUsesRifleAmmo>() is IUsesRifleAmmo) reserveAmmo = PlayerStatsManager.Instance.GetRifleAmmo();
+        if (gunScript.GetComponent<IUsesShotgunAmmo>() is IUsesShotgunAmmo) reserveAmmo = PlayerStatsManager.Instance.GetShotgunAmmo();
 
         GameEvents.current.AmmoChanged(gunScript.currentMag, reserveAmmo);
     }
@@ -195,7 +203,11 @@ public class PlayerWeaponInventory : MonoBehaviour
 
     private void PickupWeapon(GameObject weapon)
     {
-        AddToInventory(weapon);
+        Debug.Log($"{weaponDictionary.Count}, {PlayerStatsManager.Instance.GetMaxInventory()}");
+        if (weaponDictionary.Count < PlayerStatsManager.Instance.GetMaxInventory())
+        {
+            AddToInventory(weapon);
+        }
     }
 
     private void OnDrop(InputAction.CallbackContext context)

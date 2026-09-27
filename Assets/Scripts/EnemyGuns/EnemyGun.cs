@@ -1,8 +1,6 @@
-using UnityEditor.Callbacks;
 using UnityEngine;
-using UnityEngine.Animations;
-[RequireComponent(typeof(Rigidbody))]
 
+[RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(BoxCollider))]
 public class EnemyGun : MonoBehaviour
 {
@@ -14,30 +12,25 @@ public class EnemyGun : MonoBehaviour
     protected BoxCollider boxCollider;
     protected GameObject gripAnchor;
     protected Transform muzzleTransform;
-    protected EnemyController parent;
-    protected void Awake()
-    {
-        parent = GetComponentInParent<EnemyController>();
-    }
-    protected void OnEnable()
-    {
-        if (parent) 
-            parent.OnShoot += Shoot;
-            parent.OnDeath += DropWeapon;
-    }
+    protected RangedEnemyController parent;
+  
     protected void Start()
     {
         muzzleTransform = transform.Find("Muzzle");
+        parent = GetComponentInParent<RangedEnemyController>();
+        if (parent)
+        {
+            parent.OnShoot += Shoot;
+            parent.OnDeath += DropWeapon;
+        }
     }
 
-    // TODO: how to have enemies shoot based on their controller state  
     protected void Shoot()
     {
         GameObject bullet = Instantiate(bulletProjectile, muzzleTransform.position, muzzleTransform.rotation);
 
         if (bullet.TryGetComponent<Projectile>(out var projectile)) {
             projectile.setDamage(damage);
-
 
             GameEvents.current.PlaySFX("gunshot");
             GameEvents.current.PlayVFX("glockMuzzleFlash", muzzleTransform.position, muzzleTransform.rotation.eulerAngles, Vector3.zero, muzzleTransform);
@@ -57,13 +50,16 @@ public class EnemyGun : MonoBehaviour
                 Random.Range(-50f, 50f),
                 Random.Range(-50f, 50f),
                 Random.Range(-50f, 50f)
-                )
-            );
+            ));
+
+        Destroy(gameObject, 3f);
     }
     protected void OnDisable()
     {
-        if (parent)
+        if (parent) 
+        {
             parent.OnShoot -= Shoot;
             parent.OnDeath -= DropWeapon;
+        }
     }
 }
