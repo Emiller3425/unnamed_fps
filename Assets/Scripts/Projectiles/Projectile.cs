@@ -8,6 +8,7 @@ public class Projectile : MonoBehaviour
     protected bool hasCollided = false;
     protected BoxCollider boxCollider;
     protected Rigidbody rigidBody;
+    [SerializeField] protected GameObject bloodParticle;
     public void setDamage(float damage)
     {
         projectileDamage = damage;
@@ -43,7 +44,7 @@ public class Projectile : MonoBehaviour
                 Vector3 hitPoint = contact.point;
                 Vector3 hitNormal = contact.normal;
 
-                GameEvents.current.PlayVFX("bloodSplatter", hitPoint, Vector3.zero, hitNormal * 2, null);
+                Instantiate(bloodParticle, hitPoint, Quaternion.LookRotation(-hitNormal));
             }
             Destroy(gameObject);
         }

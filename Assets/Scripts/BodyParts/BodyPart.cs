@@ -60,10 +60,6 @@ public class BodyPart : MonoBehaviour, IDamageable
             Debug.LogError($"No Stats Manager found in {gameObject.name} parent");
         }
 
-        Vector3 closestPoint = GetComponent<Collider>().ClosestPoint(explosionOrigin);
-        Vector3 direction = (closestPoint - explosionOrigin).normalized;
-        GameEvents.current.PlayVFX("bloodSplatter", closestPoint, Vector3.zero, direction * 2, null);
-
         if (rb != null && !rb.isKinematic)
         {
             rb.AddExplosionForce(explosionForce, explosionOrigin, explosionRadius, 1.5f, ForceMode.Impulse);

@@ -18,7 +18,7 @@ public class PlayerDoubleBarrelShotgun : PlayerShotgun, IUsesShotgunAmmo
     protected override void Start()
     {
         // Set default values for Double Barrel Shotgun
-        damage = 5; // damage per pellet
+        damage = 10; // damage per pellet
         maxReloadBuffer = 1.5f;
         maxFireRateBuffer = 0.5f;
         PlayerStatsManager.Instance.SetShotgunAmmo(PlayerStatsManager.Instance.GetShotgunAmmo());
