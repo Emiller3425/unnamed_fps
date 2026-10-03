@@ -16,7 +16,7 @@ public class BloodParticleCollision : MonoBehaviour
 
     private void OnParticleCollision(GameObject other)
     {
-        int numCollisionEvents = bloodParticleSystem.GetCollisionEvents(other, collisionEvents);
+        _ = bloodParticleSystem.GetCollisionEvents(other, collisionEvents);
 
         Vector3 collisionPosition = collisionEvents[0].intersection;
         Vector3 collisionNormal = collisionEvents[0].normal;

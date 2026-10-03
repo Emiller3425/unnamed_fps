@@ -16,6 +16,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action OnReloadStarted;
     public event Action OnReloadFinished;
     public event Action<string> OnPlaySFX;
+    public event Action<string, Vector3, Quaternion> OnPlayParticleSystem;
     public event Action<string, Vector3, Vector3, Vector3, Transform> OnPlayVFX;
     public event Action<float, float, float> OnHealthAdded;
     public event Action<float, float, float> OnHealthSubtracted;
@@ -67,6 +68,10 @@ public class GameEvents : TemplateMonoBeheavior
     public void PlaySFX(string clip)
     {
         OnPlaySFX?.Invoke(clip);
+    }
+    public void PlayParticleSystem(string particlePrefabName, Vector3 position, Quaternion rotation)
+    {
+        OnPlayParticleSystem?.Invoke(particlePrefabName, position, rotation);
     }
     public void PlayVFX(string shader, Vector3 position, Vector3 rotation, Vector3 velocity, Transform sourceToFollow)
     {

@@ -35,7 +35,6 @@ public abstract class PlayerGun : MonoBehaviour, IInteractable
     protected Rigidbody rigidBody;
     protected BoxCollider boxCollider;
     protected GameObject gripAnchor;
-    [SerializeField] protected GameObject bloodParticle;
 
     public void HandleInteract()
     {
@@ -156,8 +155,7 @@ public abstract class PlayerGun : MonoBehaviour, IInteractable
             {
                 if (!hit.collider.GetComponentInParent<StatsManager>().isDead) {
                     damageable.BulletDamage(damage, -hit.normal);
-                    // GameEvents.current.PlayVFX("bloodSplatter", hit.point, Vector3.zero, hit.normal * 2, null);
-                    Instantiate(bloodParticle, hit.point, Quaternion.LookRotation(hit.normal));
+                    GameEvents.current.PlayParticleSystem("blood", hit.point, Quaternion.LookRotation(hit.normal));
 
                     // not awaited because hit marker is not used in anything else within this fucntion call
                     GameEvents.current.SetHitMarkerActivated();

@@ -32,7 +32,6 @@ public abstract class Equipment : MonoBehaviour, IInteractable
     protected float damage;
     protected float areaOfEffect;
     protected float dentonateForce;
-    [SerializeField] protected GameObject bloodParticle;
     public void HandleInteract()
     {
         GameEvents.current.EquipmentPickup(gameObject);
@@ -79,7 +78,7 @@ public abstract class Equipment : MonoBehaviour, IInteractable
                         Vector3 normal = (closestPoint - transform.position).normalized;
                         Quaternion rotation = Quaternion.LookRotation(normal);
                         
-                        Instantiate(bloodParticle, closestPoint, rotation);
+                        GameEvents.current.PlayParticleSystem("blood", closestPoint, rotation);
                     }
                 }
             } else if (c.attachedRigidbody != null)
