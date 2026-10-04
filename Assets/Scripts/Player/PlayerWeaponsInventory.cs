@@ -203,7 +203,6 @@ public class PlayerWeaponInventory : MonoBehaviour
 
     private void PickupWeapon(GameObject weapon)
     {
-        Debug.Log($"{weaponDictionary.Count}, {PlayerStatsManager.Instance.GetMaxInventory()}");
         if (weaponDictionary.Count < PlayerStatsManager.Instance.GetMaxInventory())
         {
             AddToInventory(weapon);

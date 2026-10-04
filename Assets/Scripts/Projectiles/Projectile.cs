@@ -35,7 +35,7 @@ public class Projectile : MonoBehaviour
         IDamageable damageableObject = c.gameObject.GetComponent<IDamageable>();
         if (damageableObject != null && !hasCollided)
         {
-            if (!c.gameObject.GetComponentInParent<StatsManager>().isDead) {
+            if (!c.gameObject.GetComponentInParent<EntityStatsManager>().isDead) {
                 damageableObject.BulletDamage(projectileDamage, c.transform.position);
 
                 // VFX

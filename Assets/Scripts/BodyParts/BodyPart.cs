@@ -6,7 +6,7 @@ using UnityEngine;
 public class BodyPart : MonoBehaviour, IDamageable
 {
     protected float damageMultiplier;
-    protected StatsManager statsManager;
+    protected EntityStatsManager statsManager;
     protected Rigidbody rb;
     protected Collider bodyCollider;
     protected int parentInstanceId;
@@ -17,7 +17,7 @@ public class BodyPart : MonoBehaviour, IDamageable
     }
     protected virtual void Start()
     {
-        statsManager = GetComponentInParent<StatsManager>();
+        statsManager = GetComponentInParent<EntityStatsManager>();
         rb = GetComponent<Rigidbody>();
         bodyCollider = GetComponent<Collider>();
 

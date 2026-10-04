@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class EnemyStatsManager : StatsManager
+public class EnemyStatsManager : EntityStatsManager
 {
     protected Animator animator;
     protected void Start()

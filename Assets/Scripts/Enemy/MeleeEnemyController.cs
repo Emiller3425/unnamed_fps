@@ -81,7 +81,7 @@ public class MeleeEnemyController : EnemyController
             {
                 if (c.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
                 {
-                    if (!c.GetComponentInParent<StatsManager>().isDead) {
+                    if (!c.GetComponentInParent<EntityStatsManager>().isDead) {
                         damageable.BulletDamage(damage, transform.position);
                     }
                 }

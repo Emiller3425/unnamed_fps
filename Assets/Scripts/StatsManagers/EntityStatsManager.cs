@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class StatsManager : MonoBehaviour, IDamageable, IHealable
+public class EntityStatsManager : StatsManager, IDamageable, IHealable
 {
     public EntityStats entityStats;
     public bool isDead;
@@ -46,12 +46,12 @@ public class StatsManager : MonoBehaviour, IDamageable, IHealable
         instanceId = gameObject.GetInstanceID();
     }
 
-    public virtual void BulletDamage(float damage, Vector3 hitNormal)
+    public override void BulletDamage(float damage, Vector3 hitNormal)
     {
         currentHealth -= damage;
     }
 
-    public virtual void ExplosiveDamage(float damage, Vector3 explosionOrigin=default, float explosionRadius=0f, float explosionForce=0f)
+    public override void ExplosiveDamage(float damage, Vector3 explosionOrigin=default, float explosionRadius=0f, float explosionForce=0f)
     {
         currentHealth -= damage;
     }

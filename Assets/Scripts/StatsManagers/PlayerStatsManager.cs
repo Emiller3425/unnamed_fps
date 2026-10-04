@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerStatsManager : StatsManager
+public class PlayerStatsManager : EntityStatsManager
 {
     public static PlayerStatsManager Instance { get; private set; }
     private float maxExperiencePoints = 100;
@@ -31,7 +31,6 @@ public class PlayerStatsManager : StatsManager
     {
         ExperienceAdded(currentExperiencePoints);
         HealthAdded(currentHealth);
-        Debug.Log(currentLevel);
         GameEvents.current.LevelChanged(currentLevel);
         if (respawnPosition != null)
         {

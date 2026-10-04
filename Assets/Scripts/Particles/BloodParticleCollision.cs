@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class BloodParticleCollision : MonoBehaviour
 {
-    // TODO: Make particles work with game events system
     private ParticleSystem bloodParticleSystem;
     private List<ParticleCollisionEvent> collisionEvents = new List<ParticleCollisionEvent>();
     [SerializeField] private GameObject bloodSplatterPrefab;

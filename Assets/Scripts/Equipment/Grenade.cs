@@ -13,9 +13,13 @@ public class Grenade : TimedFuseEquipment
         base.Start();
     }
 
-    protected override void Detonate()
+    public override void Detonate()
     {
         base.Detonate();
+    }
+    protected override void PlaySFX()
+    {
+        GameEvents.current.PlayVFX("grenadeExplosion", transform.position, Vector3.zero, Vector3.zero, null);
         GameEvents.current.PlaySFX("explosion");
     }
 }

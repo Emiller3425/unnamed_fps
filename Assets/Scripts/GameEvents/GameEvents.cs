@@ -44,6 +44,7 @@ public class GameEvents : TemplateMonoBeheavior
     public event Action OnEquipmentThrownComplete;
     public event Action<GameObject, Vector3, Vector3, float> OnSpawnLight;
     public event Action<float> OnToggleMinimumCrossHairsWidth;
+    public event Action<int> OnBreakMesh;
     public void AmmoChanged(int currentMag, int currentAmmo)
     {
         OnAmmoChanged?.Invoke(currentMag, currentAmmo);
@@ -187,5 +188,9 @@ public class GameEvents : TemplateMonoBeheavior
     public void ToggleMinimumCrosshairsWidth(float minimumBloom)
     {
         OnToggleMinimumCrossHairsWidth?.Invoke(minimumBloom);
+    }
+    public void BreakMesh(int instanceId)
+    {
+        OnBreakMesh?.Invoke(instanceId);
     }
 }

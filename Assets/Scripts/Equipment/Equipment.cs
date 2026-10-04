@@ -19,27 +19,18 @@ public enum EquipmentTypes
     SHOCKGRENADE,
 }
 
-public abstract class Equipment : MonoBehaviour, IInteractable
+public abstract class Equipment : Explosive, IInteractable
 {
     [Header("Equipment Settings")]
     public EquipmentTypes equipmentType;
     public Crosshairs crosshairs;
     public bool isPlayerEquipment;
     protected InputAction throwAction;
-    protected bool isPaused;
     protected Rigidbody rigidBody;
     protected Collider meshCollider;
-    protected float damage;
-    protected float areaOfEffect;
-    protected float dentonateForce;
     public void HandleInteract()
     {
         GameEvents.current.EquipmentPickup(gameObject);
-    }
-
-    protected virtual void OnEnable()
-    {
-        GameEvents.current.OnTogglePause += HandlePause;
     }
     protected virtual void Start()
     {
@@ -50,56 +41,12 @@ public abstract class Equipment : MonoBehaviour, IInteractable
 
     protected virtual void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Collision");
         rigidBody.mass = 10f;
     }
 
-    protected virtual void Detonate()
+    public override void Detonate()
     {
-        GameEvents.current.PlayVFX("grenadeExplosion", transform.position, Vector3.zero, Vector3.zero, null);
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, areaOfEffect);
-
-        // Hashset to ensure we only damage an enemy once
-        HashSet<int> damagedParentInstanceIds = new HashSet<int>();
-        foreach (Collider c in hitColliders)
-        {
-            if (c.GetComponentInParent<IDamageable>() is not null)
-            {
-                int damagedParentInstanceId = c.gameObject.GetComponentInParent<StatsManager>().GetInstanceID();
-                if (damagedParentInstanceIds.Contains(damagedParentInstanceId)) continue;
-
-                damagedParentInstanceIds.Add(damagedParentInstanceId);
-                if (c.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
-                {
-                    if (!c.GetComponentInParent<StatsManager>().isDead) {
-                        damageable.ExplosiveDamage(damage, transform.position, areaOfEffect, dentonateForce);
-
-                        Vector3 closestPoint = c.ClosestPoint(transform.position);
-                        Vector3 normal = (closestPoint - transform.position).normalized;
-                        Quaternion rotation = Quaternion.LookRotation(normal);
-                        
-                        GameEvents.current.PlayParticleSystem("blood", closestPoint, rotation);
-                    }
-                }
-            } else if (c.attachedRigidbody != null)
-            {
-                c.attachedRigidbody.AddExplosionForce(dentonateForce, transform.position, areaOfEffect);
-            }
-        }
-        Destroy(gameObject);
-    }
-    protected void HandlePause(bool isToggled)
-    {
-        isPaused = isToggled;
-    }
-    
-    protected void OnDisable()
-    {
-        GameEvents.current.OnTogglePause -= HandlePause;
-    }
-    protected void OnDestroy()
-    {
-         
+        base.Detonate();
     }
     private void OnDrawGizmosSelected()
     {

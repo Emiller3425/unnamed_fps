@@ -278,7 +278,6 @@ public class PlayerController : MonoBehaviour, IDetectable
 
     private void OnDash(InputAction.CallbackContext context)
     {
-        Debug.Log(currentDashCooldown);
         if (currentDashCooldown <= 0f)
         {
             // Dash Forward

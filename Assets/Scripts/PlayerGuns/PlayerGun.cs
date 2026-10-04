@@ -153,13 +153,18 @@ public abstract class PlayerGun : MonoBehaviour, IInteractable
         {
             if (hit.collider.gameObject.GetComponent<IDamageable>() is IDamageable damageable)
             {
-                if (!hit.collider.GetComponentInParent<StatsManager>().isDead) {
-                    damageable.BulletDamage(damage, -hit.normal);
-                    GameEvents.current.PlayParticleSystem("blood", hit.point, Quaternion.LookRotation(hit.normal));
+                if (hit.collider.GetComponentInParent<EntityStatsManager>()) {
+                    if (!hit.collider.GetComponentInParent<EntityStatsManager>().isDead) {
+                        damageable.BulletDamage(damage, -hit.normal);
+                        GameEvents.current.PlayParticleSystem("blood", hit.point, Quaternion.LookRotation(hit.normal));
 
-                    // not awaited because hit marker is not used in anything else within this fucntion call
-                    GameEvents.current.SetHitMarkerActivated();
-                    GameEvents.current.PlaySFX("hitmarker");
+                        // not awaited because hit marker is not used in anything else within this fucntion call
+                        GameEvents.current.SetHitMarkerActivated();
+                        GameEvents.current.PlaySFX("hitmarker");
+                    }
+                } else if (hit.collider.GetComponentInParent<EnvironmentObjectStatsManager>())
+                {
+                    damageable.BulletDamage(damage, -hit.normal);
                 }
             } else
             {
