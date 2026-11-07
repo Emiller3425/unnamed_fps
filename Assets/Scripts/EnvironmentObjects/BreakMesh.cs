@@ -6,6 +6,7 @@ public class BreakMesh : MonoBehaviour
     protected EnvironmentObjectStatsManager statsManager;
     protected int parentInstanceId;
     protected float breakForce = 2f;
+    protected bool isBroken = false;
 
     private void OnEnable()
     {
@@ -19,18 +20,22 @@ public class BreakMesh : MonoBehaviour
     private void BreakObjectMesh(int instanceId)
     {
         if (instanceId == parentInstanceId) {
+            if (isBroken) return;
+ 
+            isBroken = true;
+            Explosive e = GetComponent<Explosive>();
+            if (e)
+            {
+                e.Detonate();
+            }
+
             GameObject brokenMeshObject = Instantiate(brokenMesh, transform.position, transform.rotation);
-            Destroy(gameObject);
             foreach(Rigidbody rb in brokenMeshObject.GetComponentsInChildren<Rigidbody>())
             {
                 Vector3 force = (rb.transform.position - transform.position).normalized * breakForce;
                 rb.AddForce(force, ForceMode.Impulse);
             }
-        }
-        Explosive e = GetComponent<Explosive>();
-        if (e)
-        {
-            e.Detonate();
+            Destroy(gameObject);
         }
     }
 

@@ -145,7 +145,8 @@ public abstract class PlayerGun : MonoBehaviour, IInteractable
         
         Ray cameraRay = playerCamera.ScreenPointToRay(bloomArea);
 
-        // Debug.DrawRay(cameraRay.origin, cameraRay.direction * 100f, Color.red, 0f);
+        Debug.Log(cameraRay.origin);
+        Debug.DrawRay(cameraRay.origin, cameraRay.direction * 100f, Color.red, 4f);
 
         RaycastHit hit;
 

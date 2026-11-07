@@ -8,8 +8,8 @@ public class SceneController : MonoBehaviour
     private static int activeSceneIndex;
     private void OnEnable()
     {
-        GameEvents.current.OnPlayerDeath += ResetScene;
-        GameEvents.current.OnLevelEnd += LoadNextScene;
+        // GameEvents.current.OnPlayerDeath += ResetScene;
+        // GameEvents.current.OnLevelEnd += LoadNextScene;
     }
 
     private void Start()
@@ -44,7 +44,7 @@ public class SceneController : MonoBehaviour
     }
     private void OnDisable()
     {
-        GameEvents.current.OnPlayerDeath -= ResetScene;
-        GameEvents.current.OnLevelEnd -= LoadNextScene;
+        // GameEvents.current.OnPlayerDeath -= ResetScene;
+        // GameEvents.current.OnLevelEnd -= LoadNextScene;
     }
 }

@@ -11,6 +11,8 @@ using UnityEngine.AI;
 // ranged enemy should require an enemyGun refrence, melee type should not require a weapon 
 // but can have one, ranged enemy should be able to melee.
 
+// TODO: Better enemy behavior
+
 public enum EnemyState
 {
     IDLE,

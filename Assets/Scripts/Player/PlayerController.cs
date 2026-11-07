@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+// TODO: Handle player death
+
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour, IDetectable
 {
@@ -22,6 +24,8 @@ public class PlayerController : MonoBehaviour, IDetectable
     private float maxDashCooldown = 5f;
     public Animator animator;
     private CharacterController characterController;
+    private Rigidbody rb;
+    private MeshCollider mc;
     public bool canJump = true;
     public bool canSprint = false;
     private float rotationX = 0f;
@@ -34,6 +38,7 @@ public class PlayerController : MonoBehaviour, IDetectable
     private float gravity = 10f;
     private float walkingStepNoiseBuffer = 0.5f;
     private float sprintingStepNoiseBuffer = 0.4f;
+    private bool isDead = false;
     private Dictionary<string, int> movementValues;
     // new input system
     private InputAction moveAction;
@@ -89,12 +94,16 @@ public class PlayerController : MonoBehaviour, IDetectable
     {
         GameEvents.current.OnTogglePause += HandlePause;
         GameEvents.current.OnTogglePlayerInventory += HandlePlayerInventory;
+        GameEvents.current.OnPlayerDeath += HandlePlayerDeath;
     }
 
     private void Start()
     {
         // Game Events
         characterController = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
+        mc = GetComponent<MeshCollider>();
+        mc.enabled = false;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -102,7 +111,7 @@ public class PlayerController : MonoBehaviour, IDetectable
     private void Update()
     {
         // movement logic
-        if (canMove && !isPaused)
+        if (canMove && !isPaused && !isDead)
         {
             // Get WASD
             Vector2 moveValue = moveAction.ReadValue<Vector2>();
@@ -338,10 +347,19 @@ public class PlayerController : MonoBehaviour, IDetectable
         isPaused = isToggled;
     }
 
+    private void HandlePlayerDeath()
+    {
+        isDead = true;
+        characterController.enabled = false;
+        mc.enabled = true;
+        rb.isKinematic = false;
+    }
+
     private void OnDisable()
     {
         GameEvents.current.OnTogglePause -= HandlePause;
         GameEvents.current.OnTogglePlayerInventory -= HandlePlayerInventory;
+        GameEvents.current.OnPlayerDeath -= HandlePlayerDeath;
     }
 
     private void OnDestroy()

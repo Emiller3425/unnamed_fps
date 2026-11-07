@@ -28,7 +28,7 @@ public class Explosive : MonoBehaviour
     }
     public virtual void Detonate()
     {
-        PlaySFX();
+        PlayFX();
         Collider[] hitColliders = Physics.OverlapSphere(transform.position, areaOfEffect);
 
         // Hashset to ensure we only damage an enemy once
@@ -59,6 +59,7 @@ public class Explosive : MonoBehaviour
                         damageable.ExplosiveDamage(damage, transform.position, areaOfEffect, dentonateForce);
                     }
                 }
+                // TODO: Launch player when they die
             } else if (c.attachedRigidbody != null)
             {
                 c.attachedRigidbody.AddExplosionForce(dentonateForce, transform.position, areaOfEffect);
@@ -66,7 +67,7 @@ public class Explosive : MonoBehaviour
         }
         Destroy(gameObject);
     }
-    protected virtual void PlaySFX()
+    protected virtual void PlayFX()
     {
         GameEvents.current.PlayVFX("grenadeExplosion", transform.position, Vector3.zero, Vector3.zero, null);
         GameEvents.current.PlaySFX("explosion");
