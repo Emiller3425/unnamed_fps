@@ -102,6 +102,8 @@ public class PlayerController : MonoBehaviour, IDetectable
         // Game Events
         characterController = GetComponent<CharacterController>();
         rb = GetComponent<Rigidbody>();
+        // Must be kinematic else it conflicts with character controller updates
+        rb.isKinematic = true;
         mc = GetComponent<MeshCollider>();
         mc.enabled = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -166,7 +168,7 @@ public class PlayerController : MonoBehaviour, IDetectable
                 // Only overwrite velocityY if velocityY is < 0, this ensures that when we set it in the Input Callback it isn't overwritten.
                 if (velocityY < 0f)
                 {
-                    velocityY = -10f;
+                    velocityY = -1f;
                 }
             }
 
@@ -351,7 +353,7 @@ public class PlayerController : MonoBehaviour, IDetectable
     {
         isDead = true;
         characterController.enabled = false;
-        mc.enabled = true;
+        mc.enabled = true; 
         rb.isKinematic = false;
     }
 
