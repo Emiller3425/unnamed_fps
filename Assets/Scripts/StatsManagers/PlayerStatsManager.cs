@@ -65,6 +65,13 @@ public class PlayerStatsManager : EntityStatsManager
         // Update Health UI
         GameEvents.current.HealthAdded(healing, maxHealth, currentHealth);
     }
+
+    public override void EquipmentAdded(int equipmentCount)
+    {
+        base.EquipmentAdded(equipmentCount);
+        GameEvents.current.EquipmentCountChanged(currentEquipment);
+    }
+
     protected override void HandleDeath(float timeToDestroy)
     {
         // base.HandleDeath(timeToDestroy);

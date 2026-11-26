@@ -41,7 +41,7 @@ public class EntityStatsManager : StatsManager, IDamageable, IHealable
         maxShotgunAmmo = entityStats.GetMaxShotgunAmmo();
         // Equipment
         currentEquipment = entityStats.GetCurrentEquipment();
-        maxEquipment = entityStats.GetMaxEquipement();
+        maxEquipment = entityStats.GetMaxEquipment();
         // Instance Id
         instanceId = gameObject.GetInstanceID();
     }
@@ -62,6 +62,15 @@ public class EntityStatsManager : StatsManager, IDamageable, IHealable
         if (currentHealth > entityStats.GetMaxHealth())
         {
             currentHealth = entityStats.GetMaxHealth();
+        }
+    }
+
+    public virtual void EquipmentAdded(int equipmentCount)
+    {
+        currentEquipment += equipmentCount;
+        if (currentEquipment > entityStats.GetMaxEquipment())
+        {
+            currentEquipment = entityStats.GetMaxEquipment();
         }
     }
 

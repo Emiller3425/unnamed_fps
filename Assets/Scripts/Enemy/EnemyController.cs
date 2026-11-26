@@ -15,6 +15,8 @@ using UnityEngine.AI;
 
 // TODO: Better enemy behavior
 
+// TODO: Wait time in between waypoints
+
 public enum EnemyState
 {
     IDLE,
@@ -213,10 +215,8 @@ public class EnemyController : MonoBehaviour
         Vector3 currentWaypointPosition = path.GetCurrentWaypoint().position;
         if (Math.Abs(transform.position.x - currentWaypointPosition.x) + Math.Abs(transform.position.z - currentWaypointPosition.z) < 1f)
         {
-            Debug.Log(true);
             return true;
         }
-        Debug.Log(false);
         return false;
     }
 

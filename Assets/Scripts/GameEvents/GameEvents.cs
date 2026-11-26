@@ -82,9 +82,9 @@ public class GameEvents : TemplateMonoBeheavior
     {
         OnExperienceAdded?.Invoke(maxExperiencePoints, currentExperiencePoints, previousExperiencePoints, currentLevel);
     }
-    public void HealthAdded(float damage, float maxHealth, float currentHealth)
+    public void HealthAdded(float healing, float maxHealth, float currentHealth)
     {
-        OnHealthAdded?.Invoke(damage, maxHealth, currentHealth);
+        OnHealthAdded?.Invoke(healing, maxHealth, currentHealth);
     }
     public void HealthSubtracted(float damage, float maxHealth, float currentHealth)
     {

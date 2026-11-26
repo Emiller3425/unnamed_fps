@@ -68,7 +68,7 @@ public class EntityStats : ScriptableObject
     {
         return currentShotgunAmmo;
     }
-    public int GetMaxEquipement()
+    public int GetMaxEquipment()
     {
         return maxEquipment; 
     }
