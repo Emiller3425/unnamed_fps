@@ -47,6 +47,8 @@ public class MeleeEnemyController : EnemyController
                 navAgent.isStopped = true;
                 break;
             case EnemyState.PATROL:
+                navAgent.isStopped = false;
+                navAgent.SetDestination(path.GetCurrentWaypoint().position);
                 break;
             case EnemyState.PURSUIT:
                 navAgent.isStopped = false;

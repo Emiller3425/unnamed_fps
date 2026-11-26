@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -32,8 +34,9 @@ public class EnemyController : MonoBehaviour
     public float lookSpeed = 10f;
     public NavMeshAgent navAgent;
     public Animator animator;
-    public event Action OnAttack;
-    public event Action OnDeath;
+    public event Action? OnAttack;
+    public event Action? OnDeath;
+    public Path? path;
     protected virtual float detectDistance => 10f;
     protected float detectArcDegrees = 120f;
     protected virtual float attackRange => 3f;
@@ -143,15 +146,25 @@ public class EnemyController : MonoBehaviour
     {
         // HANDLE IDLE / PATROL
         if (State == EnemyState.IDLE || State == EnemyState.PATROL) {
-        if (detectedObjects.Count > 0)
-        {
-            if (!detectedTarget)
+            if (detectedObjects.Count > 0)
             {
-                detectedTarget = detectedObjects.First();
-                State = EnemyState.PURSUIT;
-                return;
+                if (!detectedTarget)
+                {
+                    detectedTarget = detectedObjects.First();
+                    State = EnemyState.PURSUIT;
+                    return;
+                }
             }
-        }
+
+            if (State == EnemyState.PATROL)
+            {
+                if (ShouldSetNextWaypoint())
+                {
+                    path?.SetNextWaypoint();
+                }
+            }
+
+            State = PatrolOrIdle();
         }
 
         // HANDLE PURSUIT
@@ -162,14 +175,15 @@ public class EnemyController : MonoBehaviour
                 float targetDistance = Vector3.Distance(transform.position, detectedTarget.transform.position);
                 if (targetDistance < attackRange)
                 {
-                    currentState = EnemyState.ATTACKING;
+                    State = EnemyState.ATTACKING;
                     return;
                 } else if (targetDistance < pursuitRange)
                 {
                     return;
                 }
-            } 
-            State = EnemyState.IDLE;
+            }
+
+            State = PatrolOrIdle();
             return;
         }
 
@@ -184,10 +198,31 @@ public class EnemyController : MonoBehaviour
                 }
             } else
             {
-                State = EnemyState.IDLE;
-                return;
+               State = PatrolOrIdle();
             }
         }
+    }
+
+    protected bool ShouldSetNextWaypoint()
+    {
+        Vector3 currentWaypointPosition = path.GetCurrentWaypoint().position;
+        Debug.Log(Math.Abs(transform.position.x - currentWaypointPosition.x) + Math.Abs(transform.position.z - currentWaypointPosition.z));
+        if (Math.Abs(transform.position.x - currentWaypointPosition.x) + Math.Abs(transform.position.z - currentWaypointPosition.z) < 2f)
+        {
+            Debug.Log(true);
+            return true;
+        }
+        Debug.Log(false);
+        return false;
+    }
+
+    protected virtual EnemyState PatrolOrIdle()
+    {
+        if (path?.waypoints.Length > 0)
+        {
+            return EnemyState.PATROL;
+        }
+        return EnemyState.IDLE;
     }
 
     protected virtual void ProcessState()
