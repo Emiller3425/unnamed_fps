@@ -42,7 +42,7 @@ public class EnemyController : MonoBehaviour
     protected virtual float attackRange => 3f;
     protected float pursuitRange = 200f;
     protected HashSet<GameObject> detectedObjects;
-    protected GameObject detectedTarget;
+    protected GameObject? detectedTarget;
     protected float maxCheckTimer = 0.5f;
     protected float currentCheckTimer;
     protected bool isRunningChecks = false;
@@ -205,9 +205,13 @@ public class EnemyController : MonoBehaviour
 
     protected bool ShouldSetNextWaypoint()
     {
+        if (path == null)
+        {
+            return false;
+        }
+
         Vector3 currentWaypointPosition = path.GetCurrentWaypoint().position;
-        Debug.Log(Math.Abs(transform.position.x - currentWaypointPosition.x) + Math.Abs(transform.position.z - currentWaypointPosition.z));
-        if (Math.Abs(transform.position.x - currentWaypointPosition.x) + Math.Abs(transform.position.z - currentWaypointPosition.z) < 2f)
+        if (Math.Abs(transform.position.x - currentWaypointPosition.x) + Math.Abs(transform.position.z - currentWaypointPosition.z) < 1f)
         {
             Debug.Log(true);
             return true;
